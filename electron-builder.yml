@@ -1,0 +1,63 @@
+appId: com.sessionforge.app
+productName: SessionForge
+artifactName: ${productName}-${version}-${os}-${arch}.${ext}
+directories:
+  buildResources: build
+  output: release
+# Whitelist: only the built app goes into app.asar. electron-builder always adds package.json and the
+# production node_modules. The old blacklist shipped .agents/, e2e/, docs and test output in the asar.
+files:
+  - dist-electron/**/*
+  - resources/**/*
+asarUnpack:
+  - resources/**
+  - '**/*.node'
+# The stdio MCP bridge runs with system node, which cannot read inside app.asar
+extraResources:
+  - from: bin
+    to: bin
+  # Settings → About opens these with the system viewer, so they sit outside app.asar
+  - from: README.md
+    to: docs/README.md
+  - from: SECURITY.md
+    to: docs/SECURITY.md
+  - from: PRIVACY.md
+    to: docs/PRIVACY.md
+  - from: LICENSE
+    to: docs/LICENSE
+  # Settings → Chrome Import copies this to userData/chrome-extension for "Load unpacked"
+  - from: chrome-extension
+    to: chrome-extension
+    filter:
+      - '**/*'
+      - '!store/**'
+# Rebuild better-sqlite3 for the target platform, arch and Electron version on every package run
+npmRebuild: true
+# Targets carry no `arch`: a config arch overrides the CLI flag (targetFactory.js
+# computeArchToTargetNamesMap), and release.yml picks the arch per job (--arm64 / --x64).
+# Without a flag, electron-builder builds for the host arch.
+win:
+  executableName: SessionForge
+  target:
+    - nsis
+nsis:
+  artifactName: ${productName}-${version}-win-${arch}-setup.${ext}
+  shortcutName: ${productName}
+  uninstallDisplayName: ${productName}
+  createDesktopShortcut: always
+mac:
+  category: public.app-category.developer-tools
+  target:
+    - dmg
+  # No Apple Developer ID yet. electron-builder 24 has no ad-hoc mode (mac.identity "-" arrives in v26),
+  # so skip its signing and ad-hoc sign in the afterPack hook instead.
+  identity: null
+  hardenedRuntime: false
+  notarize: false
+afterPack: ./build/macos-adhoc-sign.cjs
+linux:
+  target:
+    - AppImage
+    - deb
+  maintainer: sessionforge
+  category: Development

@@ -1,0 +1,74 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependencies
+node_modules/
+
+# Build output (anchored to the repo root: docs/release/ must stay tracked)
+/dist/
+/dist-electron/
+/out/
+/release/
+/dist-release/
+*.local
+
+# build/ holds electron-builder resources (icons, signing hook) and is committed.
+# Ignore anything else a tool might drop there.
+build/*
+!build/icon.png
+!build/icon.icns
+!build/icon.ico
+!build/icons/
+!build/entitlements*.plist
+!build/macos-adhoc-sign.cjs
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Database
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Playwright storage exports (contain login tokens)
+*.playwright.json
+*-storageState.json
+*storageState*.json
+storage-state*.json
+
+# Agent working files (plans, reviews, notes)
+.agents/
+
+# Test output
+test-artifacts/
+test-results/
+playwright-report/
+
+# Chrome extension upload zip
+sessionforge-extension-*.zip
+
+# OS
+Thumbs.db
+
+# Environment
+.env
+.env.*
+!.env.example
+# Stray npm cache from a command run with a literal HOME='~'
+/~/

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>SessionForge Import: allow site access</title>
+  <style>
+    body {
+      max-width: 480px;
+      margin: 40px auto;
+      padding: 0 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: #1a1a1a;
+    }
+    h1 {
+      font-size: 18px;
+      margin: 0 0 12px 0;
+      color: #1a1a1a;
+    }
+    p {
+      font-size: 14px;
+      line-height: 1.5;
+      margin: 0 0 12px 0;
+    }
+    .status {
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+    .status.info {
+      background: #e3f2fd;
+      color: #1976d2;
+    }
+    .status.success {
+      background: #e8f5e9;
+      color: #388e3c;
+    }
+    .status.error {
+      background: #ffebee;
+      color: #d32f2f;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+    button:hover {
+      background: #2563eb;
+    }
+    button.secondary {
+      background: #fff;
+      color: #1a1a1a;
+      border: 1px solid #cbd5e1;
+    }
+    button.secondary:hover {
+      background: #f1f5f9;
+    }
+  </style>
+</head>
+<body>
+  <h1>🚀 SessionForge Import</h1>
+
+  <!-- Only asks Chrome for site access: this page never reads cookies or page data and never contacts SessionForge -->
+  <p id="grant-text"></p>
+  <div id="status" class="status info" style="display: none;"></div>
+  <button id="allow-btn" style="display: none;">Allow access</button>
+  <button id="back-btn" class="secondary" style="display: none;">Back to the tab</button>
+
+  <script src="access.js"></script>
+  <script src="grant.js"></script>
+</body>
+</html>

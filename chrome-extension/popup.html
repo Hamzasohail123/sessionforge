@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      width: 320px;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      margin: 0;
+    }
+    h1 {
+      font-size: 18px;
+      margin: 0 0 12px 0;
+      color: #1a1a1a;
+    }
+    .status {
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+    .status.info {
+      background: #e3f2fd;
+      color: #1976d2;
+    }
+    .status.success {
+      background: #e8f5e9;
+      color: #388e3c;
+    }
+    .status.error {
+      background: #ffebee;
+      color: #d32f2f;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+    button:hover {
+      background: #2563eb;
+    }
+    button:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+    button.secondary {
+      background: #fff;
+      color: #1a1a1a;
+      border: 1px solid #cbd5e1;
+    }
+    button.secondary:hover {
+      background: #f1f5f9;
+    }
+    #consent h2 {
+      font-size: 15px;
+      margin: 0 0 8px 0;
+      color: #1a1a1a;
+    }
+    #consent p {
+      font-size: 13px;
+      margin: 0 0 8px 0;
+      color: #1a1a1a;
+    }
+    .consent-list {
+      font-size: 12px;
+      color: #334155;
+      padding-left: 18px;
+      margin: 8px 0 12px 0;
+    }
+    .consent-list li + li {
+      margin-top: 6px;
+    }
+    .small-text {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 8px;
+    }
+    .session-info {
+      background: #f1f5f9;
+      padding: 8px;
+      border-radius: 4px;
+      margin: 8px 0;
+      font-size: 13px;
+    }
+    /* "Send to <session>" for a SessionForge request: white with a band and dot in the session colour,
+       so every palette colour (yellow included) stays readable */
+    .pending-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-align: left;
+      background: #fff;
+      color: #1a1a1a;
+      border: 1px solid #cbd5e1;
+      border-left: 6px solid var(--c, #3b82f6);
+    }
+    .pending-btn:hover {
+      background: #f1f5f9;
+    }
+    .pending-btn:disabled {
+      background: #f8fafc;
+      color: #94a3b8;
+    }
+    .pending-btn .pending-text {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+      min-width: 0;
+    }
+    .pending-btn .scope {
+      font-size: 11px;
+      font-weight: 400;
+      color: #64748b;
+      overflow-wrap: anywhere;
+    }
+    .pending-btn .dot {
+      flex: none;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--c, #3b82f6);
+    }
+    .loading {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 0.6s linear infinite;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <h1>🚀 SessionForge Import</h1>
+
+  <!-- First-run notice: shown until the user clicks Agree; nothing is read or sent before that.
+       store/PRIVACY.md and store/LISTING.md repeat this text. -->
+  <div id="consent" style="display: none;">
+    <h2>Before you start</h2>
+    <p>SessionForge Import copies a login from Chrome into the SessionForge desktop app on this computer.</p>
+    <ul class="consent-list">
+      <li><strong>What it reads:</strong> the cookies and localStorage of the site you send, and that page's URL, title and favicon URL (if the title contains an e-mail address, SessionForge names the session after it). A “Send to &lt;session&gt;” button for a SessionForge sign-in request reads only the cookies of the domains shown on it.</li>
+      <li><strong>When:</strong> only when you click a Send button. Nothing is read in the background.</li>
+      <li><strong>Where it goes:</strong> only to the SessionForge app on this computer (http://127.0.0.1:34567). Never to us or any other server. No analytics.</li>
+      <li><strong>Site access:</strong> the first time you send from a site, Chrome asks you to allow access to that site.</li>
+      <li><strong>What it stores:</strong> this choice, and until Chrome closes, the site it last asked access for.</li>
+      <li><strong>How to stop:</strong> remove site access in chrome://extensions → SessionForge Import → Details → Site access, or uninstall the extension.</li>
+    </ul>
+    <button id="agree-btn">Agree</button>
+    <button id="not-now-btn" class="secondary">Not now</button>
+    <div id="consent-status" class="small-text"></div>
+  </div>
+
+  <div id="main" style="display: none;">
+    <div id="status" class="status info">
+      Ready to import current session
+    </div>
+
+    <div id="session-info" class="session-info" style="display: none;">
+      <strong>Current Site:</strong> <span id="current-url"></span><br>
+      <strong>Site access:</strong> <span id="site-access"></span>
+    </div>
+
+    <div id="pending"></div>
+
+    <button id="import-btn">
+      <span id="btn-text">Send to SessionForge</span>
+    </button>
+
+    <button id="grant-btn" class="secondary" style="display: none;">Allow access in a tab</button>
+
+    <div class="small-text">
+      ℹ️ Make sure SessionForge is running<br>
+      🔒 Reads this site's cookies and localStorage only when you click Send, and sends them only to SessionForge on this computer.
+    </div>
+  </div>
+
+  <script src="access.js"></script>
+  <script src="handoff.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

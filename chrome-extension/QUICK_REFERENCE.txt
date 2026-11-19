@@ -1,0 +1,81 @@
+SessionForge Import - Quick Reference
+=====================================
+
+INSTALL
+  Chrome Web Store: "SessionForge Import" (once published)
+  or: chrome://extensions -> Developer mode ON -> Load unpacked -> this folder
+
+UPDATE
+  After updating SessionForge: chrome://extensions -> reload icon on SessionForge Import
+  (version 1.3.0; versions before 1.2.0 have no "Send to <session>" request button)
+
+USE
+  1. Log in to a site in Chrome
+  2. Click the SessionForge Import icon (first time: read the notice, click "Agree")
+  3. Click "Send to SessionForge" (first time per site: allow access when Chrome asks)
+  4. SessionForge opens the page in a new session, in a pane, logged in
+  Nothing is read or sent before "Agree", or from a site you didn't allow.
+
+SIGN IN WITH CHROME (Google blocks sign-in inside SessionForge)
+  1. SessionForge pane on a Google sign-in page -> banner -> "Sign in with Chrome"
+  2. Sign in in the browser that opens
+  3. Extension -> "Send to <session> (SessionForge asked for this)"
+     (the regular button is then "Send to new session"; allow access to the shown domains if Chrome asks)
+  Cookies of the requested domains only, into that existing session. Request: one use, 10 minutes.
+  GET http://127.0.0.1:34567/pending lists waiting requests (id, session name/colour, domains, expiry)
+
+HOW IT TALKS TO THE APP
+  HTTP POST http://127.0.0.1:34567/import   (Playwright storageState JSON)
+  Only 127.0.0.1 on this computer. No other network requests.
+  The app accepts requests with no Origin or a chrome-extension:// Origin; web pages get 403.
+  Body limit 5 MB.
+
+REQUIREMENTS
+  - SessionForge running ("[import] listening on http://127.0.0.1:34567/import" in its log)
+  - Port 34567 free
+  - Chrome 103 or later (Edge/Brave untested, Firefox not supported)
+
+WHAT IS COPIED (on your Send click only)
+  yes: cookies for the page and its site domain (incl. httpOnly, secure)
+  yes: localStorage of the current origin
+  yes: URL, title, favicon URL
+  no:  sessionStorage, IndexedDB, history, bookmarks, passwords
+
+WHAT IS STORED
+  chrome.storage.local:   your "Agree" (consentVersion, consentAt)
+  chrome.storage.session: the site last asked access for, until Chrome closes
+  Stop: chrome://extensions -> SessionForge Import -> Details -> Site access, or uninstall
+
+TROUBLESHOOTING
+  "SessionForge is not running"   -> start the app; free port 34567
+  "Chrome did not allow access"   -> click Send again and allow, or "Allow access in a tab"
+  "Chrome closed this popup while asking" -> "Allow access in a tab", then send again
+  "Only http(s) pages can be sent" -> not on chrome:// pages, the Web Store or files
+  "Session too large (over 5 MB)" -> too much localStorage; log in inside SessionForge instead
+  "Invalid URL" / "Invalid payload" -> only http(s) pages can be imported
+  Imported but not logged in      -> site keeps auth elsewhere; log in once inside SessionForge
+  Several Google accounts         -> use one Chrome profile per Google account
+  "request expired or was already used" -> click "Sign in with Chrome" in SessionForge again
+  No "Send to <session>" button   -> reload the extension (1.2.0+); SessionForge must use port 34567
+
+KEYBOARD SHORTCUTS IN SESSIONFORGE (Cmd on macOS, Ctrl elsewhere)
+  Cmd/Ctrl+K        Command palette
+  Cmd/Ctrl+T        New tab
+  Cmd/Ctrl+W        Close tab
+  Ctrl+Tab          Next tab (Ctrl+Shift+Tab: previous)
+  Cmd/Ctrl+1..4     Focus pane 1-4
+  Cmd/Ctrl+L        Focus address bar
+  Cmd/Ctrl+R, F5    Reload
+  F12               DevTools
+
+FILES
+  manifest.json   Manifest V3 (permissions: activeTab, cookies, scripting, storage;
+                  host access: 127.0.0.1:34567; other sites only when you allow them)
+  popup.html/js   Popup: first-run notice, site access, import logic
+  access.js       Consent and site-access helpers
+  handoff.js      "Sign in with Chrome" helpers (pending requests, requested cookies)
+  grant.html/js   "Allow access in a tab" page (asks for site access; reads and sends nothing)
+  background.js   Service worker
+  icon*.png       Icons
+  store/          Chrome Web Store listing, privacy statement, images
+  README.md       Full guide        INSTALL.md   Install steps

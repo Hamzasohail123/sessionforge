@@ -153,11 +153,15 @@ Follow `docs/release/DEMO_SCRIPT.md`. Save:
   ```bash
   ffmpeg -i demo.mp4 -vf "fps=12,scale=1200:-1:flags=lanczos" -loop 0 docs/release/demo.gif
   ```
-Commit and push:
+`main` is protected, so add it through a pull request. Also put the image back in README.md: line 10
+has it commented out (`<!-- Demo GIF goes here … -->`); replace that comment with the image line inside it.
 ```bash
-git add docs/release/demo.gif
+git switch -c docs/demo-gif
+git add docs/release/demo.gif README.md
 git commit -s -m "docs: add demo GIF"
-git push
+git push -u origin docs/demo-gif
+gh pr create --fill
+gh pr merge --squash --auto    # merges by itself once CI passes
 ```
 
 ## 10. Go public

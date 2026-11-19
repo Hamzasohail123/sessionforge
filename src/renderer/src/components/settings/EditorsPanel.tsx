@@ -72,7 +72,10 @@ export function EditorsPanel() {
           </button>
         ))}
       </div>
-      <SettingsCard title={`Connect ${e.label}`} description="Three steps; each one has its own copy button.">
+      <SettingsCard
+        title="MCP connection setup"
+        description="Connect Cursor, Codex, or Claude Code to the SessionForge MCP server. Each editor has its own copy button."
+      >
         <ol className="mt-1">
           <Step
             n={1}

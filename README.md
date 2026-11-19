@@ -11,7 +11,7 @@
 
 - **Every role, logged in, side by side.** Each session has its own cookies and storage; split view shows up to four at once.
 - **One click from Chrome.** The extension's "Send to SessionForge" copies a real Chrome login into a new session.
-- **Agent Bridge (new).** A local MCP server lets Cursor, Codex and Claude Code list sessions, open pages and send the same request as each role. Off by default, localhost only, production sessions are read-only. See [Agent Bridge](#agent-bridge-cursor-codex-and-claude-code) and [docs/agents/](./docs/agents/sessionforge.md).
+- **MCP Server / Agent Bridge (new).** A local MCP server connects Cursor, Codex and Claude Code to your logged-in SessionForge sessions. Off by default, localhost only, production sessions are read-only. See [MCP Server / Agent Bridge](#mcp-server--agent-bridge-cursor-codex-and-claude-code) and [docs/agents/](./docs/agents/sessionforge.md).
 
 SessionForge is a free, open-source, local-first desktop browser for developers and QA engineers. No account, no cloud, no telemetry.
 
@@ -20,7 +20,7 @@ SessionForge is a free, open-source, local-first desktop browser for developers 
 - **🔒 Isolated Sessions** – Each session has its own cookies, storage, and cache. No cross-contamination.
 - **↔️ Split View** – See Admin and Customer side by side. Watch one user's action appear for the other.
 - **📥 Chrome Import** – The SessionForge Import extension sends a logged-in Chrome tab to a new session with one click.
-- **🤖 Agent Bridge** – A local MCP server so Cursor, Codex, Claude Code and other MCP clients can use your sessions. Off by default.
+- **🤖 MCP Server / Agent Bridge** – A local MCP server connects Cursor, Codex, Claude Code and other MCP clients to your sessions. Off by default.
 - **⚠️ Environment Safety** – Production sessions get a red banner, and agents can't act in them without your typed confirmation.
 - **🛠️ DevTools Built In** – Full Chromium DevTools for every tab.
 - **🚀 Local First** – No account, no cloud, no telemetry.
@@ -123,17 +123,17 @@ Unverified: Chrome can bind Google sessions to the device ([Device Bound Session
 
 ### Environment Safety
 
-Sessions tagged `production` show a red banner. AI agents get read-only access to them unless you confirm by typing the session name (Settings → Agent Bridge). The environment can't be changed after a session is created, so a production session can't lose this protection. Renaming keeps it, and a closed production session comes back read-only for agents until you confirm again.
+Sessions tagged `production` show a red banner. AI agents get read-only access to them unless you confirm by typing the session name (Settings → MCP Server / Agent Bridge). The environment can't be changed after a session is created, so a production session can't lose this protection. Renaming keeps it, and a closed production session comes back read-only for agents until you confirm again.
 
-## Agent Bridge (Cursor, Codex and Claude Code)
+## MCP Server / Agent Bridge (Cursor, Codex and Claude Code)
 
-The Agent Bridge lets AI coding agents in Cursor, Codex (CLI and VS Code extension), Claude Code and other MCP clients use your logged-in SessionForge sessions. An agent can list your sessions, open pages in panes, read a compact page outline with element refs, click and type with real input events, read console and network logs, take screenshots, change the split layout, and send one HTTP request as several roles to compare what each gets. It is an MCP server inside SessionForge at `http://127.0.0.1:34568/mcp` (set `SESSIONFORGE_MCP_PORT` to change the port). Instructions for agents: [docs/agents/sessionforge.md](docs/agents/sessionforge.md).
+The MCP Server / Agent Bridge connects Cursor, Codex (CLI and VS Code extension), Claude Code and other MCP clients to your logged-in SessionForge sessions. An agent can list your sessions, open pages in panes, read a compact page outline with element refs, click and type with real input events, read console and network logs, take screenshots, change the split layout, and send one HTTP request as several roles to compare what each gets. It is an MCP server inside SessionForge at `http://127.0.0.1:34568/mcp` (set `SESSIONFORGE_MCP_PORT` to change the port). Instructions for agents: [docs/agents/sessionforge.md](docs/agents/sessionforge.md).
 
 <!-- Demo picture: added with the M5 demo app. -->
 
 ### Setup
 
-1. In SessionForge, open Settings (gear icon or `Cmd/Ctrl+,`) → Agent Bridge and turn on **Enable Agent Bridge**.
+1. In SessionForge, open Settings (gear icon or `Cmd/Ctrl+,`) → MCP Server / Agent Bridge and turn on **Enable MCP server**.
 2. Click **Copy export line** and add it to `~/.bashrc` or `~/.zshrc`:
    ```sh
    export SESSIONFORGE_TOKEN='sfa_…'
@@ -224,7 +224,7 @@ Without Node installed, run the bridge with the SessionForge executable itself: 
 
 - **Port in use**: another SessionForge (or app) has port 34568. Quit it, or set `SESSIONFORGE_MCP_PORT`, then toggle the bridge off and on.
 - **401 after rotating the token**: copy the new export line, update your shell profile and restart the editor.
-- **"SessionForge is not running, or the Agent Bridge is turned off"** from the stdio bridge: start SessionForge and enable Settings → Agent Bridge.
+- **"SessionForge is not running, or the Agent Bridge is turned off"** from the stdio bridge: start SessionForge and enable Settings → MCP Server / Agent Bridge.
 - **`ui_busy`**: Settings, a dialog or a notification covers the panes; input tools pause until it closes. Read tools keep working.
 
 ## Keyboard Shortcuts

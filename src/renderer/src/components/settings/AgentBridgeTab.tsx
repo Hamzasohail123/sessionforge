@@ -1,17 +1,18 @@
 import { Activity, Gauge, KeyRound, Plug, Users } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
 import { AGENT_TABS, useStore, type AgentTab } from '../../store'
+import { MCP_SERVER_SUBTABS } from './settings-search'
 import { OverviewPanel } from './OverviewPanel'
 import { AccessPanel } from './AccessPanel'
 import { EditorsPanel } from './EditorsPanel'
 import { TokenPanel } from './TokenPanel'
 import { ActivityPanel } from './ActivityPanel'
 const SUBTABS: Record<AgentTab, { label: string; icon: typeof Gauge }> = {
-  overview: { label: 'Overview', icon: Gauge },
-  access: { label: 'Access', icon: Users },
-  editors: { label: 'Editors', icon: Plug },
-  token: { label: 'Token', icon: KeyRound },
-  activity: { label: 'Activity', icon: Activity }
+  overview: { label: MCP_SERVER_SUBTABS.overview.label, icon: Gauge },
+  access: { label: MCP_SERVER_SUBTABS.access.label, icon: Users },
+  editors: { label: MCP_SERVER_SUBTABS.editors.label, icon: Plug },
+  token: { label: MCP_SERVER_SUBTABS.token.label, icon: KeyRound },
+  activity: { label: MCP_SERVER_SUBTABS.activity.label, icon: Activity }
 }
 export function AgentBridgeTab() {
   const agentTab = useStore((s) => s.settings.agentTab)

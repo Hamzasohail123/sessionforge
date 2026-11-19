@@ -23,10 +23,19 @@ const viewsVisible = async () => {
 }
 async function setContentSize(width: number, height: number): Promise<void> {
   await wm(ctx.app, (sf, s) => sf.window.setContentSize(s.width, s.height), { width, height })
+  // The native content bounds are the contract for setContentSize. On macOS, the renderer's CSS
+  // viewport can differ by a pixel because of native frame and scale rounding.
+  const tolerance = process.platform === 'darwin' ? 1 : 0
   await waitFor(
-    () => ctx.page.evaluate((s) => window.innerWidth === s.width && window.innerHeight === s.height, { width, height }),
+    async () => {
+      const bounds = await wm(ctx.app, (sf) => {
+        const { width: contentWidth, height: contentHeight } = sf.window.getContentBounds()
+        return { width: contentWidth, height: contentHeight }
+      })
+      return Math.abs(bounds.width - width) <= tolerance && Math.abs(bounds.height - height) <= tolerance
+    },
     5_000,
-    `window ${width}x${height}`
+    `content bounds ${width}x${height}`
   )
 }
 test.beforeAll(async () => {
@@ -126,6 +135,75 @@ test('Shortcuts lists every row of the shortcut table, including Cmd/Ctrl+,', as
   await expect(ctx.page.locator('[data-testid="shortcuts-table"]')).toContainText('Open Settings')
   await closeSettings(ctx)
 })
+test('settings search finds real tabs, supports keyboard navigation, and stays readable', async () => {
+  test.setTimeout(120_000)
+  await setContentSize(1400, 900)
+  await ctx.page.click('[data-testid="open-settings"]')
+  await expect(dialog()).toBeVisible()
+  await ctx.page.click('[data-testid="settings-nav-agent"]')
+  await ctx.page.click('[data-testid="settings-subtab-overview"]')
+  await expect(ctx.page.locator('[data-testid="settings-subtab-overview"]')).toHaveAttribute('data-state', 'active')
+  await expect(ctx.page.locator('[data-testid="settings-nav-agent"]')).toContainText('MCP Server')
+  await expect(ctx.page.locator('[data-testid="settings-nav-agent"]')).toContainText('Agent Bridge')
+  await expect(ctx.page.locator('[data-testid="settings-title"]')).toHaveText('MCP Server (Agent Bridge)')
+  await expect(dialog()).toContainText('Connect Cursor, Codex or Claude Code to your logged-in sessions through MCP.')
+  await expect(ctx.page.getByRole('heading', { name: 'Connect an MCP client', exact: true })).toBeVisible()
+  await capture(ctx.app, 'settings-search-overview')
+
+  const search = ctx.page.locator('[data-testid="settings-dialog"] [role="searchbox"]')
+  await search.fill('Chrome Import')
+  const importResult = ctx.page.locator('[data-testid="settings-search-result-import"]')
+  await expect(importResult).toContainText('Chrome Import')
+  await expect(importResult).toContainText('Bring a logged-in Chrome tab into SessionForge.')
+  await expect(importResult).toHaveAttribute('aria-describedby', 'settings-search-result-import-category settings-search-result-import-description')
+  await expect(ctx.page.locator('#settings-search-result-import-category')).toHaveText('Chrome Import')
+  await expect(ctx.page.locator('#settings-search-result-import-description')).toHaveText('Bring a logged-in Chrome tab into SessionForge.')
+  await importResult.click()
+  await expect(ctx.page.locator('[data-testid="settings-nav-import"]')).toHaveAttribute('aria-selected', 'true')
+  await expect(ctx.page.locator('[data-testid="settings-title"]')).toHaveText('Chrome Import')
+
+  await search.fill('permissions')
+  await expect(ctx.page.locator('[data-testid^="settings-search-result-"]')).toHaveCount(1)
+  await search.press('Enter')
+  await expect(ctx.page.locator('[data-testid="settings-nav-agent"]')).toHaveAttribute('aria-selected', 'true')
+  await expect(ctx.page.locator('[data-testid="settings-subtab-access"]')).toHaveAttribute('data-state', 'active')
+
+  await search.fill('token')
+  await expect(ctx.page.locator('[data-testid="settings-nav-agent"]')).toBeVisible()
+  await search.press('Escape')
+  await expect(search).toHaveValue('')
+  await expect(dialog()).toBeVisible()
+  await expect(search).toBeFocused()
+  await search.fill('   ')
+  await search.press('Escape')
+  await expect(search).toHaveValue('')
+  await expect(dialog()).toBeVisible()
+  await expect(search).toBeFocused()
+  await search.press('Escape')
+  await expect(dialog()).toHaveCount(0)
+
+  await openSettings(ctx, 'overview')
+  await ctx.page.click('[data-testid="connect-mcp-client"]')
+  await expect(ctx.page.locator('[data-testid="settings-subtab-editors"]')).toHaveAttribute('data-state', 'active')
+  await expect(ctx.page.locator('[data-testid="settings-title"]')).toHaveText('MCP Server (Agent Bridge)')
+  await search.fill('MCP')
+  await expect(ctx.page.locator('[data-testid="settings-search-result-agent-editors"]')).toBeVisible()
+  await ctx.page.locator('[data-testid="settings-search-result-agent-editors"]').click()
+  await expect(ctx.page.locator('[data-testid="settings-subtab-editors"]')).toHaveAttribute('data-state', 'active')
+  await expect(ctx.page.locator('[data-testid="settings-scroll"]')).toHaveJSProperty('scrollWidth', await ctx.page.locator('[data-testid="settings-scroll"]').evaluate((el) => el.clientWidth))
+  await capture(ctx.app, 'settings-search-mcp')
+
+  await setContentSize(1024, 700)
+  await search.fill('something that is not a setting')
+  await expect(ctx.page.locator('[data-testid="settings-search-no-results"]')).toContainText('No settings found')
+  await expect(ctx.page.locator('[data-testid="settings-search-no-results-suggestion"]')).toContainText('MCP, Cursor, sessions, or shortcuts')
+  const smallSettingsScroll = ctx.page.locator('[data-testid="settings-scroll"]')
+  await expect(smallSettingsScroll).toHaveJSProperty('scrollWidth', await smallSettingsScroll.evaluate((el) => el.clientWidth))
+  await capture(ctx.app, 'settings-search-no-results')
+  await closeSettings(ctx)
+  await setContentSize(1400, 900)
+})
+
 test('screenshots of every tab at 1400x900 and Editors at 1024x700', async () => {
   test.setTimeout(120_000)
   await setContentSize(1400, 900)

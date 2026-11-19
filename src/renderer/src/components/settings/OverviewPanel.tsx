@@ -13,15 +13,15 @@ export function OverviewPanel() {
   const rejected = Object.entries(status?.rejected ?? {})
   return (
     <SettingsPage>
-      <SettingsCard>
+      <SettingsCard title="MCP server">
         <div className="flex items-start gap-4">
           <div className="min-w-0 flex-1 space-y-1">
             <label htmlFor="agent-enable" className="text-sm font-semibold">
-              Enable Agent Bridge
+              Enable MCP server
             </label>
             <p className="text-[13px] leading-relaxed text-muted-foreground">
-              Lets Cursor, Codex, Claude Code and other MCP clients on this computer use the sessions you allow. Off by
-              default. Listens only on 127.0.0.1 and refuses requests from web pages.
+              Lets Cursor, Codex, Claude Code and other MCP clients use the sessions you allow through this MCP server. The Agent Bridge
+              is off by default. Listens only on 127.0.0.1 and refuses requests from web pages.
             </p>
           </div>
           <Switch
@@ -41,7 +41,15 @@ export function OverviewPanel() {
           </span>
         </div>
       </SettingsCard>
-      <SettingsCard title="Connected clients" description="MCP clients that called the bridge since it started.">
+      <SettingsCard
+        title="Connect an MCP client"
+        description="Cursor, Codex and Claude Code can connect through MCP to use your logged-in SessionForge sessions."
+      >
+        <Button size="sm" data-testid="connect-mcp-client" onClick={() => setAgentTab('editors')}>
+          Connect an MCP client <ArrowRight className="ml-1 h-3 w-3" aria-hidden />
+        </Button>
+      </SettingsCard>
+      <SettingsCard title="Connected clients" description="MCP clients that called the MCP server since it started.">
         {status && status.clients.length > 0 ? (
           <ul className="divide-y rounded-lg border text-sm">
             {status.clients.map((c) => (
@@ -91,9 +99,6 @@ export function OverviewPanel() {
         <div className="mt-4 flex flex-wrap gap-2">
           <Button size="sm" variant="outline" onClick={() => setAgentTab('access')}>
             Session access <ArrowRight className="ml-1 h-3 w-3" aria-hidden />
-          </Button>
-          <Button size="sm" variant="outline" onClick={() => setAgentTab('editors')}>
-            Connect an editor <ArrowRight className="ml-1 h-3 w-3" aria-hidden />
           </Button>
         </div>
       </SettingsCard>

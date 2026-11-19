@@ -7,7 +7,9 @@
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](./LICENSE)
 ![Platforms](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey)
 
-![SessionForge: an agent checks Admin and Customer side by side](./docs/release/demo.gif)
+<!-- Demo GIF goes here once recorded: ![SessionForge: an agent checks Admin and Customer side by side](./docs/release/demo.gif) -->
+
+**[Download v0.1.0](https://github.com/Hamzasohail123/sessionforge/releases/latest)** for macOS, Windows or Linux.
 
 - **Every role, logged in, side by side.** Each session has its own cookies and storage; split view shows up to four at once.
 - **One click from Chrome.** The extension's "Send to SessionForge" copies a real Chrome login into a new session.

@@ -118,6 +118,15 @@ export async function waitViewOnSlot(app: ElectronApplication, page: Page, tabId
   )
 }
 
+/**
+ * The app's main shortcut modifier for sendInputEvent: Cmd on macOS, Ctrl elsewhere, as in
+ * src/main/shortcuts.ts. Use it wherever a spec means "Cmd/Ctrl". Ctrl+Tab is Control on every OS,
+ * so tab cycling keeps 'control'.
+ */
+export const MOD = process.platform === 'darwin' ? 'meta' : 'control'
+/** MOD as a key name for the agent's press tool (page.keyboard has its own 'ControlOrMeta') */
+export const MOD_KEY = process.platform === 'darwin' ? 'Meta' : 'Control'
+
 /** Send a key to a tab's page (keyDown + keyUp), as a user pressing it inside the page. */
 export async function pressInTab(app: ElectronApplication, tabId: string, keyCode: string, modifiers: string[] = []) {
   await wm(

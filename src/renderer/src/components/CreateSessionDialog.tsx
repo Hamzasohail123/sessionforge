@@ -97,7 +97,7 @@ export function CreateSessionDialog({ open, onOpenChange }: CreateSessionDialogP
 
           <div className="space-y-2">
             <Label htmlFor="env">Environment</Label>
-            <Select value={selectedEnv} onValueChange={(v: any) => setSelectedEnv(v)}>
+            <Select value={selectedEnv} onValueChange={(v) => setSelectedEnv(v as CreateSessionInput['env'])}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>

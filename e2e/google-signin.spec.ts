@@ -17,6 +17,7 @@ import {
   getLayout,
   intersects,
   logsHaveTabNotFound,
+  MOD,
   pressInTab,
   rectOf,
   setMode,
@@ -55,6 +56,7 @@ let firstRequestId: string
 interface Reply {
   status: number
   headers: Record<string, string | string[] | undefined>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- each endpoint replies with its own JSON; specs assert on it field by field
   json: any
 }
 
@@ -240,7 +242,7 @@ test('3: keyboard path to "Sign in with Chrome" logs the right URL and opens one
   expect(await ctx.page.locator('[data-testid="signin-dismiss-pane-1"]').evaluate((e) => e.tagName)).toBe('BUTTON')
 
   // From inside the page: Ctrl+L (focus address bar), then Tab through the DOM to the banner
-  await pressInTab(ctx.app, gmailTab, 'L', ['control'])
+  await pressInTab(ctx.app, gmailTab, 'L', [MOD])
   await waitFor(() => ctx.page.evaluate(() => document.activeElement?.tagName === 'INPUT'), 5_000, 'address bar focused')
   let reached = false
   for (let i = 0; i < 30 && !reached; i++) {
@@ -392,7 +394,7 @@ test('5: reused, made-up, malformed, expired and orphaned ids create and overwri
 })
 
 test('6: OAuth popup: the opener’s site opens in Chrome and gets the cookie back', async () => {
-  ;[site] = await createSessions(ctx.page, [{ name: 'Site', color: '#eab308' }])
+  [site] = await createSessions(ctx.page, [{ name: 'Site', color: '#eab308' }])
   siteTab = await createHiddenTab(ctx.app, site.id, `${server.base}/site`)
   await assign('pane-2', siteTab)
   await waitLoaded(ctx.page, siteTab, `${server.base}/site`, 'Site')

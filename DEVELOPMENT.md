@@ -38,7 +38,7 @@ If `npm install` or a later `npm ci` replaced the native module, the app fails a
 | `npm run typecheck` | `tsc --noEmit` for the app and for `e2e/` |
 | `npx playwright test --project=unit` | Unit specs in `e2e/unit/` (plain Node, a few seconds) |
 | `npm run test:e2e` | `electron-vite build`, then the whole Playwright suite (unit + Electron e2e) |
-| `npm run lint` | ESLint; the tree currently has known lint errors, so CI reports lint without blocking |
+| `npm run lint` | ESLint with `--max-warnings 0`; CI fails on any lint error or warning |
 | `npm run electron:build` | Build main, preload and renderer into `dist-electron/` |
 | `npm run package` | Build and package for the current OS into `release/` |
 | `npm run package:mac` / `package:win` / `package:linux` | Package for one OS; add `-- --arm64` or `-- --x64` to pick the arch |

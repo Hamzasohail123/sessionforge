@@ -259,7 +259,7 @@ test('a failed createTab answers 500 and leaves no session behind', async () => 
   const before = (await sessions()).map((s) => s.id)
   await wm(ctx.app, (sf) => {
     // Own property shadows the prototype method until it is deleted again
-    ;(sf.windowManager as unknown as Record<string, unknown>).createTab = async () => {
+    (sf.windowManager as unknown as Record<string, unknown>).createTab = async () => {
       throw new Error('Shutting down')
     }
   })

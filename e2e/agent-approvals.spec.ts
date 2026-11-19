@@ -124,7 +124,10 @@ test('Codex: Ask, All and Read-only edit only default_tools_approval_mode', asyn
   expect(backups('codex')).toHaveLength(1)
   expect(read('codex')).toContain('[mcp_servers.sessionforge]\ndefault_tools_approval_mode = "approve"\n')
   await applyPreset('codex', 'ask')
-  const t = parseToml(read('codex')) as any
+  const t = parseToml(read('codex')) as {
+    mcp_servers: Record<string, Record<string, unknown>>
+    projects: Record<string, { trust_level: string }>
+  }
   expect(t.mcp_servers.sessionforge.default_tools_approval_mode).toBe('prompt')
   expect(t.mcp_servers.figma).toEqual({ command: 'npx', args: ['-y', 'figma-mcp'] })
   expect(t.projects['/home/me/app'].trust_level).toBe('trusted')

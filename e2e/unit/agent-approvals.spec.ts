@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { mkdtemp, readdir, readFile, rm, symlink, writeFile, mkdir } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { join, resolve } from 'node:path'
 import { parse as parseJsonc } from 'jsonc-parser'
 import { parse as parseToml } from 'smol-toml'
 import { READ, WRITE } from '../../src/main/agent/annotations'
@@ -337,14 +337,18 @@ test('backup names, collisions and the atomic write', async () => {
   }
 })
 test('paths: injected root, relative values, CODEX_HOME', () => {
-  expect(resolveConfigPaths({ SESSIONFORGE_EDITOR_CONFIG_HOME: 'rel' }, '/home/u').error).toBe(CONFIG_HOME_ERROR)
-  const inj = resolveConfigPaths({ SESSIONFORGE_EDITOR_CONFIG_HOME: '/tmp/x', CODEX_HOME: '/elsewhere' }, '/home/u')
-  expect(editorFile(inj, 'codex')).toBe('/tmp/x/.codex/config.toml')
-  expect(editorFile(inj, 'cursor')).toBe('/tmp/x/.cursor/permissions.json')
-  expect(editorFile(inj, 'claude')).toBe('/tmp/x/.claude/settings.json')
-  expect(editorFile(resolveConfigPaths({ CODEX_HOME: '/c' }, '/home/u'), 'codex')).toBe('/c/config.toml')
-  expect(editorFile(resolveConfigPaths({ CODEX_HOME: 'c' }, '/home/u'), 'codex')).toBeNull()
-  expect(editorFile(resolveConfigPaths({}, '/home/u'), 'codex')).toBe('/home/u/.codex/config.toml')
+  // Native absolute paths (C:\… on Windows), and the native separator in the results
+  const home = resolve('/home/u')
+  const x = resolve('/tmp/x')
+  const c = resolve('/c')
+  expect(resolveConfigPaths({ SESSIONFORGE_EDITOR_CONFIG_HOME: 'rel' }, home).error).toBe(CONFIG_HOME_ERROR)
+  const inj = resolveConfigPaths({ SESSIONFORGE_EDITOR_CONFIG_HOME: x, CODEX_HOME: resolve('/elsewhere') }, home)
+  expect(editorFile(inj, 'codex')).toBe(join(x, '.codex', 'config.toml'))
+  expect(editorFile(inj, 'cursor')).toBe(join(x, '.cursor', 'permissions.json'))
+  expect(editorFile(inj, 'claude')).toBe(join(x, '.claude', 'settings.json'))
+  expect(editorFile(resolveConfigPaths({ CODEX_HOME: c }, home), 'codex')).toBe(join(c, 'config.toml'))
+  expect(editorFile(resolveConfigPaths({ CODEX_HOME: 'c' }, home), 'codex')).toBeNull()
+  expect(editorFile(resolveConfigPaths({}, home), 'codex')).toBe(join(home, '.codex', 'config.toml'))
 })
 test('needsExtensionCopy', () => {
   expect(needsExtensionCopy({ version: '1.1.0' }, null)).toBe(true)

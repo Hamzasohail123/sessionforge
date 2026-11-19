@@ -8,6 +8,7 @@ import {
   createSessions,
   getLayout,
   logsHaveTabNotFound,
+  MOD,
   pressInShell,
   pressInTab,
   setMode,
@@ -112,7 +113,7 @@ test.afterAll(async () => {
 })
 
 test('Ctrl+1 from inside pane-2 focuses pane-1', async () => {
-  await pressInTab(ctx.app, b1, '1', ['control'])
+  await pressInTab(ctx.app, b1, '1', [MOD])
   await waitFor(async () => (await activePane()) === 'pane-1', 5_000, 'pane-1 active')
   await ctx.page.waitForTimeout(500) // focus ring re-render
   await capture(ctx.app, 'shortcuts-focus-pane')
@@ -137,7 +138,7 @@ test('Ctrl+T opens a new tab of session A in pane-1', async () => {
     },
     `${server.base}/page?label=D`
   )
-  await pressInTab(ctx.app, a1, 'T', ['control'])
+  await pressInTab(ctx.app, a1, 'T', [MOD])
   const added = await waitFor(async () => {
     const now = await sessionTabIds(A.id)
     const n = now.filter((id) => !before.includes(id))
@@ -162,7 +163,7 @@ test('Ctrl+T opens a new tab of session A in pane-1', async () => {
 test('Ctrl+Tab / Ctrl+Shift+Tab cycle pane-1 through A\'s tabs; Ctrl+W closes and refills', async () => {
   const a3 = (await paneTab('pane-1'))!
   expect([a1, a2]).not.toContain(a3)
-  // Order is a1, a2, a3 (creation order)
+  // Order is a1, a2, a3 (creation order). Tab cycling is Control on every OS, macOS included.
   await pressInTab(ctx.app, a3, 'Tab', ['control'])
   await waitPaneTab('pane-1', a1)
   await pressInTab(ctx.app, a1, 'Tab', ['control'])
@@ -174,7 +175,7 @@ test('Ctrl+Tab / Ctrl+Shift+Tab cycle pane-1 through A\'s tabs; Ctrl+W closes an
   expect(await paneTab('pane-2')).toBe(b1)
 
   // Ctrl+W closes the shown tab and pane-1 gets another A tab
-  await pressInTab(ctx.app, a3, 'W', ['control'])
+  await pressInTab(ctx.app, a3, 'W', [MOD])
   await waitFor(async () => !(await sessionTabIds(A.id)).includes(a3), 5_000, 'a3 closed')
   expect(await tabState(ctx.page, a3)).toBeNull()
   const refill = await paneTab('pane-1')
@@ -185,11 +186,11 @@ test('Ctrl+Tab / Ctrl+Shift+Tab cycle pane-1 through A\'s tabs; Ctrl+W closes an
 })
 
 test('Ctrl+L and Ctrl+K from inside a page reach the shell UI; the pages never see the keys', async () => {
-  await pressInTab(ctx.app, b1, 'L', ['control'])
+  await pressInTab(ctx.app, b1, 'L', [MOD])
   await waitFor(addressFocused, 5_000, 'address input focused')
   expect(await activePane()).toBe('pane-2')
 
-  await pressInTab(ctx.app, a1, 'K', ['control'])
+  await pressInTab(ctx.app, a1, 'K', [MOD])
   await waitFor(paletteOpen, 5_000, 'palette open')
   await waitFor(async () => (await attachedViews(ctx.app)).every((v) => !v.visible), 5_000, 'views hidden')
 
@@ -209,7 +210,7 @@ test('a key pressed in pane-2 while pane-1 is active acts on pane-2 (Ctrl+R, F12
   const l1 = await loadsOf(p1)
   const l2 = await loadsOf(b1)
 
-  await sendKeyNoFocus(b1, 'R', ['control'])
+  await sendKeyNoFocus(b1, 'R', [MOD])
   await waitFor(async () => (await loadsOf(b1)) === l2 + 1, 5_000, 'pane-2 reloaded')
   await waitLoaded(ctx.page, b1, `${server.base}/page`, 'Page C')
   expect(await activePane()).toBe('pane-2')
@@ -225,7 +226,7 @@ test('a key pressed in pane-2 while pane-1 is active acts on pane-2 (Ctrl+R, F12
 
   await ctx.page.evaluate(() => window.api.layout.focusPane('pane-1'))
   await waitFor(async () => (await activePane()) === 'pane-1', 5_000, 'pane-1 active')
-  await sendKeyNoFocus(b1, 'W', ['control'])
+  await sendKeyNoFocus(b1, 'W', [MOD])
   await waitFor(async () => !(await sessionTabIds(B.id)).includes(b1), 5_000, 'b1 closed')
   await waitPaneTab('pane-2', b2)
   expect(await paneTab('pane-1')).toBe(p1)
@@ -266,8 +267,8 @@ test('keys with extra modifiers reach the page (Ctrl+Shift+K, Ctrl+Alt+L)', asyn
   const tabsA = (await sessionTabIds(A.id)).length
   const tabsB = (await sessionTabIds(B.id)).length
   for (const [key, mods, seen] of [
-    ['K', ['control', 'shift'], 'Shift+K'],
-    ['L', ['control', 'alt'], 'Alt+l']
+    ['K', [MOD, 'shift'], 'Shift+K'],
+    ['L', [MOD, 'alt'], 'Alt+l']
   ] as const) {
     await pressInTab(ctx.app, p1, key, [...mods])
     await waitFor(async () => (await tabEval<string>(ctx.app, p1, 'window.__lastCtrlKey')) === seen, 5_000, `page saw ${seen}`)
@@ -289,7 +290,7 @@ test('Ctrl+Shift+T inside a page reopens the last closed tab once, in that pane'
   const beforeB = await sessionTabIds(B.id)
   const keys0 = await ctrlKeys(p1)
 
-  await pressInTab(ctx.app, p1, 'T', ['control', 'shift'])
+  await pressInTab(ctx.app, p1, 'T', [MOD, 'shift'])
   const added = await waitFor(async () => {
     const n = (await sessionTabIds(B.id)).filter((id) => !beforeB.includes(id))
     return n.length === 1 ? n[0] : null
@@ -315,7 +316,7 @@ test('shell-focused: Escape closes a dialog, F12 opens only the tab\'s DevTools'
   await ctx.page.click('[data-testid="address-input"]')
   expect(await addressFocused()).toBe(true)
 
-  await pressInShell(ctx.app, 'K', ['control'])
+  await pressInShell(ctx.app, 'K', [MOD])
   await waitFor(paletteOpen, 5_000, 'palette open')
   await waitFor(async () => (await attachedViews(ctx.app)).every((v) => !v.visible), 5_000, 'views hidden')
   await pressInShell(ctx.app, 'Escape')

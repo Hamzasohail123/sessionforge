@@ -5,6 +5,31 @@ import type { Session, Tab, Layout } from './types'
 import type { AgentGrant } from './agent/types'
 import { parseClosedTabs, type ClosedItem, type ClosedKind } from './closed-stack'
 
+/** A sessions row as stored */
+interface SessionRow {
+  id: string
+  partition: string
+  name: string
+  color: string
+  icon: string | null
+  env: Session['env']
+  urlGuards: string | null
+  workspaceId: string | null
+  createdAt: number
+  updatedAt: number
+}
+
+/** A tabs row as stored */
+interface TabRow {
+  id: string
+  sessionId: string
+  url: string
+  title: string | null
+  favicon: string | null
+  order: number
+  lastActiveAt: number
+}
+
 /** A closed_items row as stored */
 interface ClosedRow {
   seq: number
@@ -125,19 +150,19 @@ export class DatabaseManager {
 
   getSession(id: string): Session | undefined {
     const stmt = this.db.prepare('SELECT * FROM sessions WHERE id = ?')
-    const row = stmt.get(id) as any
+    const row = stmt.get(id) as SessionRow | undefined
     return row ? this.parseSession(row) : undefined
   }
 
   getAllSessions(): Session[] {
     const stmt = this.db.prepare('SELECT * FROM sessions ORDER BY createdAt ASC')
-    const rows = stmt.all() as any[]
+    const rows = stmt.all() as SessionRow[]
     return rows.map(this.parseSession)
   }
 
   updateSession(id: string, updates: Partial<Session>): void {
     const fields: string[] = []
-    const values: any[] = []
+    const values: Array<string | number> = []
 
     if (updates.name !== undefined) {
       fields.push('name = ?')
@@ -191,12 +216,12 @@ export class DatabaseManager {
 
   getTabsBySession(sessionId: string): Tab[] {
     const stmt = this.db.prepare('SELECT * FROM tabs WHERE sessionId = ? ORDER BY `order` ASC')
-    const rows = stmt.all(sessionId) as any[]
+    const rows = stmt.all(sessionId) as TabRow[]
     return rows.map(this.parseTab)
   }
 
   getAllTabs(): Tab[] {
-    const rows = this.db.prepare('SELECT * FROM tabs ORDER BY sessionId, `order` ASC').all() as any[]
+    const rows = this.db.prepare('SELECT * FROM tabs ORDER BY sessionId, `order` ASC').all() as TabRow[]
     return rows.map(this.parseTab)
   }
 
@@ -209,13 +234,13 @@ export class DatabaseManager {
   }
 
   getTabById(id: string): Tab | null {
-    const row = this.db.prepare('SELECT * FROM tabs WHERE id = ?').get(id) as any
+    const row = this.db.prepare('SELECT * FROM tabs WHERE id = ?').get(id) as TabRow | undefined
     return row ? this.parseTab(row) : null
   }
 
   updateTab(id: string, updates: Partial<Tab>): void {
     const fields: string[] = []
-    const values: any[] = []
+    const values: Array<string | number> = []
 
     if (updates.url !== undefined) {
       fields.push('url = ?')
@@ -258,7 +283,9 @@ export class DatabaseManager {
 
   /** The stored row, unvalidated (layout.ts normalizeLayout validates it). null when there is none. */
   getLayoutRaw(windowId: string): { mode: unknown; panes: unknown; activePaneId: unknown } | null {
-    const row = this.db.prepare('SELECT * FROM layouts WHERE windowId = ?').get(windowId) as any
+    const row = this.db.prepare('SELECT * FROM layouts WHERE windowId = ?').get(windowId) as
+      | { mode: string; panes: string; activePaneId: string }
+      | undefined
     if (!row) return null
     let panes: unknown = null
     try {
@@ -346,7 +373,7 @@ export class DatabaseManager {
     }
   }
 
-  private parseSession(row: any): Session {
+  private parseSession(row: SessionRow): Session {
     return {
       id: row.id,
       partition: row.partition,
@@ -361,7 +388,7 @@ export class DatabaseManager {
     }
   }
 
-  private parseTab(row: any): Tab {
+  private parseTab(row: TabRow): Tab {
     return {
       id: row.id,
       sessionId: row.sessionId,

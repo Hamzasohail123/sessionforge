@@ -5,6 +5,7 @@ import { connect } from 'node:net'
 import type { Client } from '@modelcontextprotocol/sdk/client/index.js'
 import { launchApp, relaunch, teardown, waitFor, wm, type AppCtx } from './fixtures/app'
 import { capture } from './fixtures/capture'
+import { MOD_KEY } from './fixtures/ui'
 import { startAgentTestServer, type AgentTestServer } from './fixtures/agent-test-server'
 import {
   TOOL_NAMES,
@@ -189,15 +190,28 @@ test('F4: type, select and press', async () => {
   const sel = await call(client, 'select', { session: 'Alice', ref: refOf(s, 'Plan'), values: ['Beta'] })
   expect(sel.json.selected).toEqual(['b'])
   expect(await snapshot()).toContain('sel:b')
-  const p1 = await call(client, 'press', { session: 'Alice', key: 'a', modifiers: ['Control'], ref: input })
+  const p1 = await call(client, 'press', { session: 'Alice', key: 'a', modifiers: [MOD_KEY], ref: input })
   expect(p1.isError, p1.text).toBe(false)
   await call(client, 'press', { session: 'Alice', key: 'Backspace' })
   expect(await snapshot()).toContain('typed: enters:1')
   const count = (await tabsOf(alice.id)).length
-  const bad = await call(client, 'press', { session: 'Alice', key: 'w', modifiers: ['Control'] })
+  const bad = await call(client, 'press', { session: 'Alice', key: 'w', modifiers: [MOD_KEY] })
   expect(bad.isError).toBe(true)
   expect(bad.text).toContain('ERROR invalid_key')
   expect((await tabsOf(alice.id)).length).toBe(count)
+})
+
+test('F4b: a page that handles Cmd/Ctrl+Z itself sees one undo per press', async () => {
+  const nav = await call(client, 'navigate', { session: 'Alice', url: `${server.base}/editor` })
+  expect(nav.isError, nav.text).toBe(false)
+  const ed = refOf(await snapshot(), 'Editor')
+  // Gives the field an undo step, so a native undo would fire beforeinput historyUndo
+  const t = await call(client, 'type', { session: 'Alice', ref: ed, text: 'draft' })
+  expect(t.isError, t.text).toBe(false)
+  const p = await call(client, 'press', { session: 'Alice', key: 'z', modifiers: [MOD_KEY], ref: ed })
+  expect(p.isError, p.text).toBe(false)
+  expect(await snapshot()).toContain('keys:1 history:0')
+  await call(client, 'navigate', { session: 'Alice', url: `${server.base}/app` })
 })
 
 test('F5: wait_for success and timeout', async () => {
@@ -226,7 +240,13 @@ test('F6: console_logs and network_log', async () => {
     const r = await call(client, 'network_log', { session: 'Alice', include_headers: true })
     return r.json.entries.some((e: { url: string }) => e.url.endsWith('/api/clicked')) ? r : null
   })
-  const all = n.json.entries as Array<Record<string, any>>
+  const all = n.json.entries as Array<{
+    method: string
+    url: string
+    status: number
+    type: string
+    request_headers: Record<string, string>
+  }>
   expect(all.some((e) => e.method === 'GET' && e.url === `${server.base}/app` && e.status === 200 && e.type === 'mainFrame')).toBe(true)
   const clicked = all.filter((e) => e.url.endsWith('/api/clicked')).pop()!
   expect(clicked.request_headers.authorization).toBe('Bearer [redacted]')
@@ -243,7 +263,7 @@ test('F7: send_request_as as two sessions and no session', async () => {
     url: `${server.base}/api/whoami`
   })
   expect(who.isError, who.text).toBe(false)
-  const cols = who.json.columns as Array<Record<string, any>>
+  const cols = who.json.columns as Array<{ body: string; headers: Record<string, unknown> }>
   expect(cols.map((c) => JSON.parse(c.body).user)).toEqual(['alice', 'bob', null])
   expect(who.text).toContain('body differs')
   expect(String(cols[0].headers['set-cookie'])).toContain('seen=[redacted]')

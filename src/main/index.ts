@@ -145,7 +145,7 @@ if (envOk) app.whenReady().then(() => {
 
   // Test-only handle for Playwright specs (app.evaluate)
   if (e2e) {
-    ;(globalThis as Record<string, unknown>).__sessionforge = {
+    (globalThis as Record<string, unknown>).__sessionforge = {
       windowManager,
       sessionManager,
       db: DatabaseManager.getInstance(),

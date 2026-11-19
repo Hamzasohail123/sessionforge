@@ -11,6 +11,7 @@ import {
   createSessions,
   getLayout,
   logsHaveTabNotFound,
+  MOD,
   openSession,
   pressInShell,
   pressInTab,
@@ -48,7 +49,7 @@ const partitionCookies = (partition: string) =>
     partition
   )
 const closedItems = () => wm(ctx.app, (sf) => sf.db.listClosedItems())
-const reopenKey = () => pressInShell(ctx.app, 'T', ['control', 'shift'])
+const reopenKey = () => pressInShell(ctx.app, 'T', [MOD, 'shift'])
 const getSession = (id: string) => ctx.page.evaluate((i) => window.api.session.get(i), id)
 const allSessionIds = async () => (await ctx.page.evaluate(() => window.api.session.getAll())).map((s) => s.id)
 const tabsOf = (id: string) => ctx.page.evaluate((s) => window.api.tab.getBySession(s), id)
@@ -146,8 +147,8 @@ test('2: double-click renames with Enter; no duplicate open; app shortcuts are i
   expect(await pane1()).toBe(alphaTab)
 
   // Ctrl+T and Ctrl+K are matched in main; the renderer drops them while the name is edited
-  await pressInShell(ctx.app, 'T', ['control'])
-  await pressInShell(ctx.app, 'K', ['control'])
+  await pressInShell(ctx.app, 'T', [MOD])
+  await pressInShell(ctx.app, 'K', [MOD])
   await ctx.page.waitForTimeout(600)
   expect((await liveTabs()).length).toBe(liveBefore)
   await expect(ctx.page.locator('[cmdk-input]')).toHaveCount(0)
@@ -180,7 +181,8 @@ test('3: Escape cancels, leaving the field saves, an empty name keeps the old on
 
   await sessionButton(beta.id).dblclick()
   await expect(nameInput(beta.id)).toBeFocused()
-  await ctx.page.keyboard.press('Control+A')
+  // Select all is Cmd+A on macOS; Playwright resolves ControlOrMeta for the OS it runs on
+  await ctx.page.keyboard.press('ControlOrMeta+A')
   await ctx.page.keyboard.press('Backspace')
   await expect(nameInput(beta.id)).toHaveValue('')
   await ctx.page.keyboard.press('Enter')
@@ -294,7 +296,7 @@ test('7: "Close session" removes it from the bar, the panes, the palette, Settin
   expect((await call(client!, 'snapshot', { session: 'Beta 2' })).text).toContain('ERROR unknown_session')
 
   // Command palette
-  await pressInShell(ctx.app, 'K', ['control'])
+  await pressInShell(ctx.app, 'K', [MOD])
   await expect(ctx.page.locator('[cmdk-input]')).toBeVisible()
   await expect(ctx.page.locator('[cmdk-item]').filter({ hasText: 'Alpha QA' })).toHaveCount(1)
   await expect(ctx.page.locator('[cmdk-item]').filter({ hasText: 'Beta 2' })).toHaveCount(0)
@@ -358,14 +360,14 @@ test('10: newest first, from inside a page: the session closed last, then the ta
   await waitViewOnSlot(ctx.app, ctx.page, d, 'pane-1')
 
   // Ctrl+W inside the page records the tab; then Beta closes
-  await pressInTab(ctx.app, d, 'W', ['control'])
+  await pressInTab(ctx.app, d, 'W', [MOD])
   await waitFor(async () => !(await tabIdsOf(alpha.id)).includes(d), 5_000, 'tab D closed')
   await ctx.page.evaluate((id) => window.api.session.close(id), beta.id)
   expect((await closedItems()).map((i) => i.kind)).toEqual(['session', 'tab'])
 
   const shown = (await pane1())!
   expect((await tabsOf(alpha.id)).map((t) => t.id)).toContain(shown)
-  await pressInTab(ctx.app, shown, 'T', ['control', 'shift'])
+  await pressInTab(ctx.app, shown, 'T', [MOD, 'shift'])
   await expect(sessionButton(beta.id)).toBeVisible()
   await expect(toastText('Reopened Beta 2')).toBeVisible()
   const betaNow = await waitFor(async () => {
@@ -376,7 +378,7 @@ test('10: newest first, from inside a page: the session closed last, then the ta
   await waitViewOnSlot(ctx.app, ctx.page, betaNow, 'pane-1')
 
   const alphaBefore = await tabIdsOf(alpha.id)
-  await pressInTab(ctx.app, betaNow, 'T', ['control', 'shift'])
+  await pressInTab(ctx.app, betaNow, 'T', [MOD, 'shift'])
   const reopened = await newTabOf(alpha.id, alphaBefore)
   expect(reopened.url).toBe(`${server.base}/page?label=D`)
   await waitFor(async () => (await pane1()) === reopened.id, 5_000, 'pane-1 on the reopened tab')
@@ -394,7 +396,7 @@ test('11: a reopened tab gets the URL it had when it closed', async () => {
   const url = `${server.base}/page?label=C&x=1`
   await ctx.page.evaluate(([t, u]) => window.api.tab.navigate(t, u), [id, url] as const)
   await waitLoaded(ctx.page, id, url, 'Page C')
-  await pressInTab(ctx.app, id, 'W', ['control'])
+  await pressInTab(ctx.app, id, 'W', [MOD])
   await waitFor(async () => !(await tabIdsOf(alpha.id)).includes(id), 5_000, 'tab closed')
   const before = await tabIdsOf(alpha.id)
   await reopenKey()
@@ -612,7 +614,7 @@ test('18: the command palette\'s "Reopen closed tab or session" reopens the newe
   await expect(sessionButton(gamma.id)).toHaveCount(0)
   expect((await closedItems()).map((i) => [i.kind, i.sessionId])).toEqual([['session', gamma.id]])
 
-  await pressInShell(ctx.app, 'K', ['control'])
+  await pressInShell(ctx.app, 'K', [MOD])
   await expect(ctx.page.locator('[cmdk-input]')).toBeVisible()
   await expect(ctx.page.locator('[data-testid="palette-reopen"]')).toContainText('Reopen closed tab or session')
   await ctx.page.click('[data-testid="palette-reopen"]')

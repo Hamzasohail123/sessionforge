@@ -5,6 +5,7 @@ import { useStore } from '../store'
 import { callMain } from '../lib/ipc'
 import { cn } from '../lib/utils'
 
+// eslint-disable-next-line react-refresh/only-export-components -- shared with CommandPalette; edits here do a full reload in dev
 export const LAYOUT_OPTIONS: Array<{ mode: LayoutMode; label: string; Icon: typeof Square }> = [
   { mode: 'single', label: 'Single pane', Icon: Square },
   { mode: 'columns', label: 'Two columns', Icon: Columns2 },

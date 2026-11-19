@@ -12,24 +12,28 @@ import { wrapUntrusted } from './untrusted'
 import { cut, redactUrl } from './redact'
 import { checkAgentUrl, isSelfTarget, SELF_TARGET_MESSAGE } from './url-guard'
 import { choosePane, paneNumber, planLayout } from './placement'
-import { parsePress } from './keys'
+import { macEditCommand, parsePress } from './keys'
 import { composite, type CompositeItem } from './composite'
 import { columnOut, summarize, toDiffColumn, type RawColumn } from './diff'
 import { formatSnapshot } from './snapshot-format'
 import {
   FocusResult,
+  KeydownResult,
+  KeydownWatchResult,
   PrepareResult,
   ProbeResult,
   SelectResult,
   SnapshotResult,
   ValueResult,
   focusScript,
+  keydownPreventedScript,
   prepareActionScript,
   probeScript,
   selectContentScript,
   selectScript,
   snapshotScript,
   valueScript,
+  watchKeydownScript,
   type Target
 } from './page-scripts'
 import {
@@ -560,9 +564,19 @@ export function buildTools(): ToolDef[] {
           const r = await runInPage(wc, focusScript(target), FocusResult, { signal: ctx.signal, name: 'focus' })
           if (!r.ok) throw scriptFailError(r, what)
         }
+        // Chrome on macOS runs the menu command for Cmd+A/Z/Y only if the page did not prevent the keydown
+        const edit = process.platform === 'darwin' ? macEditCommand(a.key, a.modifiers) : null
+        if (edit) await runInPage(wc, watchKeydownScript(), KeydownWatchResult, { signal: ctx.signal, name: 'watchKeydown' })
         b.requireInteractive(tabId)
         b.touch(prep.sessions[0].id)
         sendKeys(wc, events, ctx.signal)
+        if (edit) {
+          const prevented = await runInPage(wc, keydownPreventedScript(1000), KeydownResult, {
+            signal: ctx.signal,
+            name: 'keydownPrevented'
+          }).catch(() => null)
+          if (prevented === false && !wc.isDestroyed()) wc[edit]()
+        }
         await settle(wc, ctx.signal)
         return text(JSON.stringify({ pressed: label }))
       }

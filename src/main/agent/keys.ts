@@ -78,3 +78,26 @@ export function parsePress(key: string, modifiers: PressModifier[] = []): { labe
   events.push({ type: 'keyUp', keyCode, modifiers: electronMods })
   return { label, events }
 }
+
+export type EditCommand = 'selectAll' | 'undo' | 'redo'
+
+/**
+ * The edit command behind Cmd+A, Cmd+Z, Cmd+Shift+Z and Cmd+Y on macOS, else null. Chromium leaves
+ * these keys to the app menu on macOS, and synthetic key events never reach the menu, so the press
+ * tool runs the command itself, like the menu only when the page did not prevent the keydown. Call
+ * after parsePress has accepted the combination.
+ */
+export function macEditCommand(key: string, modifiers: PressModifier[] = []): EditCommand | null {
+  if (!modifiers.includes('Meta') || modifiers.includes('Control')) return null
+  const shift = modifiers.includes('Shift')
+  switch (key.toLowerCase()) {
+    case 'a':
+      return shift ? null : 'selectAll'
+    case 'z':
+      return shift ? 'redo' : 'undo'
+    case 'y':
+      return shift ? null : 'redo'
+    default:
+      return null
+  }
+}

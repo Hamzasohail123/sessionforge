@@ -43,6 +43,9 @@ export const SelectResult = z.union([
 export const FocusResult = z.union([z.object({ ok: z.literal(true) }), ScriptFail])
 export const ProbeResult = z.boolean()
 export const ValueResult = z.object({ value: z.string().max(10_000), isPassword: z.boolean() })
+export const KeydownWatchResult = z.literal(true)
+/** true: the page prevented the keydown's default; null: no keydown reached the top window in time. */
+export const KeydownResult = z.boolean().nullable()
 
 export type Target = { ref: string } | { selector: string }
 
@@ -289,6 +292,38 @@ ${COMMON}
 const r0 = resolveTarget(T); if (r0.fail) return { ok: false, code: r0.fail };
 r0.el.focus(); return { ok: true };
 })()`
+}
+
+/**
+ * press on macOS, before the keys are sent: remember the next non-modifier keydown on the top window.
+ * The capture listener runs before the page's listeners, so keydownPreventedScript reads the result.
+ */
+export function watchKeydownScript(): string {
+  return String.raw`(() => {
+const w = window; const old = w.__sfKeydown;
+if (old) w.removeEventListener('keydown', old.on, true);
+const k = { ev: null, wake: null };
+k.on = (e) => {
+  if (e.key === 'Meta' || e.key === 'Control' || e.key === 'Shift' || e.key === 'Alt') return;
+  w.removeEventListener('keydown', k.on, true); k.ev = e; if (k.wake) setTimeout(k.wake, 0);
+};
+w.__sfKeydown = k; w.addEventListener('keydown', k.on, true);
+return true;
+})()`
+}
+
+/** After the keys were sent: whether the page prevented the watched keydown, read once its dispatch is over. */
+export function keydownPreventedScript(waitMs: number): string {
+  return String.raw`new Promise((resolve) => {
+const w = window; const k = w.__sfKeydown;
+if (!k) { resolve(null); return }
+const done = () => {
+  w.removeEventListener('keydown', k.on, true); if (w.__sfKeydown === k) w.__sfKeydown = undefined;
+  resolve(k.ev ? k.ev.defaultPrevented : null);
+};
+if (k.ev) { done(); return }
+k.wake = done; setTimeout(done, ${JSON.stringify(waitMs)});
+})`
 }
 
 export function valueScript(target: Target): string {

@@ -486,6 +486,11 @@ test('S13: disabling closes the port', async () => {
 })
 
 test('S14: without the OS keyring the token is not stored and the panel says so', async () => {
+  // --password-store=basic is a Linux switch. macOS (Keychain) and Windows (DPAPI) always encrypt,
+  // so there is no keyring-less launch to test there.
+  const reason = '--password-store=basic only turns off the OS keyring on Linux'
+  if (process.platform !== 'linux') console.log(`[S14] skipped: ${reason}`)
+  test.skip(process.platform !== 'linux', reason)
   let basic: AppCtx | undefined
   try {
     basic = await launchApp({ extraArgs: ['--password-store=basic'] })

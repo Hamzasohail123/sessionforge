@@ -1,13 +1,17 @@
 import { test, expect } from '@playwright/test'
 import {
   FocusResult,
+  KeydownResult,
+  KeydownWatchResult,
   PrepareResult,
   ProbeResult,
   SelectResult,
   SnapshotResult,
   ValueResult,
+  keydownPreventedScript,
   prepareActionScript,
-  snapshotScript
+  snapshotScript,
+  watchKeydownScript
 } from '../../src/main/agent/page-scripts'
 
 test('good fixtures parse', () => {
@@ -18,6 +22,8 @@ test('good fixtures parse', () => {
   expect(FocusResult.safeParse({ ok: true }).success).toBe(true)
   expect(ProbeResult.safeParse(true).success).toBe(true)
   expect(ValueResult.safeParse({ value: 'x', isPassword: false }).success).toBe(true)
+  expect(KeydownWatchResult.safeParse(true).success).toBe(true)
+  for (const v of [true, false, null]) expect(KeydownResult.safeParse(v).success, String(v)).toBe(true)
 })
 
 test('bad results are rejected', () => {
@@ -30,6 +36,8 @@ test('bad results are rejected', () => {
   expect(SnapshotResult.safeParse({ ...snap, lines: ['x'.repeat(401)] }).success).toBe(false)
   expect(PrepareResult.safeParse('{"ok":true}').success).toBe(false)
   expect(ProbeResult.safeParse('true').success).toBe(false)
+  expect(KeydownWatchResult.safeParse(false).success).toBe(false)
+  for (const v of ['false', 0, undefined]) expect(KeydownResult.safeParse(v).success, String(v)).toBe(false)
 })
 
 test('arguments are embedded as JSON literals', () => {
@@ -37,4 +45,6 @@ test('arguments are embedded as JSON literals', () => {
   expect(s).toContain(JSON.stringify({ selector: '"]); alert(1); ("' }))
   expect(() => new Function(s)).not.toThrow()
   expect(() => new Function(snapshotScript({ base: 1, interactiveOnly: false, maxChars: 1000 }))).not.toThrow()
+  expect(() => new Function(watchKeydownScript())).not.toThrow()
+  expect(() => new Function(keydownPreventedScript(1000))).not.toThrow()
 })

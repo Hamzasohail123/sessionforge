@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { launchApp, projectRoot, teardown, waitFor, wm, type AppCtx } from './fixtures/app'
 import { capture } from './fixtures/capture'
 import { startTestServer, type TestServer } from './fixtures/test-server'
-import { attachedViews, createHiddenTab, openSession, pressInShell, pressInTab, waitViewOnSlot } from './fixtures/ui'
+import { attachedViews, createHiddenTab, MOD, openSession, pressInShell, pressInTab, waitViewOnSlot } from './fixtures/ui'
 import { closeSettings, openSettings, setGrant } from './fixtures/mcp'
 import { SHORTCUT_ROWS } from '../src/main/shortcut-table'
 import type { Session } from '../src/main/types'
@@ -46,11 +46,11 @@ test.afterAll(async () => {
 })
 test('Ctrl+, from the shell opens Settings with the page views hidden; Escape closes it', async () => {
   await ctx.page.evaluate(() => document.querySelector<HTMLElement>('[data-testid="open-settings"]')?.focus())
-  await pressInShell(ctx.app, ',', ['control'])
+  await pressInShell(ctx.app, ',', [MOD])
   await expect(dialog()).toBeVisible()
   await waitFor(viewsHidden, 5_000, 'views hidden')
   // Pressing it again while open changes nothing
-  await pressInShell(ctx.app, ',', ['control'])
+  await pressInShell(ctx.app, ',', [MOD])
   await expect(dialog()).toHaveCount(1)
   await pressInShell(ctx.app, 'Escape')
   await expect(dialog()).toHaveCount(0)
@@ -58,15 +58,15 @@ test('Ctrl+, from the shell opens Settings with the page views hidden; Escape cl
   expect(await ctx.page.evaluate(() => document.activeElement?.getAttribute('data-testid'))).toBe('open-settings')
 })
 test('Ctrl+, from inside a page opens Settings; the page never sees it', async () => {
-  await pressInTab(ctx.app, tabId, ',', ['control'])
+  await pressInTab(ctx.app, tabId, ',', [MOD])
   await expect(dialog()).toBeVisible()
   await waitFor(viewsHidden, 5_000, 'views hidden')
   await closeSettings(ctx)
 })
 test('Ctrl+, while the command palette is open leaves only Settings on screen', async () => {
-  await pressInShell(ctx.app, 'K', ['control'])
+  await pressInShell(ctx.app, 'K', [MOD])
   await expect(ctx.page.locator('[cmdk-input]')).toBeVisible()
-  await pressInShell(ctx.app, ',', ['control'])
+  await pressInShell(ctx.app, ',', [MOD])
   await expect(dialog()).toBeVisible()
   await expect(ctx.page.locator('[cmdk-input]')).toHaveCount(0)
   await closeSettings(ctx)

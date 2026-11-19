@@ -5,9 +5,12 @@ import { join } from 'node:path'
 const require_ = createRequire(__filename)
 const HandOff = require_(join(__dirname, '..', '..', 'chrome-extension', 'handoff.js')) as {
   parsePending(json: unknown, now: number): Array<Record<string, unknown>>
-  collectCookiesForDomains(getAll: (q: { domain: string }) => Promise<unknown[]>, domains: string[]): Promise<any[]>
-  buildHandOffPayload(requestId: string, cookies: unknown[]): any
-  toPlaywrightCookie(c: unknown): any
+  collectCookiesForDomains(
+    getAll: (q: { domain: string }) => Promise<unknown[]>,
+    domains: string[]
+  ): Promise<Array<{ name: string }>>
+  buildHandOffPayload(requestId: string, cookies: unknown[]): Record<string, unknown>
+  toPlaywrightCookie(c: unknown): Record<string, unknown>
 }
 
 const NOW = 1_763_420_000_000

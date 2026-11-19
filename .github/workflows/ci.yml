@@ -65,10 +65,8 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
-  # Lint has known errors in the current tree; report them without blocking the build
   lint:
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

@@ -124,7 +124,9 @@ test('R7/R8: + adds a tab and the address bar drives the new tab', async () => {
   await waitLoaded(ctx.page, newTab, `${server.base}/page`, 'Page C')
   // The old tab was not navigated
   expect((await tabState(ctx.page, firstTab))?.title).not.toBe('Page C')
-  expect(colorMatches(await sampleTab(ctx.app, newTab), LABEL_COLORS.C)).toBe(true)
+  // A new tab's view can paint after its load finishes (a one-shot sample failed on macOS CI), so poll
+  await waitViewOnSlot(ctx.app, ctx.page, newTab, 'pane-1')
+  await waitFor(async () => colorMatches(await sampleTab(ctx.app, newTab), LABEL_COLORS.C), 5_000, 'new tab painted Page C')
 })
 
 test('R9-R12: session switch hides the page, isolates cookies, and returns to the tab you left', async () => {

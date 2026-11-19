@@ -13,6 +13,7 @@ import { cn } from '../lib/utils'
 import type { Session } from '../../../main/types'
 
 /** Session colour at a given opacity (works for any CSS colour, not only #rrggbb). */
+// eslint-disable-next-line react-refresh/only-export-components -- shared with TabBar; edits here do a full reload in dev
 export const tint = (color: string, percent: number) => `color-mix(in srgb, ${color} ${percent}%, transparent)`
 
 const RING = 'outline-none focus-visible:ring-1 focus-visible:ring-muted-foreground/60 focus-visible:ring-offset-0'

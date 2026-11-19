@@ -162,6 +162,29 @@ test.describe('SHORTCUT_ROWS (Settings → Shortcuts)', () => {
       }
     }
   })
+  test('on darwin every Cmd/Ctrl row matches with Cmd, not Ctrl; Ctrl+Tab stays Control', () => {
+    let cmdProbes = 0
+    for (const row of SHORTCUT_ROWS) {
+      for (const { input: i, expected } of row.probe) {
+        for (const source of SOURCES) {
+          const label = `${row.keys} (${source})`
+          if (i.control && row.keys.includes('Cmd/Ctrl')) {
+            cmdProbes++
+            const cmd = { ...i, control: false, meta: true }
+            expect(matchShortcut(cmd, 'darwin', source)?.action, label).toBe(expected)
+            expect(matchShortcut(i, 'darwin', source), `${label} with Ctrl`).toBeNull()
+          } else {
+            // Ctrl+Tab and the keys without a modifier are the same on every OS
+            expect(matchShortcut(i, 'darwin', source)?.action, label).toBe(expected)
+          }
+        }
+      }
+    }
+    // Every Cmd/Ctrl probe was translated, including Cmd+Shift+T and Cmd+,
+    expect(cmdProbes).toBe(SOURCES.length * SHORTCUT_ROWS.flatMap((r) => r.probe).filter((p) => p.input.control && p.input.key !== 'Tab').length)
+    expect(matchShortcut(input('T', { meta: true, shift: true }, { code: 'KeyT' }), 'darwin', 'page')?.action).toBe('reopenClosed')
+    expect(matchShortcut(input(',', { meta: true }, { code: 'Comma' }), 'darwin', 'shell')?.action).toBe('openSettings')
+  })
   test('the README table has exactly these rows', () => {
     const readme = readFileSync(join(__dirname, '..', '..', 'README.md'), 'utf8')
     const section = readme.split('## Keyboard Shortcuts')[1].split('\n## ')[0]

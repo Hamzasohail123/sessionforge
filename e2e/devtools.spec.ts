@@ -7,6 +7,7 @@ import {
   createSessions,
   getLayout,
   logsHaveTabNotFound,
+  MOD,
   openSession,
   pressInTab,
   setMode,
@@ -210,14 +211,14 @@ test('D7-D10: F12, Ctrl+Shift+I and Ctrl+U inside the page', async () => {
   await waitFor(() => devToolsOpen(devTab), 5_000, 'F12 opened devtools')
 
   // D9: Ctrl+Shift+I toggles (closes) them
-  await pressInTab(ctx.app, devTab, 'I', ['control', 'shift'])
+  await pressInTab(ctx.app, devTab, 'I', [MOD, 'shift'])
   await waitFor(async () => !(await devToolsOpen(devTab)), 5_000, 'Ctrl+Shift+I closed devtools')
   expect(await devToolsOpen(aTab)).toBe(false)
 
   // D10: Ctrl+U opens view-source in a new tab of the same session, in pane-2
   const known = new Set((await ctx.page.evaluate((s) => window.api.tab.getBySession(s), B.id)).map((t) => t.id))
   await ctx.page.evaluate(() => window.api.layout.focusPane('pane-1'))
-  await pressInTab(ctx.app, devTab, 'U', ['control'])
+  await pressInTab(ctx.app, devTab, 'U', [MOD])
   const [src] = await waitFor(async () => {
     const n = await newBTabs(known)
     return n.length === 1 ? n : null
@@ -270,23 +271,23 @@ test('step 4: DevTools keys toggle once per press; the shell DevTools never open
   expect(await shellDevToolsOpen()).toBe(false)
 
   // Ctrl+Shift+I twice: open, then closed
-  await pressInTab(ctx.app, devTab, 'I', ['control', 'shift'])
+  await pressInTab(ctx.app, devTab, 'I', [MOD, 'shift'])
   await waitFor(() => devToolsOpen(devTab), 5_000, 'Ctrl+Shift+I opened devtools')
-  await pressInTab(ctx.app, devTab, 'I', ['control', 'shift'])
+  await pressInTab(ctx.app, devTab, 'I', [MOD, 'shift'])
   await waitFor(async () => !(await devToolsOpen(devTab)), 5_000, 'second Ctrl+Shift+I closed devtools')
   await ctx.page.waitForTimeout(500)
   expect(await devToolsOpen(devTab)).toBe(false)
 
   // Ctrl+Shift+J opens on the console and a second press keeps them open
-  await pressInTab(ctx.app, devTab, 'J', ['control', 'shift'])
+  await pressInTab(ctx.app, devTab, 'J', [MOD, 'shift'])
   await waitFor(() => devToolsOpen(devTab), 5_000, 'Ctrl+Shift+J opened devtools')
-  await pressInTab(ctx.app, devTab, 'J', ['control', 'shift'])
+  await pressInTab(ctx.app, devTab, 'J', [MOD, 'shift'])
   await ctx.page.waitForTimeout(500)
   expect(await devToolsOpen(devTab)).toBe(true)
   await closeDevTools(devTab)
 
   // Ctrl+Shift+C opens them (Elements panel)
-  await pressInTab(ctx.app, devTab, 'C', ['control', 'shift'])
+  await pressInTab(ctx.app, devTab, 'C', [MOD, 'shift'])
   await waitFor(() => devToolsOpen(devTab), 5_000, 'Ctrl+Shift+C opened devtools')
   await closeDevTools(devTab)
 
@@ -298,7 +299,7 @@ test('step 4: Ctrl+U opens one view-source tab in pane-2, and its URL round-trip
   await showDevTab()
   await ctx.page.evaluate(() => window.api.layout.focusPane('pane-1'))
   const known = new Set((await ctx.page.evaluate((s) => window.api.tab.getBySession(s), B.id)).map((t) => t.id))
-  await pressInTab(ctx.app, devTab, 'U', ['control'])
+  await pressInTab(ctx.app, devTab, 'U', [MOD])
   const [src] = await waitFor(async () => {
     const n = await newBTabs(known)
     return n.length === 1 ? n : null
@@ -343,8 +344,8 @@ test('step 4: Alt+Left goes back one entry; Ctrl+R, Ctrl+Shift+R and Shift+F5 ea
 
   await watchLoads(hist)
   for (const [key, mods] of [
-    ['R', ['control']],
-    ['R', ['control', 'shift']],
+    ['R', [MOD]],
+    ['R', [MOD, 'shift']],
     ['F5', ['shift']]
   ] as const) {
     const before = await loadsOf(hist)

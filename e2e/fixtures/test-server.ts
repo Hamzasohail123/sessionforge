@@ -25,7 +25,8 @@ window.__firstLocalStorage = localStorage.getItem('seeded');
 window.__ua = navigator.userAgent;
 window.__ctrlKeys = 0; window.__escKeys = 0; window.__lastCtrlKey = null;
 addEventListener('keydown', (e) => {
-  if (e.ctrlKey) { window.__ctrlKeys++; window.__lastCtrlKey = (e.shiftKey ? 'Shift+' : '') + (e.altKey ? 'Alt+' : '') + e.key }
+  // Cmd/Ctrl: the app's shortcut modifier is Meta on macOS
+  if (e.ctrlKey || e.metaKey) { window.__ctrlKeys++; window.__lastCtrlKey = (e.shiftKey ? 'Shift+' : '') + (e.altKey ? 'Alt+' : '') + e.key }
   if (e.key === 'Escape') window.__escKeys++;
 }, true);
 const idb = (mode, fn) => new Promise((resolve, reject) => {

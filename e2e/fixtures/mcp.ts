@@ -88,12 +88,13 @@ export async function stdioClient(ctx: AppCtx, token: string): Promise<Client> {
 export interface CallResult {
   isError: boolean
   text: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- each tool returns its own JSON shape; specs assert on it field by field
   json: any
   images: Array<{ data: string; mimeType: string }>
 }
 
 /** JSON inside the untrusted wrapper (or the whole text) when it parses. */
-export function parseWrapped(text: string): any {
+export function parseWrapped(text: string): unknown {
   const m = /<untrusted_page_content>\n([\s\S]*)\n<\/untrusted_page_content>/.exec(text)
   const body = m ? m[1] : text
   try {

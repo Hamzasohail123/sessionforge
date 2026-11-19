@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test'
 import { randomUUID } from 'node:crypto'
 import { GoogleSignInCoordinator, type BroadcastWindow } from '../../src/main/google-signin/coordinator'
 import { PENDING_TTL_MS } from '../../src/main/google-signin/pending-store'
-import type { ImportStatusInput, SignInWindowPort } from '../../src/main/google-signin/types'
+import type { ImportStatusInput, SignInBannerState, SignInWindowPort } from '../../src/main/google-signin/types'
 import type { PaneId } from '../../src/main/types'
 
 const LOCAL = 'http://localhost:41234'
@@ -74,11 +74,11 @@ function setup(opts: { status?: ImportStatusInput; openFails?: boolean } = {}) {
     e2e: false,
     storeOptions: { timers: false, now: () => now }
   })
-  const sent: Array<{ channel: string; payload: any }> = []
+  const sent: Array<{ channel: string; payload: { tabId: string; state: SignInBannerState | null } }> = []
   let destroyed = false
   const win: BroadcastWindow = {
     isDestroyed: () => destroyed,
-    webContents: { send: (channel, payload) => void sent.push({ channel, payload }) }
+    webContents: { send: (channel, payload) => void sent.push({ channel, payload: payload as (typeof sent)[number]['payload'] }) }
   }
   const tab = (id: string, sessionId: string, url: string, pane?: PaneId) => {
     windows.tabs.set(id, { sessionId, url })
@@ -155,7 +155,7 @@ test('start: opens the plan URL and waits; blockers and launch failures create n
   expect(new URL(r.opened[0]).pathname).toBe('/ServiceLogin')
   expect(state).toMatchObject({ status: 'waiting', browser: 'Google Chrome', expiresAt: 1_000_000 + PENDING_TTL_MS })
   expect(r.c.pending.list()).toHaveLength(1)
-  expect(r.sent.at(-1)?.payload.state.status).toBe('waiting')
+  expect(r.sent.at(-1)?.payload.state?.status).toBe('waiting')
 
   r.setStatus({ port: 34567, listening: false, error: 'port 34567 is in use' })
   r.c.cancel('t1')

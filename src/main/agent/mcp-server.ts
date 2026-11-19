@@ -856,5 +856,6 @@ function clientInfo(server: McpServer): { name: string; version: string } {
 
 function cut60(s: string): string {
   // Untrusted client string: strip control characters, cut to 60
+  // eslint-disable-next-line no-control-regex -- matching control characters is the point of this sanitizer
   return String(s).replace(/[\u0000-\u001f\u007f]/g, '').slice(0, 60)
 }

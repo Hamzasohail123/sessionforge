@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 280" role="img" aria-labelledby="title desc">
+  <title id="title">SessionForge, Every role. One window.</title>
+  <desc id="desc">SessionForge promotional tile with four connected browser session panes and the tagline Every role. One window.</desc>
+  <defs>
+    <linearGradient id="sf-base" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#101936"/>
+      <stop offset="0.52" stop-color="#17245a"/>
+      <stop offset="1" stop-color="#2c185f"/>
+    </linearGradient>
+    <linearGradient id="sf-spark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.48" stop-color="#d7e5ff"/>
+      <stop offset="1" stop-color="#7ce2ed"/>
+    </linearGradient>
+    <radialGradient id="sf-halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#7387ff" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#7387ff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="sf-soft-glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="13"/>
+    </filter>
+    <clipPath id="sf-tile-clip">
+      <rect x="20" y="20" width="472" height="472" rx="116"/>
+    </clipPath>
+    <g id="sf-mark">
+      <rect x="20" y="20" width="472" height="472" rx="116" fill="url(#sf-base)" stroke="#5969df" stroke-width="4"/>
+      <rect x="40" y="40" width="432" height="432" rx="98" fill="none" stroke="#aab5ff" stroke-opacity="0.16" stroke-width="3"/>
+      <g clip-path="url(#sf-tile-clip)">
+        <circle cx="256" cy="256" r="116" fill="url(#sf-halo)" filter="url(#sf-soft-glow)"/>
+        <g fill="none" stroke-linecap="round" stroke-width="15" opacity="0.72">
+          <path d="M180 180 L256 256" stroke="#4bd3e0"/>
+          <path d="M332 180 L256 256" stroke="#aa8bff"/>
+          <path d="M180 332 L256 256" stroke="#f4b95f"/>
+          <path d="M332 332 L256 256" stroke="#58d99a"/>
+        </g>
+        <g>
+          <rect x="83" y="83" width="143" height="143" rx="38" fill="#e6f2f8"/>
+          <rect x="83" y="126" width="143" height="100" fill="#dce9f7"/>
+          <path d="M121 83H188A38 38 0 0 1 226 121V127H83V121A38 38 0 0 1 121 83Z" fill="#38cbd7"/>
+          <rect x="83" y="83" width="143" height="143" rx="38" fill="none" stroke="#f4f7ff" stroke-opacity="0.36" stroke-width="4"/>
+        </g>
+        <g>
+          <rect x="286" y="83" width="143" height="143" rx="38" fill="#ece9fb"/>
+          <rect x="286" y="126" width="143" height="100" fill="#e4e5fa"/>
+          <path d="M324 83H391A38 38 0 0 1 429 121V127H286V121A38 38 0 0 1 324 83Z" fill="#a68aff"/>
+          <rect x="286" y="83" width="143" height="143" rx="38" fill="none" stroke="#f6f4ff" stroke-opacity="0.36" stroke-width="4"/>
+        </g>
+        <g>
+          <rect x="83" y="286" width="143" height="143" rx="38" fill="#fff0d8"/>
+          <rect x="83" y="329" width="143" height="100" fill="#f9e6c5"/>
+          <path d="M121 286H188A38 38 0 0 1 226 324V330H83V324A38 38 0 0 1 121 286Z" fill="#f0b552"/>
+          <rect x="83" y="286" width="143" height="143" rx="38" fill="none" stroke="#fff8ed" stroke-opacity="0.42" stroke-width="4"/>
+        </g>
+        <g>
+          <rect x="286" y="286" width="143" height="143" rx="38" fill="#e0f5e9"/>
+          <rect x="286" y="329" width="143" height="100" fill="#d4f0e2"/>
+          <path d="M324 286H391A38 38 0 0 1 429 324V330H286V324A38 38 0 0 1 324 286Z" fill="#50d497"/>
+          <rect x="286" y="286" width="143" height="143" rx="38" fill="none" stroke="#f0fff7" stroke-opacity="0.42" stroke-width="4"/>
+        </g>
+        <circle cx="256" cy="256" r="49" fill="#111b43" stroke="#8996ff" stroke-opacity="0.85" stroke-width="6"/>
+        <path d="M256 204L270 242L308 256L270 270L256 308L242 270L204 256L242 242Z" fill="url(#sf-spark)" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/>
+        <circle cx="256" cy="256" r="13" fill="#6174e7"/>
+      </g>
+    </g>
+  </defs>
+  <rect width="440" height="280" rx="30" fill="#0b112b"/>
+  <rect x="2" y="2" width="436" height="276" rx="28" fill="none" stroke="#6774dc" stroke-opacity="0.42" stroke-width="2"/>
+  <circle cx="74" cy="38" r="156" fill="#4456db" fill-opacity="0.10"/>
+  <use href="#sf-mark" transform="translate(30 52) scale(0.34)"/>
+  <rect x="216" y="93" width="31" height="5" rx="2.5" fill="#57d8e2"/>
+  <!-- The wordmark and tagline are outlined paths, so this source renders identically without host fonts. -->
+  <g fill="none" stroke="#f7f8ff" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" aria-label="SessionForge">
+    <path d="M229 113C226 110 218 110 217 114C216 119 221 120 225 121C230 122 231 125 230 130C229 135 220 136 216 132"/>
+    <path d="M233 126H247C247 120 244 116 240 116C235 116 232 120 232 125C232 131 236 134 241 134C244 134 246 133 248 131"/>
+    <path d="M265 118C262 116 254 116 253 120C252 123 256 124 260 125C264 126 266 129 264 132C262 135 255 135 251 132"/>
+    <path d="M282 118C279 116 271 116 270 120C269 123 273 124 277 125C281 126 283 129 281 132C279 135 272 135 268 132"/>
+    <path d="M287 117V134M287 111V112"/>
+    <path d="M296 125C296 119 299 116 304 116C309 116 312 119 312 125C312 131 309 134 304 134C299 134 296 131 296 125"/>
+    <path d="M316 134V117M316 121C318 117 321 116 324 117C327 118 328 121 328 125V134"/>
+    <path d="M350 112H335V134M335 123H347"/>
+    <path d="M354 125C354 119 357 116 362 116C367 116 370 119 370 125C370 131 367 134 362 134C357 134 354 131 354 125"/>
+    <path d="M374 134V117M374 121C376 118 379 117 382 118"/>
+    <path d="M389 119C391 117 394 116 397 117C400 118 402 121 402 125C402 131 399 134 394 134C391 134 389 132 389 129C389 126 391 124 395 124H402M402 134C401 137 398 139 394 139"/>
+    <path d="M410 126H424C424 120 421 116 417 116C413 116 410 120 410 125C410 131 414 134 419 134C422 134 424 133 426 131"/>
+  </g>
+  <g fill="none" stroke="#cbd3ff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-label="Every role. One window.">
+    <path d="M224 157H216V166H224M216 161.5H223"/>
+    <path d="M226 157L230 166L234 157"/>
+    <path d="M236 162H244C244 159 242 157 240 157C237.5 157 236 159 236 162C236 165 238 166 241 166C242.5 166 243.5 165.5 244.5 165"/>
+    <path d="M246 166V157M246 160C247 158 249 157 252 157"/>
+    <path d="M255 157L259 162L263 157M259 162V166"/>
+    <path d="M271 166V157M271 160C272 158 274 157 277 157"/>
+    <path d="M280 162C280 159 282 157 284 157C287 157 289 159 289 162C289 165 287 166 284 166C282 166 280 165 280 162"/>
+    <path d="M292 156V166"/>
+    <path d="M295 162H303C303 159 301 157 299 157C296.5 157 295 159 295 162C295 165 297 166 300 166C301.5 166 302.5 165.5 303.5 165"/>
+    <path d="M307 165.5V166"/>
+    <path d="M319 161.5C319 158.5 321 156.5 324 156.5C327 156.5 329 158.5 329 161.5C329 164.5 327 166 324 166C321 166 319 164.5 319 161.5"/>
+    <path d="M330 166V157M330 160C331 158 333 157 335 157C338 157 339 159 339 162V166"/>
+    <path d="M341 162H349C349 159 347 157 345 157C342.5 157 341 159 341 162C341 165 343 166 346 166C347.5 166 348.5 165.5 349.5 165"/>
+    <path d="M356 157L359 166L362 158L365 166L368 157"/>
+    <path d="M371 157V166M371 154V154.5"/>
+    <path d="M375 166V157M375 160C376 158 378 157 380 157C383 157 384 159 384 162V166"/>
+    <path d="M386 156V166M386 162C386 159 388 157 391 157C394 157 396 159 396 162C396 165 394 166 391 166C388 166 386 165 386 162"/>
+    <path d="M398 162C398 159 400 157 402 157C405 157 407 159 407 162C407 165 405 166 402 166C400 166 398 165 398 162"/>
+    <path d="M410 157L413 166L416 158L419 166L422 157"/>
+    <path d="M425 165.5V166"/>
+  </g>
+</svg>

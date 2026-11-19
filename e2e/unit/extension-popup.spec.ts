@@ -24,7 +24,7 @@ class El {
     this.textContent = v.replace(/<[^>]*>/g, '')
   }
   addEventListener(type: string, fn: () => void) {
-    ;(this.listeners[type] ??= []).push(fn)
+    (this.listeners[type] ??= []).push(fn)
   }
   appendChild(c: El) {
     this.children.push(c)
@@ -45,6 +45,7 @@ class El {
 interface FetchCall {
   url: string
   method: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- the parsed POST body; specs assert on it field by field
   body: any
 }
 type Reply = { status: number; body: unknown } | 'network-error'
@@ -67,7 +68,9 @@ const JAR: Record<string, unknown[]> = {
 function cookie(name: string, domain: string, hostOnly: boolean) {
   return { name, value: name + '-v', domain, hostOnly, path: '/', session: true, httpOnly: true, secure: true, sameSite: 'lax' }
 }
-const cookieHost = (c: any) => String(c.domain).replace(/^\./, '')
+/** The cookie fields the fake chrome.cookies.getAll filters on */
+type JarCookie = { domain: string; hostOnly: boolean }
+const cookieHost = (c: JarCookie) => String(c.domain).replace(/^\./, '')
 /** h is d or a subdomain of d */
 const underDomain = (h: string, d: string) => h === d || h.endsWith('.' + d)
 /** Whether a granted origin pattern (*://*.d/* or *://d/*) covers host h */
@@ -98,7 +101,7 @@ interface BootOpts {
   /** chrome.storage.local.set rejects with this message */
   localSetError?: string
   /** Every cookie in the profile (default: the JAR cookies) */
-  jar?: any[]
+  jar?: JarCookie[]
 }
 
 function boot(opts: BootOpts = {}) {
@@ -123,9 +126,9 @@ function boot(opts: BootOpts = {}) {
     if (r === 'network-error') return Promise.reject(new TypeError('Failed to fetch'))
     return Promise.resolve({ ok: r.status >= 200 && r.status < 300, status: r.status, json: async () => r.body })
   }
-  const jar = opts.jar ?? Object.values(JAR).flat()
+  const jar = opts.jar ?? (Object.values(JAR).flat() as JarCookie[])
   // Like Chrome: only cookies whose own domain a granted host permission covers are returned
-  const visible = (c: any) => granted === null || [...granted].some((p) => patternCovers(p, cookieHost(c)))
+  const visible = (c: JarCookie) => granted === null || [...granted].some((p) => patternCovers(p, cookieHost(c)))
   const area = (name: string, store: Map<string, unknown>) => ({
     get: async (key: string | string[]) => {
       api.push(`storage.${name}.get`)
@@ -221,7 +224,7 @@ function boot(opts: BootOpts = {}) {
   vm.runInContext(POPUP_SRC, sandbox, { filename: 'popup.js' })
   const el = (id: string) => els.get(id)!
   const posts = () => calls.filter((c) => c.method === 'POST')
-  return { el, calls, api, requests, contains, created, local, session, posts, sandbox, handOff: sandbox.SessionForgeHandOff as any }
+  return { el, calls, api, requests, contains, created, local, session, posts, sandbox, handOff: sandbox.SessionForgeHandOff as { buildHandOffPayload(requestId: string, cookies: unknown[]): unknown } }
 }
 
 async function until(fn: () => boolean, what: string): Promise<void> {
@@ -477,7 +480,7 @@ test('parent-domain cookies: access is asked for the parent site, so its login c
     p.el('import-btn').click()
     expect(p.requests, c.host).toEqual([[`*://*.${c.site}/*`]])
     await until(() => p.el('status').className === 'status success', 'send after grant')
-    const sent = p.posts()[0].body.storageState.cookies.map((x: any) => `${x.name}@${x.domain}`).sort()
+    const sent = p.posts()[0].body.storageState.cookies.map((x: { name: string; domain: string }) => `${x.name}@${x.domain}`).sort()
     expect(sent, c.host).toEqual([`login@.${c.site}`, `pref@${c.host}`])
   }
 })
@@ -487,7 +490,7 @@ test('the cookie fake hides cookies of hosts that were not granted, like Chrome'
   const jar = [cookie('login', '.x.ai', false), cookie('pref', 'console.x.ai', true)]
   const p = boot({ granted: ['*://*.console.x.ai/*'], tab: { id: 4, url: 'https://console.x.ai/' }, jar })
   await ready(p)
-  const fns = p.sandbox as Record<string, (...a: unknown[]) => Promise<any[]>>
+  const fns = p.sandbox as Record<string, (...a: unknown[]) => Promise<Array<{ name: string }>>>
   expect((await fns.getCookies({ url: 'https://console.x.ai/' })).map((c) => c.name)).toEqual(['pref'])
   expect((await fns.getCookies({ domain: 'x.ai' })).map((c) => c.name)).toEqual(['pref'])
 })

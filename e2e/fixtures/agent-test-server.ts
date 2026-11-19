@@ -79,6 +79,16 @@ const FRAME_HTML = `<!doctype html><title>frame</title><body style="margin:8px">
 <button id="fbtn" onclick="if(event.isTrusted){document.getElementById('fout').textContent='frame:'+(window.c=(window.c||0)+1)}">Frame button</button>
 <span id="fout">frame:0</span></body>`
 
+/** Like CodeMirror or ProseMirror: the page undoes on Cmd/Ctrl+Z keydown and on beforeinput historyUndo. */
+const EDITOR_HTML = `<!doctype html><title>Editor</title><body style="margin:8px">
+<textarea id="ed" aria-label="Editor"></textarea><span id="eout">keys:0 history:0</span>
+<script>
+let keys = 0, history = 0
+const ed = document.getElementById('ed'), show = () => { document.getElementById('eout').textContent = 'keys:' + keys + ' history:' + history }
+ed.addEventListener('keydown', (e) => { if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); keys++; show() } })
+ed.addEventListener('beforeinput', (e) => { if (e.inputType === 'historyUndo' || e.inputType === 'historyRedo') { e.preventDefault(); history++; show() } })
+</script></body>`
+
 export async function startAgentTestServer(): Promise<AgentTestServer> {
   const hits: Hit[] = []
   const open = new Set<ServerResponse>()
@@ -115,6 +125,8 @@ export async function startAgentTestServer(): Promise<AgentTestServer> {
         return send(200, 'text/javascript', REACT_DOM)
       case '/frame':
         return send(200, 'text/html; charset=utf-8', FRAME_HTML)
+      case '/editor':
+        return send(200, 'text/html; charset=utf-8', EDITOR_HTML)
       case '/api/whoami':
         return json(200, { user }, { 'set-cookie': 'seen=1; Path=/' })
       case '/api/admin':

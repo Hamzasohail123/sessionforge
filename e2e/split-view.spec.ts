@@ -9,6 +9,7 @@ import {
   getLayout,
   intersects,
   logsHaveTabNotFound,
+  MOD,
   openSession,
   pressInShell,
   rectOf,
@@ -325,7 +326,7 @@ test('grid, single, and back to grid', async () => {
 
 test('R13/R14: views hide while the palette is open and come back after', async () => {
   await ctx.page.locator('[data-testid="session-bar"]').click({ position: { x: 5, y: 5 } })
-  await pressInShell(ctx.app, 'K', ['control']) // through main's shortcut handler, like a real key
+  await pressInShell(ctx.app, 'K', [MOD]) // through main's shortcut handler, like a real key
   await ctx.page.waitForSelector('[cmdk-input]')
   await waitFor(async () => {
     const v = await attachedViews(ctx.app)
@@ -386,7 +387,7 @@ test('tabs without a saved layout: pane-1 shows the most recently shown tab', as
     await fresh.page.waitForTimeout(20)
     await fresh.page.evaluate((id) => window.api.tab.setActive(id), first) // first is now the most recent
     await wm(fresh.app, (sf) => {
-      ;(sf.db as unknown as { db: { prepare(sql: string): { run(): void } } }).db
+      (sf.db as unknown as { db: { prepare(sql: string): { run(): void } } }).db
         .prepare('DELETE FROM layouts')
         .run()
     })

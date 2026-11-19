@@ -1,7 +1,7 @@
 import { app, ipcMain, BrowserWindow, dialog, shell } from 'electron'
 import { z } from 'zod'
 import { existsSync } from 'fs'
-import { join } from 'path'
+import { basename, join } from 'path'
 import { SessionManager } from './session-manager'
 import { WindowManager } from './window-manager'
 import { RecentlyClosed } from './recently-closed'
@@ -212,7 +212,7 @@ export function initializeIPC(): void {
       if (!parsed.success) throw new Error('Invalid storage state: ' + formatZodIssues(parsed.error))
 
       // Extract session name from filename
-      const filename = filePaths[0].split('/').pop() || 'Imported Session'
+      const filename = basename(filePaths[0]) || 'Imported Session'
       const sessionName = filename.replace('-storageState.json', '').replace('.json', '').slice(0, SESSION_NAME_MAX)
 
       const { session, cookies } = await sessionManager.importFromPlaywright(sessionName, parsed.data)

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { parsePress, type PressModifier } from '../../src/main/agent/keys'
+import { macEditCommand, parsePress, type PressModifier } from '../../src/main/agent/keys'
 import { matchShortcut } from '../../src/main/shortcuts'
 import { AgentError } from '../../src/main/agent/errors'
 
@@ -36,6 +36,24 @@ test('accepted keys and event sequences', () => {
   expect(sel.events.map((e) => e.type)).toEqual(['keyDown', 'keyUp'])
   expect(parsePress('z', ['Meta', 'Shift']).label).toBe('Meta+Shift+z')
   expect(parsePress('é').events[1].keyCode).toBe('é')
+})
+
+test('macOS edit commands: Cmd+A/Z/Shift+Z/Y only; Control and the other allowed keys send keys alone', () => {
+  expect(macEditCommand('a', ['Meta'])).toBe('selectAll')
+  expect(macEditCommand('A', ['Meta'])).toBe('selectAll')
+  expect(macEditCommand('z', ['Meta'])).toBe('undo')
+  expect(macEditCommand('z', ['Meta', 'Shift'])).toBe('redo')
+  expect(macEditCommand('y', ['Meta'])).toBe('redo')
+  for (const [k, mods] of [
+    ['a', ['Control']],
+    ['z', ['Control']],
+    ['Enter', ['Meta']],
+    ['a', []],
+    ['a', ['Shift']],
+    ['Backspace', ['Meta']]
+  ] as Array<[string, PressModifier[]]>) {
+    expect(macEditCommand(k, mods), `${mods.join('+')}+${k}`).toBeNull()
+  }
 })
 
 test('no allowed combination is an app shortcut (except Escape → stop)', () => {

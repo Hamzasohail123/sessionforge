@@ -279,10 +279,11 @@ export function ApprovalsCard({ editor }: { editor: EditorId }) {
         )}
         {presetInfo && (
           <div className="space-y-2">
+            {/* A long path (CODEX_HOME, an injected config home) wraps instead of widening the card */}
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <FileCode2 className="h-3.5 w-3.5" aria-hidden />
-              <span className="font-mono">{info.displayPath}</span>
-              {!info.exists && <span>(not created yet)</span>}
+              <FileCode2 className="h-3.5 w-3.5 shrink-0" aria-hidden />
+              <span className="min-w-0 font-mono [overflow-wrap:anywhere]">{info.displayPath}</span>
+              {!info.exists && <span className="shrink-0">(not created yet)</span>}
             </div>
             <CopyBlock
               testid={`approval-text-${editor}`}
@@ -297,6 +298,8 @@ export function ApprovalsCard({ editor }: { editor: EditorId }) {
             data-testid={`approval-apply-${editor}`}
             disabled={!presetInfo?.canApply}
             onClick={() => setDialog(true)}
+            // The label holds the full path, so it may wrap; one line keeps the default h-9 look
+            className="h-auto min-h-9 max-w-full whitespace-normal text-left [overflow-wrap:anywhere]"
           >
             Apply to {info?.displayPath ?? '…'}
           </Button>

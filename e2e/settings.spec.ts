@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { readFileSync } from 'node:fs'
+import { mkdtemp } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { launchApp, projectRoot, teardown, waitFor, wm, type AppCtx } from './fixtures/app'
 import { capture } from './fixtures/capture'
@@ -62,7 +64,10 @@ async function setContentSize(width: number, height: number): Promise<void> {
 }
 test.beforeAll(async () => {
   server = await startTestServer()
-  ctx = await launchApp()
+  // Editors shows the injected config home in full, and on macOS it sits under /var/folders/…/T/
+  // (about 45 characters longer than /tmp/). The longer prefix makes the paths long on Linux and
+  // Windows too, so the no-sideways-overflow checks below catch a path label that can't wrap.
+  ctx = await launchApp({ editorHome: await mkdtemp(join(tmpdir(), 'sessionforge-editors-long-path-like-macos-tmpdir-')) })
   local = await ctx.page.evaluate(() => window.api.session.create({ name: 'Local QA', color: '#3b82f6', env: 'local' }))
   prod = await ctx.page.evaluate(() => window.api.session.create({ name: 'Prod Admin', color: '#ef4444', env: 'production' }))
   tabId = await createHiddenTab(ctx.app, local.id, `${server.base}/`)
@@ -274,6 +279,17 @@ test('screenshots of every tab at 1400x900 and Editors at 1024x700', async () =>
   })
   expect(overflow).toBeLessThanOrEqual(0)
   await shot('settings-agent-editors-1024x700')
+  await closeSettings(ctx)
+  // Narrower still, for every editor: the Apply button and the file line hold the full config path
+  // (long here, see beforeAll), so they have to wrap instead of widening the panel
+  await setContentSize(900, 640)
+  await openSettings(ctx, 'editors')
+  const scroll = ctx.page.locator('[data-testid="settings-scroll"]')
+  for (const editor of ['cursor', 'codex', 'claude'] as const) {
+    await ctx.page.click(`[data-testid="agent-editor-${editor}"]`)
+    await expect(ctx.page.locator(`[data-testid="approval-apply-${editor}"]`)).toContainText(ctx.editorHome)
+    await expect(scroll, `Editors → ${editor} at 900x640`).toHaveJSProperty('scrollWidth', await scroll.evaluate((el) => el.clientWidth))
+  }
   await closeSettings(ctx)
   await setContentSize(1400, 900)
 })

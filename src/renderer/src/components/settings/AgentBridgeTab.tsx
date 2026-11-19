@@ -20,7 +20,8 @@ export function AgentBridgeTab() {
   return (
     <Tabs data-testid="agent-bridge-panel" value={agentTab} onValueChange={(v) => setAgentTab(v as AgentTab)} className="text-sm">
       <div className="mb-6">
-        <TabsList aria-label="Agent Bridge sections">
+        {/* flex-wrap: in a narrow window the sub-tabs take a second row instead of scrolling sideways */}
+        <TabsList aria-label="Agent Bridge sections" className="flex-wrap">
           {AGENT_TABS.map((t) => {
             const Icon = SUBTABS[t].icon
             return (

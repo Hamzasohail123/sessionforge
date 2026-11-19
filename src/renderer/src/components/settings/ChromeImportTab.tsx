@@ -51,7 +51,7 @@ export function ChromeImportTab() {
             </Callout>
           </div>
         )}
-        <div className="mt-4 flex items-center gap-3">
+        <div className="mt-4 flex flex-wrap items-center gap-3">
           <Button size="sm" variant="outline" onClick={() => callMain(window.api.app.openDoc('chromeExtension'))}>
             <FileText className="mr-1 h-3.5 w-3.5" aria-hidden /> Open extension README
           </Button>

@@ -16,6 +16,8 @@ import { resolveTestGoogleOrigins } from './google-signin/match'
 import { openInBrowser } from './google-signin/launch'
 import { registerSignInIpc } from './google-signin/ipc'
 import { RecentlyClosed } from './recently-closed'
+// Real file path: resources/** is asarUnpacked in packaged builds
+import icon from '../../resources/icon.png?asset&asarUnpack'
 
 // Lets tests run against a throwaway data folder instead of ~/.config/sessionforge.
 // A relative path is refused: falling back to the real profile could let a test write into it.
@@ -45,6 +47,8 @@ function createWindow(): void {
     height: 900,
     show: false,
     autoHideMenuBar: true,
+    // Linux window icon; macOS and Windows take it from the app bundle / exe
+    ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,

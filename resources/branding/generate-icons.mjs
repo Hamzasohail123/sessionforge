@@ -2,7 +2,7 @@
 // Usage: node resources/branding/generate-icons.mjs
 import { chromium } from 'playwright'
 import { existsSync } from 'node:fs'
-import { mkdir, readFile } from 'node:fs/promises'
+import { copyFile, mkdir, readFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 
 const ROOT = resolve(new URL('../..', import.meta.url).pathname)
@@ -25,11 +25,18 @@ const outputs = [
   ['sessionforge-icon.svg', 'chrome-extension/icon128.png', 128],
   ['sessionforge-icon.svg', 'chrome-extension/store/icon-128.png', 128],
   ['sessionforge-icon.svg', 'build/icon.png', 512],
+  // Linux packages: electron-builder installs each NxN.png into /usr/share/icons/hicolor/NxN/apps
+  ...[16, 24, 32, 48, 64, 128, 256, 512].map((size) => ['sessionforge-icon.svg', `build/icons/${size}x${size}.png`, size]),
+  // BrowserWindow icon on Linux (window list and title bar)
+  ['sessionforge-icon.svg', 'resources/icon.png', 256],
   ['sessionforge-promo.svg', 'chrome-extension/store/promo-small-440x280.png', 440, 280]
 ]
 
 await mkdir(join(ROOT, 'chrome-extension', 'store'), { recursive: true })
-await mkdir(join(ROOT, 'build'), { recursive: true })
+await mkdir(join(ROOT, 'build', 'icons'), { recursive: true })
+await mkdir(join(ROOT, 'src', 'renderer', 'public'), { recursive: true })
+// Renderer favicon, served from Vite's public folder
+await copyFile(join(BRANDING, 'sessionforge-icon.svg'), join(ROOT, 'src', 'renderer', 'public', 'sessionforge-icon.svg'))
 
 const browser = await chromium.launch({
   executablePath,

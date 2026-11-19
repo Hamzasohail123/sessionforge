@@ -38,6 +38,8 @@ npmRebuild: true
 # Without a flag, electron-builder builds for the host arch.
 win:
   executableName: SessionForge
+  # Explicit: without it electron-builder would build the .ico from build/icons (the Linux set)
+  icon: build/icon.png
   target:
     - nsis
 nsis:
@@ -47,6 +49,8 @@ nsis:
   createDesktopShortcut: always
 mac:
   category: public.app-category.developer-tools
+  # Explicit: without it electron-builder would build the .icns from build/icons (the Linux set)
+  icon: build/icon.png
   target:
     - dmg
   # No Apple Developer ID yet. electron-builder 24 has no ad-hoc mode (mac.identity "-" arrives in v26),
@@ -56,6 +60,9 @@ mac:
   notarize: false
 afterPack: ./build/macos-adhoc-sign.cjs
 linux:
+  # One PNG per size (NxN.png). A single build/icon.png installs into hicolor/0x0/apps, which no
+  # icon theme reads, so the .desktop entry showed a generic icon.
+  icon: build/icons
   target:
     - AppImage
     - deb

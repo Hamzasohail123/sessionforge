@@ -98,6 +98,10 @@ git commit -s -m "fix(tabs): keep popups in the parent session"
 
 Pull requests:
 
+`main` is protected: every change, including the maintainer's, goes through a pull request, and
+it merges only when CI passes (lint, license check, and the test jobs on Linux, macOS and Windows).
+Force-pushes to `main` and deleting it are blocked, and release tags (`v*`) can't be moved or deleted.
+
 1. Describe what changed and why, how to test it, and the related issue.
 2. CI must pass.
 3. Changes to isolation, the import server or the Agent Bridge security model need a maintainer review.

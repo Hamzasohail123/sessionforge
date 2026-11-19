@@ -113,17 +113,23 @@ test('D6: Inspect opens detached DevTools for that tab only', async () => {
   await openMenuAt(ctx.app, devTab, '#plain')
   await clickMenuItem(ctx.app, 'Inspect')
   await waitFor(() => devToolsOpen(devTab), 5_000, 'devtools open')
-  const detached = await wm(
-    ctx.app,
-    (sf, id) => {
-      const wc = sf.windowManager.getViewForTest(id)!.webContents
-      const dt = wc.devToolsWebContents
-      const children = sf.window.contentView.children.map((v) => (v as Electron.WebContentsView).webContents)
-      return dt !== null && !children.includes(dt)
-    },
-    devTab
+  // On macOS isDevToolsOpened() can turn true a moment before devToolsWebContents is set, so wait
+  // for the DevTools webContents too, then check it isn't one of the window's own pane views.
+  await waitFor(
+    () =>
+      wm(
+        ctx.app,
+        (sf, id) => {
+          const wc = sf.windowManager.getViewForTest(id)!.webContents
+          const dt = wc.devToolsWebContents
+          const children = sf.window.contentView.children.map((v) => (v as Electron.WebContentsView).webContents)
+          return dt !== null && !children.includes(dt)
+        },
+        devTab
+      ),
+    5_000,
+    'detached devtools webContents'
   )
-  expect(detached).toBe(true)
   expect(await devToolsOpen(aTab)).toBe(false)
   await ctx.page.waitForTimeout(1000)
   await capture(ctx.app, 'devtools-inspect')

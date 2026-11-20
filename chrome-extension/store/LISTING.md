@@ -49,7 +49,7 @@ Package: zip of the extension's runtime files only, without `store/` and the doc
 >
 > Open source (Apache-2.0).
 
-**Icon**: `store/icon-128.png` (128×128; artwork 96×96 with transparent padding).
+**Icon**: `store/icon-128.png` (128×128, the artwork edge to edge with transparent corners).
 
 **Screenshots** (required, at least 1; 1280×800 or 640×400, PNG or JPEG): **not generated, the user must
 capture them.** Suggested:

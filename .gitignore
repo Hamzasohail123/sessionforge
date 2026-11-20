@@ -22,7 +22,6 @@ node_modules/
 # Ignore anything else a tool might drop there.
 build/*
 !build/icon.png
-!build/icon-mac.png
 !build/icon.icns
 !build/icon.ico
 !build/icons/

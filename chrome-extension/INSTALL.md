@@ -17,7 +17,7 @@ Chrome is the tested browser. Edge and Brave should work the same way (untested)
 ## Updating
 
 After updating SessionForge, open `chrome://extensions` and click the reload icon on SessionForge Import.
-It should show version 1.3.0. Versions before 1.2.0 have no "Send to <session> (SessionForge asked for
+It should show version 1.3.1. Versions before 1.2.0 have no "Send to <session> (SessionForge asked for
 this)" button and can only create new sessions. 1.3.0 shows a first-run notice once, and Chrome asks for
 access to each site the first time you send from it.
 

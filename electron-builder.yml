@@ -9,6 +9,8 @@ directories:
 files:
   - dist-electron/**/*
   - resources/**/*
+  # Icon sources and their generator are build inputs, not runtime files
+  - '!resources/branding/**'
 asarUnpack:
   - resources/**
   - '**/*.node'
@@ -38,7 +40,8 @@ npmRebuild: true
 # Without a flag, electron-builder builds for the host arch.
 win:
   executableName: SessionForge
-  # Explicit: without it electron-builder would build the .ico from build/icons (the Linux set)
+  # Explicit: without it electron-builder would build the .ico from build/icons (the Linux set).
+  # 1024 px, full bleed like the source artwork (resources/branding/generate-icons.mjs)
   icon: build/icon.png
   target:
     - nsis
@@ -49,7 +52,8 @@ nsis:
   createDesktopShortcut: always
 mac:
   category: public.app-category.developer-tools
-  # Explicit: without it electron-builder would build the .icns from build/icons (the Linux set)
+  # Explicit: without it electron-builder would build the .icns from build/icons (the Linux set, 512 px
+  # at most). Same 1024 px full-bleed file as Windows.
   icon: build/icon.png
   target:
     - dmg

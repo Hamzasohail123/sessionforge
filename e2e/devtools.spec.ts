@@ -3,6 +3,7 @@ import { clickMenuItem, launchApp, openMenuAt, teardown, waitFor, wm, type AppCt
 import { capture } from './fixtures/capture'
 import { startTestServer, type TestServer } from './fixtures/test-server'
 import {
+  closeTabDevTools,
   createHiddenTab,
   createSessions,
   getLayout,
@@ -31,10 +32,7 @@ let devTab: string
 const devToolsOpen = (tabId: string) =>
   wm(ctx.app, (sf, id) => sf.windowManager.getViewForTest(id)!.webContents.isDevToolsOpened(), tabId)
 
-async function closeDevTools(tabId: string) {
-  await wm(ctx.app, (sf, id) => sf.windowManager.getViewForTest(id)!.webContents.closeDevTools(), tabId)
-  await waitFor(async () => !(await devToolsOpen(tabId)), 5_000, 'devtools closed')
-}
+const closeDevTools = (tabId: string) => closeTabDevTools(ctx.app, tabId)
 
 /** Put the /dev tab back in pane-2 (menu actions open new tabs there). */
 async function showDevTab() {

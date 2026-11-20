@@ -4,6 +4,7 @@ import { capture } from './fixtures/capture'
 import { startTestServer, type TestServer } from './fixtures/test-server'
 import {
   attachedViews,
+  closeTabDevTools,
   createHiddenTab,
   createSessions,
   getLayout,
@@ -59,10 +60,7 @@ const devToolsOpen = (tabId: string) =>
   wm(ctx.app, (sf, id) => sf.windowManager.getViewForTest(id)?.webContents.isDevToolsOpened() ?? false, tabId)
 const shellDevToolsOpen = () => wm(ctx.app, (sf) => sf.window.webContents.isDevToolsOpened())
 
-async function closeDevTools(tabId: string) {
-  await wm(ctx.app, (sf, id) => sf.windowManager.getViewForTest(id)!.webContents.closeDevTools(), tabId)
-  await waitFor(async () => !(await devToolsOpen(tabId)), 5_000, 'devtools closed')
-}
+const closeDevTools = (tabId: string) => closeTabDevTools(ctx.app, tabId)
 
 async function waitPaneTab(paneId: PaneId, tabId: string) {
   await waitFor(async () => (await paneTab(paneId)) === tabId, 5_000, `${paneId} to show ${tabId}`)

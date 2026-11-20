@@ -184,7 +184,7 @@ it is public. Submitting earlier risks a rejection, and each review round can ta
 2. Build the upload zip (every runtime file, nothing from `store/` and no `*.md`/`*.txt` docs):
    ```bash
    cd chrome-extension
-   zip ../sessionforge-extension-1.3.0.zip manifest.json popup.html popup.js access.js handoff.js grant.html grant.js background.js icon16.png icon48.png icon128.png
+   zip ../sessionforge-extension-1.3.1.zip manifest.json popup.html popup.js access.js handoff.js grant.html grant.js background.js icon16.png icon48.png icon128.png
    cd ..
    ```
 3. In the dashboard: **New item** → upload the zip.

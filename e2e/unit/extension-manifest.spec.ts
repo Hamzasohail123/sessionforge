@@ -11,9 +11,9 @@ const sources = readdirSync(extDir)
   .filter((f) => f.endsWith('.js') || f.endsWith('.html'))
   .map((f) => ({ f, src: readFileSync(join(extDir, f), 'utf8') }))
 
-test('manifest: version 1.3.0, a short description, and only the narrow permissions', () => {
+test('manifest: version 1.3.1, a short description, and only the narrow permissions', () => {
   expect(manifest.manifest_version).toBe(3)
-  expect(manifest.version).toBe('1.3.0')
+  expect(manifest.version).toBe('1.3.1')
   expect(manifest.description.length).toBeLessThanOrEqual(132)
   expect(manifest.permissions).toEqual(['activeTab', 'cookies', 'scripting', 'storage'])
   expect(manifest.host_permissions).toEqual(['http://127.0.0.1:34567/*'])

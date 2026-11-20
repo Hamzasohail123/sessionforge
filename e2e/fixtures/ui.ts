@@ -158,4 +158,52 @@ export async function pressInShell(app: ElectronApplication, keyCode: string, mo
   )
 }
 
+/**
+ * Close a tab's DevTools and wait until they are closed.
+ *
+ * On macOS, app.evaluate runs as a V8 interrupt inside whatever main-process JS is running, including JS
+ * that native code calls during the AppKit focus changes of a DevTools open. Calling closeDevTools() from
+ * inside that native callback crashes the main process. So first wait until devToolsWebContents is set
+ * (the last step of opening; isDevToolsOpened() can be true before it), then call closeDevTools() from
+ * setTimeout, which runs it as its own main-process task, as a key press or IPC call would.
+ *
+ * The setTimeout is what prevents the crash, and it is required even after devToolsWebContents is set:
+ * the devtools-opened and focus events still run JS from native code after that point.
+ */
+export async function closeTabDevTools(app: ElectronApplication, tabId: string): Promise<void> {
+  await waitFor(
+    () =>
+      wm(
+        app,
+        (sf, id) => {
+          const wc = sf.windowManager.getViewForTest(id)?.webContents
+          return !!wc && wc.isDevToolsOpened() && wc.devToolsWebContents !== null
+        },
+        tabId
+      ),
+    5_000,
+    'devtools to finish opening'
+  )
+  await wm(
+    app,
+    (sf, id) =>
+      new Promise<void>((resolve, reject) => {
+        setTimeout(() => {
+          try {
+            sf.windowManager.getViewForTest(id)!.webContents.closeDevTools()
+            resolve()
+          } catch (e) {
+            reject(e)
+          }
+        }, 0)
+      }),
+    tabId
+  )
+  await waitFor(
+    () => wm(app, (sf, id) => !(sf.windowManager.getViewForTest(id)?.webContents.isDevToolsOpened() ?? false), tabId),
+    5_000,
+    'devtools closed'
+  )
+}
+
 export const logsHaveTabNotFound = (logs: string[]) => logs.join('').includes('Tab not found')

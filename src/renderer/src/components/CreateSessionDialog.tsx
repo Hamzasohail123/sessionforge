@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import {
@@ -15,7 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import type { CreateSessionInput, Session } from '../../../main/types'
 import { COLORS, SESSION_NAME_MAX } from '../../../main/constants'
 import { useStore } from '../store'
-import { callMain } from '../lib/ipc'
+import { callMain, getMainErrorMessage } from '../lib/ipc'
 import { useViewOverlay } from '../hooks/useViewOverlay'
 
 interface CreateSessionDialogProps {
@@ -29,11 +29,25 @@ export function CreateSessionDialog({ open, onOpenChange }: CreateSessionDialogP
   const queryClient = useQueryClient()
   const [selectedColor, setSelectedColor] = useState(COLORS[0].value)
   const [selectedEnv, setSelectedEnv] = useState<CreateSessionInput['env']>('local')
+  const [saveError, setSaveError] = useState<string | null>(null)
 
-  const { register, handleSubmit, reset } = useForm<{ name: string }>()
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<{ name: string }>()
+
+  // The dialog stays mounted while closed, so reset it each time it opens
+  useEffect(() => {
+    if (open) {
+      setSelectedEnv('local')
+      setSelectedColor(COLORS[0].value)
+      setSaveError(null)
+      reset()
+    }
+  }, [open, reset])
 
   const createMutation = useMutation({
     mutationFn: (input: CreateSessionInput) => window.api.session.create(input),
+    onError: (error: unknown) => {
+      setSaveError(getMainErrorMessage(error))
+    },
     onSuccess: (session: Session) => {
       queryClient.invalidateQueries({ queryKey: ['sessions'] })
       reset()
@@ -49,7 +63,7 @@ export function CreateSessionDialog({ open, onOpenChange }: CreateSessionDialogP
 
   const onSubmit = (data: { name: string }) => {
     createMutation.mutate({
-      name: data.name,
+      name: data.name.trim(),
       color: selectedColor,
       env: selectedEnv
     })
@@ -72,13 +86,20 @@ export function CreateSessionDialog({ open, onOpenChange }: CreateSessionDialogP
               id="name"
               placeholder="e.g., Admin User"
               maxLength={SESSION_NAME_MAX}
-              {...register('name', { required: true })}
+              aria-invalid={!!errors.name}
+              aria-describedby="name-error"
+              {...register('name', { validate: (v) => v.trim().length > 0 || 'Enter a session name' })}
             />
+            {errors.name && (
+              <p id="name-error" role="alert" className="text-sm text-destructive">
+                {errors.name.message}
+              </p>
+            )}
           </div>
 
           <div className="space-y-2">
             <Label>Color</Label>
-            <div className="flex gap-2">
+            <div className="flex gap-2" role="group" aria-label="Color">
               {COLORS.map((color) => (
                 <button
                   key={color.value}
@@ -90,6 +111,8 @@ export function CreateSessionDialog({ open, onOpenChange }: CreateSessionDialogP
                     borderColor: selectedColor === color.value ? '#000' : 'transparent'
                   }}
                   title={color.name}
+                  aria-label={color.name}
+                  aria-pressed={selectedColor === color.value}
                 />
               ))}
             </div>
@@ -98,7 +121,7 @@ export function CreateSessionDialog({ open, onOpenChange }: CreateSessionDialogP
           <div className="space-y-2">
             <Label htmlFor="env">Environment</Label>
             <Select value={selectedEnv} onValueChange={(v) => setSelectedEnv(v as CreateSessionInput['env'])}>
-              <SelectTrigger>
+              <SelectTrigger id="env">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -109,6 +132,12 @@ export function CreateSessionDialog({ open, onOpenChange }: CreateSessionDialogP
               </SelectContent>
             </Select>
           </div>
+
+          {saveError && (
+            <p role="alert" className="text-sm text-destructive">
+              {saveError}
+            </p>
+          )}
 
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>

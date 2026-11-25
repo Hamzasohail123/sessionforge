@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="560" viewBox="0 0 1400 560" role="img" aria-labelledby="title desc">
+  <title id="title">SessionForge, Every role. One window.</title>
+  <desc id="desc">SessionForge marquee promotional tile with the SessionForge icon and the tagline Every role. One window.</desc>
+  <!-- The small tile (sessionforge-promo.svg) scaled 2.4x and centred: x' = 168 + 2.4x, y' = 280 + 2.4(y - 140).
+       The frame scales with the height (2x). -->
+  <defs>
+    <filter id="sf-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="24"/>
+    </filter>
+  </defs>
+  <!-- Square and opaque: the Chrome Web Store rejects promo tiles with transparency -->
+  <rect width="1400" height="560" fill="#0b112b"/>
+  <rect x="4" y="4" width="1392" height="552" rx="56" fill="none" stroke="#6774dc" stroke-opacity="0.42" stroke-width="4"/>
+  <circle cx="345.6" cy="35.2" r="374.4" fill="#4456db" fill-opacity="0.10"/>
+  <!-- Soft cyan glow so the dark icon stands out from the dark tile -->
+  <rect x="249.6" y="97.6" width="364.8" height="364.8" rx="96" fill="#22d3ee" fill-opacity="0.45" filter="url(#sf-glow)"/>
+  <!-- generate-icons.mjs replaces this href with the icon, corners masked and downscaled to 394 px -->
+  <image href="sessionforge-icon-source.png" x="235" y="83" width="394" height="394"/>
+  <rect x="676.8" y="188.8" width="74.4" height="12" rx="6" fill="#57d8e2"/>
+  <!-- generate-icons.mjs embeds DejaVu Sans as 'SessionForge Promo', so the text never falls back to another font -->
+  <text x="674.4" y="287.2" font-family="'SessionForge Promo', 'DejaVu Sans', sans-serif" font-size="64.8" font-weight="700" fill="#f7f8ff">SessionForge</text>
+  <text x="676.8" y="352" font-family="'SessionForge Promo', 'DejaVu Sans', sans-serif" font-size="33.6" font-weight="400" fill="#cbd3ff">Every role. One window.</text>
+</svg>

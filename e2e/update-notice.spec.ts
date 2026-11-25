@@ -8,6 +8,7 @@ import { startTestServer, type TestServer } from './fixtures/test-server'
 import { createHiddenTab, openSession, rectOf, viewInfo, waitViewOnSlot } from './fixtures/ui'
 import { RELEASES_PAGE_URL } from '../src/main/constants'
 import { UPDATE_SETTING_KEYS } from '../src/main/updates'
+import { version as APP_VERSION } from '../package.json'
 
 test.describe.configure({ mode: 'serial' })
 
@@ -96,11 +97,11 @@ test('2: a newer release shows the bar above the session bar; one cookie-less re
   const c = (ctx = await launch())
   await expect(bar(c)).toBeVisible()
   await expect(bar(c)).toHaveAttribute('data-version', '0.2.0')
-  await expect(c.page.getByTestId('update-notice-text')).toHaveText('SessionForge 0.2.0 is available. You have 0.1.0.')
+  await expect(c.page.getByTestId('update-notice-text')).toHaveText(`SessionForge 0.2.0 is available. You have ${APP_VERSION}.`)
   expect(release.hits.length).toBe(before + 1)
   const { headers } = release.hits[before]
   expect(headers.cookie).toBeUndefined()
-  expect(headers['user-agent']).toMatch(/^SessionForge\/0\.1\.0/)
+  expect(headers['user-agent']).toMatch(new RegExp(`^SessionForge/${APP_VERSION.replace(/\./g, '\\.')}`))
   expect(c.logs.join('')).not.toContain('Action failed')
 
   // The bar is in normal flow: the session bar and the page view sit below it

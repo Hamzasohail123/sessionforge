@@ -9,7 +9,7 @@
 
 <!-- Demo GIF goes here once recorded: ![SessionForge: an agent checks Admin and Customer side by side](./docs/release/demo.gif) -->
 
-**[Download v0.1.0](https://github.com/Hamzasohail123/sessionforge/releases/latest)** for macOS, Windows or Linux.
+**[Download v0.1.1](https://github.com/Hamzasohail123/sessionforge/releases/latest)** for macOS, Windows or Linux.
 
 Get notified of new versions: on GitHub click **Watch → Custom → Releases**. From the next version on, SessionForge itself tells you when an update is out (Settings → General → Check for updates).
 

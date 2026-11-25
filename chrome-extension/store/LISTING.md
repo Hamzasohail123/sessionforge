@@ -57,8 +57,8 @@ capture them.** Suggested:
 2. SessionForge right after the import: the new session in the session bar and the page in a pane.
 3. SessionForge split view with two imported sessions side by side.
 
-**Small promo tile** (440×280): `store/promo-small-440x280.png`.
-**Marquee promo tile** (1400×560): optional, not provided.
+**Small promo tile** (440×280, 24-bit PNG, no alpha): `store/promo-small-440x280.png`.
+**Marquee promo tile** (1400×560, 24-bit PNG, no alpha): `store/promo-marquee-1400x560.png`.
 
 **Homepage URL**: `https://github.com/Hamzasohail123/sessionforge`
 **Support URL**: `https://github.com/Hamzasohail123/sessionforge/issues`

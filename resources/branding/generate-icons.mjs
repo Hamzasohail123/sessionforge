@@ -1,4 +1,4 @@
-// Build every SessionForge icon and the store promo tile from the master PNG, with the installed Chromium.
+// Build every SessionForge icon and the store promo tiles from the master PNG, with the installed Chromium.
 // Every icon is the source artwork edge to edge, downscaled; the only change is that the black outside the
 // rounded corners becomes transparent.
 // Usage: node resources/branding/generate-icons.mjs
@@ -8,7 +8,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const ROOT = resolve(new URL('../..', import.meta.url).pathname)
+const ROOT = fileURLToPath(new URL('../..', import.meta.url))
 const BRANDING = join(ROOT, 'resources', 'branding')
 // The artwork as delivered (1254x1254 RGB): a navy rounded square edge to edge, black outside its corners
 export const SOURCE = join(BRANDING, 'sessionforge-icon-source.png')
@@ -35,7 +35,11 @@ const icons = [
   // Renderer favicon, served from Vite's public folder
   ['src/renderer/public/sessionforge-icon.png', 64]
 ]
-const promo = { source: 'sessionforge-promo.svg', output: 'chrome-extension/store/promo-small-440x280.png', width: 440, height: 280, icon: 164 }
+// Chrome Web Store promo tiles: JPEG or 24-bit PNG, no alpha. The marquee is the small tile's layout scaled 2.4x.
+const promos = [
+  { source: 'sessionforge-promo.svg', output: 'chrome-extension/store/promo-small-440x280.png', width: 440, height: 280, icon: 164 },
+  { source: 'sessionforge-promo-marquee.svg', output: 'chrome-extension/store/promo-marquee-1400x560.png', width: 1400, height: 560, icon: 394 }
+]
 
 /**
  * Runs in the page: makes the source's black corners transparent and installs window.sfRender(size).
@@ -175,29 +179,38 @@ async function main() {
       console.log(`wrote ${outputName} (${size}x${size})`)
     }
 
-    // Promo tile: the SVG with the icon at its layout size and the embedded fonts, captured opaque
-    const promoIcon = await page.evaluate((s) => window.sfRender(s), promo.icon)
-    const svg = (await readFile(join(BRANDING, promo.source), 'utf8')).replace('href="sessionforge-icon-source.png"', `href="${promoIcon}"`)
-    if (!svg.includes(promoIcon)) throw new Error(`${promo.source} has no <image href="sessionforge-icon-source.png">`)
     const fontFaces = []
     for (const [weight, file] of Object.entries(PROMO_FONTS)) {
       const data = (await readFile(file)).toString('base64')
       fontFaces.push(`@font-face{font-family:'SessionForge Promo';font-weight:${weight};src:url(data:font/ttf;base64,${data})}`)
     }
-    const promoPage = await browser.newPage({ viewport: { width: promo.width, height: promo.height }, deviceScaleFactor: 1 })
-    await promoPage.setContent(`<!doctype html><style>${fontFaces.join('')}html,body{margin:0;overflow:hidden}svg{display:block}</style>${svg}`)
-    const missing = await promoPage.evaluate(async (weights) => {
-      const result = []
-      for (const weight of weights) {
-        const faces = await document.fonts.load(`${weight} 20px 'SessionForge Promo'`)
-        if (!faces.some((face) => face.status === 'loaded')) result.push(weight)
+    for (const promo of promos) {
+      // Promo tile: the SVG with the icon at its layout size and the embedded fonts, captured opaque
+      const promoIcon = await page.evaluate((s) => window.sfRender(s), promo.icon)
+      const svg = (await readFile(join(BRANDING, promo.source), 'utf8')).replace('href="sessionforge-icon-source.png"', `href="${promoIcon}"`)
+      if (!svg.includes(promoIcon)) throw new Error(`${promo.source} has no <image href="sessionforge-icon-source.png">`)
+      const promoPage = await browser.newPage({ viewport: { width: promo.width, height: promo.height }, deviceScaleFactor: 1 })
+      await promoPage.setContent(`<!doctype html><style>${fontFaces.join('')}html,body{margin:0;overflow:hidden}svg{display:block}</style>${svg}`)
+      const missing = await promoPage.evaluate(async (weights) => {
+        const result = []
+        for (const weight of weights) {
+          const faces = await document.fonts.load(`${weight} 20px 'SessionForge Promo'`)
+          if (!faces.some((face) => face.status === 'loaded')) result.push(weight)
+        }
+        await document.fonts.ready
+        return result
+      }, Object.keys(PROMO_FONTS))
+      if (missing.length) throw new Error(`Promo font weights did not load: ${missing.join(', ')}`)
+      const png = await promoPage.screenshot({ type: 'png' })
+      // IHDR: width, height, bit depth, colour type. The store wants 8-bit truecolour (type 2), no alpha.
+      const [width, height, depth, colourType] = [png.readUInt32BE(16), png.readUInt32BE(20), png[24], png[25]]
+      if (width !== promo.width || height !== promo.height || depth !== 8 || colourType !== 2) {
+        throw new Error(`${promo.output}: got ${width}x${height}, ${depth}-bit colour type ${colourType}; need ${promo.width}x${promo.height} 8-bit RGB`)
       }
-      await document.fonts.ready
-      return result
-    }, Object.keys(PROMO_FONTS))
-    if (missing.length) throw new Error(`Promo font weights did not load: ${missing.join(', ')}`)
-    await write(promo.output, await promoPage.screenshot({ type: 'png' }))
-    console.log(`wrote ${promo.output} (${promo.width}x${promo.height})`)
+      await write(promo.output, png)
+      await promoPage.close()
+      console.log(`wrote ${promo.output} (${promo.width}x${promo.height}, 24-bit RGB)`)
+    }
   } finally {
     await browser.close()
   }

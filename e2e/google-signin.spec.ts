@@ -4,10 +4,11 @@
 import { test, expect } from '@playwright/test'
 import { request } from 'node:http'
 import { createServer, type Server } from 'node:net'
+import { readFileSync } from 'node:fs'
 import { mkdtemp, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { freePort, launchApp, tabEval, teardown, waitFor, wm, type AppCtx, type SfGlobal } from './fixtures/app'
+import { freePort, launchApp, projectRoot, tabEval, teardown, waitFor, wm, type AppCtx, type SfGlobal } from './fixtures/app'
 import { capture } from './fixtures/capture'
 import { startTestServer, type TestServer } from './fixtures/test-server'
 import { httpClient } from './fixtures/mcp'
@@ -519,7 +520,11 @@ test('8: the /pending boundary', async () => {
   expect(nav.status).toBe(403)
   expect(nav.json).toEqual({ success: false, error: 'Request mode not allowed' })
   expect((await getPending({ host: `127.0.0.1.nip.io:${ctx.importPort}` })).status).toBe(403)
-  expect((await getPending({ 'sec-fetch-mode': 'same-origin' })).status).toBe(200)
+  const sameOrigin = await getPending({ 'sec-fetch-mode': 'same-origin' })
+  expect(sameOrigin.status).toBe(200)
+  // The extension tells users about newer desktop releases from this field; older ones ignore it
+  expect(Array.isArray(sameOrigin.json.requests)).toBe(true)
+  expect(sameOrigin.json.appVersion).toBe(JSON.parse(readFileSync(join(projectRoot, 'package.json'), 'utf8')).version)
   expect((await http('POST', '/pending', { headers: EXT, body: {} })).status).toBe(404)
   expect((await http('GET', '/import', { headers: EXT })).status).toBe(404)
   const pre = await http('OPTIONS', '/pending', { headers: EXT })

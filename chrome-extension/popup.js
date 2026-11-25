@@ -17,6 +17,10 @@ const GRANT_ATTEMPT_MAX_AGE = 10 * 60 * 1000;
 // access.js and handoff.js (loaded first) define consent, site access, the cookie conversion and the hand-off payload
 const Access = self.SessionForgeAccess;
 const HandOff = self.SessionForgeHandOff;
+// update-check.js (loaded before this file) decides whether a newer SessionForge desktop is out
+const Update = self.SessionForgeUpdate;
+// The update notice is checked once per popup, even when /pending is asked again
+let updateChecked = false;
 // "Send to new session" while SessionForge has a request open, else the original label
 let regularLabel = BUTTON_LABEL;
 let pendingButtons = [];
@@ -293,13 +297,48 @@ async function loadPending() {
   try {
     const res = await fetch(PENDING_URL, { signal: AbortSignal.timeout(2000) });
     if (!res.ok) return;
-    const requests = HandOff.parsePending(await res.json(), Date.now());
+    const json = await res.json();
+    const appVersion = Update.appVersionOf(json);
+    const requests = HandOff.parsePending(json, Date.now());
     await Promise.all(requests.map(async (req) => {
       req.access = await hasAccess(req.cookieDomains);
     }));
     renderPending(requests);
+    void showUpdateNotice(appVersion);
   } catch (error) {
     // SessionForge not running, or an older version without /pending
+  }
+}
+/**
+ * When the running SessionForge is older than the latest release, one line with a link to the
+ * releases page. Asks GitHub at most once a day (cached); shows nothing when anything fails.
+ */
+async function showUpdateNotice(appVersion) {
+  requireConsent();
+  if (updateChecked || !appVersion) return;
+  updateChecked = true;
+  try {
+    const version = await Update.check({
+      storage: chrome.storage.local,
+      fetch: (url, init) => fetch(url, init),
+      now: Date.now(),
+      appVersion
+    });
+    if (!version) return;
+    const box = document.getElementById('update-notice');
+    const link = document.createElement('a');
+    link.href = Update.RELEASES_URL;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.textContent = 'Download';
+    link.addEventListener('click', (e) => {
+      if (e) e.preventDefault();
+      chrome.tabs.create({ url: Update.RELEASES_URL });
+    });
+    box.replaceChildren(document.createTextNode(`SessionForge desktop ${version} is available. `), link);
+    show('update-notice', true);
+  } catch (error) {
+    console.warn('Cannot show the update notice:', error);
   }
 }
 

@@ -189,7 +189,8 @@ it is public. Submitting earlier risks a rejection, and each review round can ta
    ```
 3. In the dashboard: **New item** → upload the zip.
 4. Fill in the listing and the privacy tab from `chrome-extension/store/LISTING.md`. Upload
-   `store/icon-128.png`, `store/promo-small-440x280.png`, and at least one 1280×800 screenshot that you take.
+   `store/icon-128.png`, `store/promo-small-440x280.png`, `store/promo-marquee-1400x560.png`, and at least
+   one 1280×800 screenshot that you take.
 5. Privacy policy URL: `https://github.com/<owner>/sessionforge/blob/main/chrome-extension/store/PRIVACY.md`.
 6. Paste the "How to verify (for reviewers)" paragraph from `LISTING.md` into the dashboard's **Test
    instructions** field.

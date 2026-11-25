@@ -1,6 +1,6 @@
 {
   "name": "sessionforge",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Open-source multi-session browser for QA and developers with Playwright built in",
   "main": "dist-electron/main/index.js",
   "desktopName": "sessionforge.desktop",

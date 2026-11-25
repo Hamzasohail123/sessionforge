@@ -14,6 +14,8 @@ import type {
   ShortcutEvent,
   Tab,
   TabState,
+  TourOutcome,
+  TourState,
   UpdateSessionInput
 } from '../main/types'
 import type {
@@ -148,7 +150,15 @@ const api = {
     getInfo: (): Promise<AppInfo> => ipcRenderer.invoke('app:getInfo'),
     showUserData: (): Promise<void> => ipcRenderer.invoke('app:showUserData'),
     showExtensionFolder: (): Promise<void> => ipcRenderer.invoke('app:showExtensionFolder'),
-    openDoc: (doc: DocId): Promise<void> => ipcRenderer.invoke('app:openDoc', doc)
+    openDoc: (doc: DocId): Promise<void> => ipcRenderer.invoke('app:openDoc', doc),
+    /** Opens the SessionForge Import Chrome Web Store page; takes no URL (main owns it) */
+    openExtensionStore: (): Promise<void> => ipcRenderer.invoke('app:openExtensionStore')
+  },
+
+  // First-run tour: main decides auto-start and stores the outcome
+  tour: {
+    getState: (): Promise<TourState> => ipcRenderer.invoke('tour:getState'),
+    finish: (outcome: TourOutcome): Promise<void> => ipcRenderer.invoke('tour:finish', outcome)
   },
   // Playwright
   playwright: {

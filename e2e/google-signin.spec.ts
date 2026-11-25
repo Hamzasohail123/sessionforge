@@ -29,6 +29,7 @@ import {
 import type { GoogleSignInCoordinator } from '../src/main/google-signin/coordinator'
 import { GOOGLE_SIGNIN_AGENT_NOTE } from '../src/main/google-signin/match'
 import type { LayoutMode, PaneId, Session } from '../src/main/types'
+import { CHROME_EXTENSION_STORE_URL } from '../src/main/constants'
 
 test.describe.configure({ mode: 'serial' })
 
@@ -36,6 +37,7 @@ type SfWithSignIn = SfGlobal & { googleSignIn: GoogleSignInCoordinator }
 
 const OFFER_TEXT =
   "Google doesn't allow signing in inside embedded browsers like SessionForge. Sign in with Chrome and send the login back, two clicks."
+const EXTENSION_TEXT = 'The SessionForge Import extension brings your existing Chrome login into this session.'
 // Distinctive values, so the log check cannot match by accident
 const SIGNIN_VALUE = 'SF-SIGNIN-7c1e9b'
 const EVIL_VALUE = 'SF-EVIL-41d2'
@@ -169,6 +171,13 @@ test('1: the banner takes space from its own pane only, in every layout', async 
   await ctx.page.waitForSelector('[data-testid="signin-banner-pane-1"][data-kind="google-account"][data-state="offer"]')
   await expect(ctx.page.getByTestId('signin-text-pane-1')).toHaveText(OFFER_TEXT)
   expect(await banner('pane-2').count()).toBe(0)
+  // The extension row: what it does, and a button to the store page
+  await expect(ctx.page.getByTestId('signin-extension-pane-1')).toHaveText(EXTENSION_TEXT)
+  const getExt = ctx.page.getByTestId('signin-get-extension-pane-1')
+  expect(await getExt.evaluate((e) => e.tagName)).toBe('BUTTON')
+  await expect(getExt).toHaveAccessibleName('Get the extension')
+  await waitViewOnSlot(ctx.app, ctx.page, gmailTab, 'pane-1')
+  await capture(ctx.app, 'google-signin-extension-prompt')
 
   const modes: LayoutMode[] = ['columns', 'single', 'rows', 'grid', 'columns']
   for (const mode of modes) {
@@ -212,6 +221,52 @@ test('1: the banner takes space from its own pane only, in every layout', async 
   await ctx.page.waitForSelector('[data-testid="signin-banner-pane-1"][data-rejected="true"]')
   await expect(ctx.page.getByTestId('signin-text-pane-1')).toHaveText(`Google refused this sign-in. ${OFFER_TEXT}`)
   await capture(ctx.app, 'google-signin-banner-e2e')
+  // A failed login keeps the extension row
+  await expect(ctx.page.getByTestId('signin-extension-pane-1')).toBeVisible()
+  await capture(ctx.app, 'google-signin-extension-prompt-rejected')
+})
+
+type StubGlobal = { __opened: string[]; __realOpenExternal?: typeof import('electron').shell.openExternal }
+test('1b: "Get the extension" opens only the store URL in the system browser', async () => {
+  // Stub before any click, so the real browser never opens
+  await wm(ctx.app, (_sf, _a, { shell }) => {
+    const g = globalThis as unknown as StubGlobal
+    g.__opened = []
+    g.__realOpenExternal = shell.openExternal
+    const stub = async (u: string) => {
+      g.__opened.push(u)
+    }
+    try {
+      shell.openExternal = stub
+    } catch {
+      Object.defineProperty(shell, 'openExternal', { value: stub, configurable: true, writable: true })
+    }
+    if (shell.openExternal !== stub) {
+      Object.defineProperty(shell, 'openExternal', { value: stub, configurable: true, writable: true })
+    }
+  })
+  try {
+    const opened = () => wm(ctx.app, () => (globalThis as unknown as StubGlobal).__opened)
+    const state = await banner('pane-1').getAttribute('data-state')
+    await ctx.page.click('[data-testid="signin-get-extension-pane-1"]')
+    await expect.poll(opened).toEqual([CHROME_EXTENSION_STORE_URL])
+    await expect(ctx.page.getByTestId('signin-get-extension-pane-1')).toHaveText('Get the extension')
+    await expect(banner('pane-1')).toHaveAttribute('data-state', state!)
+
+    // Preload contract: a URL passed from the renderer is dropped, main still opens only the store page
+    await ctx.page.evaluate(() =>
+      (window.api.app.openExtensionStore as unknown as (u: string) => Promise<void>)('https://evil.example')
+    )
+    await expect.poll(opened).toEqual([CHROME_EXTENSION_STORE_URL, CHROME_EXTENSION_STORE_URL])
+  } finally {
+    await wm(ctx.app, (_sf, _a, { shell }) => {
+      const g = globalThis as unknown as StubGlobal
+      if (g.__realOpenExternal) {
+        Object.defineProperty(shell, 'openExternal', { value: g.__realOpenExternal, configurable: true, writable: true })
+      }
+      delete g.__realOpenExternal
+    })
+  }
 })
 
 test('2: no banner where none is due', async () => {
@@ -268,6 +323,7 @@ test('3: keyboard path to "Sign in with Chrome" logs the right URL and opens one
   await expect(ctx.page.getByTestId('signin-text-pane-1')).toContainText('Finish signing in in Google Chrome')
   await expect(ctx.page.getByTestId('signin-text-pane-1')).toContainText('“Send to Gmail”')
   await expect(ctx.page.getByTestId('signin-text-pane-1')).toContainText('version 1.2.0 or later')
+  await expect(ctx.page.getByTestId('signin-extension-pane-1')).toBeVisible()
 
   const res = await getPending()
   expect(res.status).toBe(200)
@@ -439,8 +495,10 @@ test('7: a popup known to be OAuth only from its redirect chain; a fresh bare OA
   expect((await viewInfo(ctx.app, popupTab))?.url).toBe(`${server.localBase}/v3/signin/identifier`)
   await ctx.page.waitForSelector('[data-testid="signin-banner-pane-2"][data-kind="oauth"]')
   await expect(ctx.page.getByTestId('signin-text-pane-2')).toContainText(`127.0.0.1:${server.port}`)
+  await expect(ctx.page.getByTestId('signin-extension-pane-2')).toBeVisible()
   await ctx.page.click('[data-testid="signin-dismiss-pane-2"]')
   await expect(banner('pane-2')).toHaveCount(0)
+  await expect(ctx.page.getByTestId('signin-extension-pane-2')).toHaveCount(0)
   await ctx.page.evaluate((id) => window.api.tab.close(id), popupTab)
 
   // A fresh tab that starts on the OAuth URL has no site to go back to
@@ -448,6 +506,7 @@ test('7: a popup known to be OAuth only from its redirect chain; a fresh bare OA
   await assign('pane-2', bareTab)
   await ctx.page.waitForSelector('[data-testid="signin-banner-pane-2"][data-state="unavailable"][data-kind="oauth"]')
   expect(await ctx.page.locator('[data-testid="signin-start-pane-2"]').count()).toBe(0)
+  await expect(ctx.page.getByTestId('signin-extension-pane-2')).toHaveCount(0)
   await expect(ctx.page.getByTestId('signin-text-pane-2')).toContainText("SessionForge can't tell which site started it")
   await ctx.page.evaluate((id) => window.api.tab.close(id), bareTab)
   await assign('pane-2', siteTab)

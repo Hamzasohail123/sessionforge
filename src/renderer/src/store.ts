@@ -23,6 +23,8 @@ interface AppState {
   settings: SettingsState
   /** A session name is being edited in the SessionBar; app shortcuts are ignored meanwhile */
   inlineEditing: boolean
+  /** The first-run tour is running; app shortcuts are ignored and Settings search is cleared meanwhile */
+  tourActive: boolean
   setSessions: (sessions: Session[]) => void
   setTabs: (tabs: Tab[]) => void
   setLayout: (layout: LayoutState) => void
@@ -34,6 +36,9 @@ interface AppState {
   setSettingsTab: (tab: SettingsTab) => void
   setAgentTab: (agentTab: AgentTab) => void
   setInlineEditing: (editing: boolean) => void
+  /** No-op when a tour is already running */
+  startTour: () => void
+  endTour: () => void
 }
 export const useStore = create<AppState>((set) => ({
   sessions: [],
@@ -44,6 +49,7 @@ export const useStore = create<AppState>((set) => ({
   overlayCount: 0,
   settings: { open: false, tab: 'agent', agentTab: 'overview' },
   inlineEditing: false,
+  tourActive: false,
   setSessions: (sessions) => set({ sessions }),
   setTabs: (tabs) => set({ tabs }),
   setLayout: (layout) => {
@@ -60,5 +66,7 @@ export const useStore = create<AppState>((set) => ({
   closeSettings: () => set((s) => ({ settings: { ...s.settings, open: false } })),
   setSettingsTab: (tab) => set((s) => ({ settings: { ...s.settings, tab } })),
   setAgentTab: (agentTab) => set((s) => ({ settings: { ...s.settings, agentTab } })),
-  setInlineEditing: (inlineEditing) => set({ inlineEditing })
+  setInlineEditing: (inlineEditing) => set({ inlineEditing }),
+  startTour: () => set((s) => (s.tourActive ? s : { tourActive: true })),
+  endTour: () => set({ tourActive: false })
 }))

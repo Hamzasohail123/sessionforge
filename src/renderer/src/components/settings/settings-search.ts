@@ -20,7 +20,7 @@ export const TOP_LEVEL_SETTINGS = {
     subtitle: 'App version and where your data lives.',
     category: 'General settings',
     target: { tab: 'general' },
-    keywords: ['general']
+    keywords: ['general', 'tour']
   },
   sessions: {
     id: 'sessions',

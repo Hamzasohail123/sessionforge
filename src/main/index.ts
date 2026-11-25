@@ -2,7 +2,7 @@ import { app, BrowserWindow, shell } from 'electron'
 import { isAbsolute, join } from 'path'
 import { mkdirSync } from 'fs'
 import { electronApp, is } from '@electron-toolkit/utils'
-import { initializeIPC, registerAppIpc } from './ipc'
+import { initializeIPC, registerAppIpc, registerTourIpc } from './ipc'
 import { SessionManager } from './session-manager'
 import { WindowManager } from './window-manager'
 import { ImportServer } from './import-server'
@@ -97,6 +97,8 @@ if (envOk) app.whenReady().then(() => {
   })
   windowManager.setTabObserver(signIn)
   registerSignInIpc(signIn)
+  // First-run tour (SESSIONFORGE_TEST_TOUR only counts under SESSIONFORGE_E2E=1)
+  registerTourIpc(DatabaseManager.getInstance(), { e2e, testTour: process.env.SESSIONFORGE_TEST_TOUR })
 
   // Agent Bridge (off by default): hooks go in before any view exists, init() after the window
   const agentBridge = new AgentBridge({

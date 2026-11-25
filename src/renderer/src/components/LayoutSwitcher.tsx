@@ -16,7 +16,7 @@ export const LAYOUT_OPTIONS: Array<{ mode: LayoutMode; label: string; Icon: type
 export function LayoutSwitcher() {
   const mode = useStore((s) => s.layout?.mode)
   return (
-    <div className="flex items-center gap-0.5 shrink-0">
+    <div data-testid="layout-switcher" className="flex items-center gap-0.5 shrink-0">
       {LAYOUT_OPTIONS.map(({ mode: m, label, Icon }) => (
         <Button
           key={m}

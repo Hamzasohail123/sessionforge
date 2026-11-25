@@ -55,7 +55,7 @@ export function EditorsPanel() {
     )
   return (
     <SettingsPage>
-      <div role="group" aria-label="Editor" className="inline-flex rounded-lg border bg-muted/60 p-1">
+      <div role="group" aria-label="Editor" data-testid="agent-editor-picker" className="inline-flex rounded-lg border bg-muted/60 p-1">
         {EDITOR_ORDER.map((id) => (
           <button
             key={id}

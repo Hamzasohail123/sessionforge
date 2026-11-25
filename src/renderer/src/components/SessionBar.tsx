@@ -19,7 +19,8 @@ export const tint = (color: string, percent: number) => `color-mix(in srgb, ${co
 const RING = 'outline-none focus-visible:ring-1 focus-visible:ring-muted-foreground/60 focus-visible:ring-offset-0'
 
 export function SessionBar() {
-  const [createOpen, setCreateOpen] = useState(false)
+  const createOpen = useStore((s) => s.createSessionOpen)
+  const setCreateOpen = useStore((s) => s.setCreateSessionOpen)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [closing, setClosing] = useState<Session | null>(null)
   const openSettings = useStore((s) => s.openSettings)
@@ -147,8 +148,19 @@ export function SessionBar() {
         <Settings className="h-4 w-4" />
       </Button>
 
-      <Button size="sm" variant="ghost" onClick={() => setCreateOpen(true)} className="shrink-0" title="New session">
-        <Plus className="h-4 w-4" />
+      <Button
+        size="sm"
+        variant="outline"
+        onClick={() => setCreateOpen(true)}
+        className="shrink-0 gap-1.5"
+        title="New session"
+        aria-label="New session"
+        data-testid="new-session"
+      >
+        <Plus className="h-4 w-4" aria-hidden />
+        <span data-testid="new-session-label" className="hidden md:inline">
+          New session
+        </span>
       </Button>
 
       <CreateSessionDialog open={createOpen} onOpenChange={setCreateOpen} />

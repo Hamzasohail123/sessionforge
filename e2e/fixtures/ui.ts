@@ -207,3 +207,44 @@ export async function closeTabDevTools(app: ElectronApplication, tabId: string):
 }
 
 export const logsHaveTabNotFound = (logs: string[]) => logs.join('').includes('Tab not found')
+
+/** Resize the window content (macOS: capped to the work area) and wait until the native bounds match. */
+export async function setContentSize(app: ElectronApplication, width: number, height: number): Promise<void> {
+  // macOS keeps a window inside the screen's work area, even with enableLargerThanScreen
+  // (https://github.com/electron/electron/issues/47632), and the GitHub macOS runner's virtual
+  // display is smaller than 1400x900. On macOS, ask for the largest content size that fits there;
+  // Linux and Windows get the exact size. The checks below are size-relative (no sideways overflow).
+  const target = await wm(
+    app,
+    (sf, s, { screen }) => {
+      if (process.platform !== 'darwin') return s
+      const win = sf.window
+      const work = screen.getDisplayMatching(win.getBounds()).workAreaSize
+      const outer = win.getBounds()
+      const inner = win.getContentBounds()
+      return {
+        width: Math.min(s.width, work.width - (outer.width - inner.width)),
+        height: Math.min(s.height, work.height - (outer.height - inner.height))
+      }
+    },
+    { width, height }
+  )
+  if (target.width !== width || target.height !== height) {
+    console.log(`[settings] screen too small for ${width}x${height}; using ${target.width}x${target.height}`)
+  }
+  await wm(app, (sf, s) => sf.window.setContentSize(s.width, s.height), target)
+  // The native content bounds are the contract for setContentSize. On macOS they can differ by a
+  // pixel because of native frame and scale rounding.
+  const tolerance = process.platform === 'darwin' ? 1 : 0
+  await waitFor(
+    async () => {
+      const bounds = await wm(app, (sf) => {
+        const { width: contentWidth, height: contentHeight } = sf.window.getContentBounds()
+        return { width: contentWidth, height: contentHeight }
+      })
+      return Math.abs(bounds.width - target.width) <= tolerance && Math.abs(bounds.height - target.height) <= tolerance
+    },
+    5_000,
+    `content bounds ${target.width}x${target.height}`
+  )
+}

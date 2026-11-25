@@ -14,3 +14,10 @@ export const DEFAULT_URL = 'https://www.google.com'
 
 /** Longest session name (create and rename) */
 export const SESSION_NAME_MAX = 60
+
+/** The SessionForge Import listing; opened by "Get the extension" in the Google sign-in banner */
+export const CHROME_EXTENSION_STORE_URL =
+  'https://chromewebstore.google.com/detail/sessionforge-import/ofdnckgaoffbablejmfimchoifdlhjbf'
+
+/** The only URLs SessionForge opens in the system browser on the renderer's request. */
+export const EXTERNAL_URL_ALLOWLIST: readonly string[] = [CHROME_EXTENSION_STORE_URL]

@@ -99,6 +99,13 @@ export interface AppInfo {
 }
 export const DOC_IDS = ['readme', 'security', 'privacy', 'license', 'chromeExtension'] as const
 export type DocId = (typeof DOC_IDS)[number]
+/** How the first-run tour ended (stored as onboardingTour.status) */
+export const TOUR_OUTCOMES = ['completed', 'skipped'] as const
+export type TourOutcome = (typeof TOUR_OUTCOMES)[number]
+/** tour:getState */
+export interface TourState {
+  autoStart: boolean
+}
 /** Payload of the main → renderer 'shortcut' event. tabId/sessionId are resolved by main from the active pane after any focus change. */
 export interface ShortcutEvent {
   action: ShortcutAction

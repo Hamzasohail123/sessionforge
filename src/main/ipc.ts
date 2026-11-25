@@ -6,11 +6,22 @@ import { SessionManager } from './session-manager'
 import { WindowManager } from './window-manager'
 import { RecentlyClosed } from './recently-closed'
 import type { ImportServer } from './import-server'
-import { DOC_IDS, type AppInfo, type CreateSessionInput, type DocId, type UpdateSessionInput } from './types'
+import {
+  DOC_IDS,
+  TOUR_OUTCOMES,
+  type AppInfo,
+  type CreateSessionInput,
+  type DocId,
+  type TourState,
+  type UpdateSessionInput
+} from './types'
 import { writeFile, readFile } from 'fs/promises'
 import { formatZodIssues, isOpenableUrl, resolveImportPort, StorageStateSchema } from './import-payload'
 import { prepareExtensionFolder } from './extension-copy'
-import { SESSION_NAME_MAX } from './constants'
+import { CHROME_EXTENSION_STORE_URL, SESSION_NAME_MAX } from './constants'
+import { isAllowedExternalUrl } from './external-url'
+import type { DatabaseManager } from './database'
+import { TOUR_SETTING_KEY, shouldAutoStartTour, type TourEnv } from './tour'
 
 // All existing ids are 36-character UUIDs (checked read-only against the user's DB before this change)
 const Id = z.string().uuid()
@@ -279,5 +290,34 @@ export function registerAppIpc(getImportServer: () => ImportServer | null): void
     if (!existsSync(file)) throw new Error('Not included in this build')
     const err = await shell.openPath(file)
     if (err) throw new Error(err)
+  })
+  // No argument: the renderer can't choose the URL, main opens the one store page
+  ipcMain.handle('app:openExtensionStore', async () => openAllowedExternal(CHROME_EXTENSION_STORE_URL))
+}
+async function openAllowedExternal(url: string): Promise<void> {
+  if (!isAllowedExternalUrl(url)) {
+    console.error('[app] refused external URL')
+    throw new Error('Refusing to open this URL')
+  }
+  try {
+    await shell.openExternal(url)
+  } catch (err) {
+    console.warn('[app] openExternal failed', err instanceof Error ? err.message : String(err))
+    throw new Error('Could not open your browser. Open the Chrome Web Store and search for "SessionForge Import".')
+  }
+}
+// ---------------------------------------------------------------- tour:* (first-run tour)
+export function registerTourIpc(db: DatabaseManager, env: TourEnv): void {
+  // Sessions are counted at call time: only a profile with none (and nothing stored) auto-starts
+  ipcMain.handle(
+    'tour:getState',
+    async (): Promise<TourState> => ({
+      autoStart: shouldAutoStartTour(db.getSetting(TOUR_SETTING_KEY), db.getAllSessions().length, env)
+    })
+  )
+  ipcMain.handle('tour:finish', async (_, outcome: unknown) => {
+    const value = z.enum(TOUR_OUTCOMES).parse(outcome)
+    db.setSetting(TOUR_SETTING_KEY, value)
+    console.log('[tour]', value)
   })
 }

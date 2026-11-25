@@ -3,6 +3,7 @@ import { Button } from '../ui/button'
 import { callMain } from '../../lib/ipc'
 import { SettingRow, SettingsCard, SettingsPage } from './shared'
 import { useAppInfo } from './app-info'
+import { useStore } from '../../store'
 export function GeneralTab() {
   const { data: info } = useAppInfo()
   return (
@@ -29,6 +30,11 @@ export function GeneralTab() {
             <FolderOpen className="mr-1 h-3.5 w-3.5" aria-hidden /> Show in folder
           </Button>
         </div>
+      </SettingsCard>
+      <SettingsCard title="Product tour" description="A one-minute walk through split view, Settings and the MCP server.">
+        <Button size="sm" variant="outline" data-testid="replay-tour" onClick={() => useStore.getState().startTour()}>
+          Show tour again
+        </Button>
       </SettingsCard>
     </SettingsPage>
   )

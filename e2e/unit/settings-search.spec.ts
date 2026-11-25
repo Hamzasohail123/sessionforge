@@ -16,6 +16,9 @@ test('search matches titles, subtitles, and multiple tokens', () => {
   expect(filterSettings('claude code connection').map((entry) => entry.id)).toEqual(['agent-editors'])
 })
 
+test('"tour" finds General, where the tour is replayed', () => {
+  expect(filterSettings('tour').map((entry) => entry.id)).toContain('general')
+})
 test('every top-level settings target is represented by searchable metadata', () => {
   for (const entry of Object.values(TOP_LEVEL_SETTINGS)) {
     expect(filterSettings(entry.label).map((result) => result.id), entry.label).toContain(entry.id)

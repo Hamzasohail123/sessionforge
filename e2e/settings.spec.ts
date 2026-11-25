@@ -3,10 +3,10 @@ import { readFileSync } from 'node:fs'
 import { mkdtemp } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { launchApp, projectRoot, teardown, waitFor, wm, type AppCtx } from './fixtures/app'
+import { launchApp, projectRoot, teardown, waitFor, type AppCtx } from './fixtures/app'
 import { capture } from './fixtures/capture'
 import { startTestServer, type TestServer } from './fixtures/test-server'
-import { attachedViews, createHiddenTab, MOD, openSession, pressInShell, pressInTab, waitViewOnSlot } from './fixtures/ui'
+import { attachedViews, createHiddenTab, MOD, openSession, pressInShell, pressInTab, setContentSize, waitViewOnSlot } from './fixtures/ui'
 import { closeSettings, openSettings, setGrant } from './fixtures/mcp'
 import { SHORTCUT_ROWS } from '../src/main/shortcut-table'
 import type { Session } from '../src/main/types'
@@ -22,45 +22,6 @@ const viewsHidden = async () => (await attachedViews(ctx.app)).every((v) => !v.v
 const viewsVisible = async () => {
   const v = await attachedViews(ctx.app)
   return v.length > 0 && v.every((x) => x.visible)
-}
-async function setContentSize(width: number, height: number): Promise<void> {
-  // macOS keeps a window inside the screen's work area, even with enableLargerThanScreen
-  // (https://github.com/electron/electron/issues/47632), and the GitHub macOS runner's virtual
-  // display is smaller than 1400x900. On macOS, ask for the largest content size that fits there;
-  // Linux and Windows get the exact size. The checks below are size-relative (no sideways overflow).
-  const target = await wm(
-    ctx.app,
-    (sf, s, { screen }) => {
-      if (process.platform !== 'darwin') return s
-      const win = sf.window
-      const work = screen.getDisplayMatching(win.getBounds()).workAreaSize
-      const outer = win.getBounds()
-      const inner = win.getContentBounds()
-      return {
-        width: Math.min(s.width, work.width - (outer.width - inner.width)),
-        height: Math.min(s.height, work.height - (outer.height - inner.height))
-      }
-    },
-    { width, height }
-  )
-  if (target.width !== width || target.height !== height) {
-    console.log(`[settings] screen too small for ${width}x${height}; using ${target.width}x${target.height}`)
-  }
-  await wm(ctx.app, (sf, s) => sf.window.setContentSize(s.width, s.height), target)
-  // The native content bounds are the contract for setContentSize. On macOS they can differ by a
-  // pixel because of native frame and scale rounding.
-  const tolerance = process.platform === 'darwin' ? 1 : 0
-  await waitFor(
-    async () => {
-      const bounds = await wm(ctx.app, (sf) => {
-        const { width: contentWidth, height: contentHeight } = sf.window.getContentBounds()
-        return { width: contentWidth, height: contentHeight }
-      })
-      return Math.abs(bounds.width - target.width) <= tolerance && Math.abs(bounds.height - target.height) <= tolerance
-    },
-    5_000,
-    `content bounds ${target.width}x${target.height}`
-  )
 }
 test.beforeAll(async () => {
   server = await startTestServer()
@@ -164,7 +125,7 @@ test('Shortcuts lists every row of the shortcut table, including Cmd/Ctrl+,', as
 })
 test('settings search finds real tabs, supports keyboard navigation, and stays readable', async () => {
   test.setTimeout(120_000)
-  await setContentSize(1400, 900)
+  await setContentSize(ctx.app, 1400, 900)
   await ctx.page.click('[data-testid="open-settings"]')
   await expect(dialog()).toBeVisible()
   await ctx.page.click('[data-testid="settings-nav-agent"]')
@@ -220,7 +181,7 @@ test('settings search finds real tabs, supports keyboard navigation, and stays r
   await expect(ctx.page.locator('[data-testid="settings-scroll"]')).toHaveJSProperty('scrollWidth', await ctx.page.locator('[data-testid="settings-scroll"]').evaluate((el) => el.clientWidth))
   await capture(ctx.app, 'settings-search-mcp')
 
-  await setContentSize(1024, 700)
+  await setContentSize(ctx.app, 1024, 700)
   await search.fill('something that is not a setting')
   await expect(ctx.page.locator('[data-testid="settings-search-no-results"]')).toContainText('No settings found')
   await expect(ctx.page.locator('[data-testid="settings-search-no-results-suggestion"]')).toContainText('MCP, Cursor, sessions, or shortcuts')
@@ -228,12 +189,12 @@ test('settings search finds real tabs, supports keyboard navigation, and stays r
   await expect(smallSettingsScroll).toHaveJSProperty('scrollWidth', await smallSettingsScroll.evaluate((el) => el.clientWidth))
   await capture(ctx.app, 'settings-search-no-results')
   await closeSettings(ctx)
-  await setContentSize(1400, 900)
+  await setContentSize(ctx.app, 1400, 900)
 })
 
 test('screenshots of every tab at 1400x900 and Editors at 1024x700', async () => {
   test.setTimeout(120_000)
-  await setContentSize(1400, 900)
+  await setContentSize(ctx.app, 1400, 900)
   const shot = async (name: string) => {
     await ctx.page.waitForTimeout(250) // open animation and fonts settle
     await capture(ctx.app, name)
@@ -270,7 +231,7 @@ test('screenshots of every tab at 1400x900 and Editors at 1024x700', async () =>
   await shot('settings-agent-editors-dark')
   await ctx.page.evaluate(() => document.documentElement.classList.remove('dark'))
   await closeSettings(ctx)
-  await setContentSize(1024, 700)
+  await setContentSize(ctx.app, 1024, 700)
   await openSettings(ctx, 'editors')
   // Nothing scrolls sideways at the small size
   const overflow = await ctx.page.evaluate(() => {
@@ -282,7 +243,7 @@ test('screenshots of every tab at 1400x900 and Editors at 1024x700', async () =>
   await closeSettings(ctx)
   // Narrower still, for every editor: the Apply button and the file line hold the full config path
   // (long here, see beforeAll), so they have to wrap instead of widening the panel
-  await setContentSize(900, 640)
+  await setContentSize(ctx.app, 900, 640)
   await openSettings(ctx, 'editors')
   const scroll = ctx.page.locator('[data-testid="settings-scroll"]')
   for (const editor of ['cursor', 'codex', 'claude'] as const) {
@@ -291,5 +252,5 @@ test('screenshots of every tab at 1400x900 and Editors at 1024x700', async () =>
     await expect(scroll, `Editors → ${editor} at 900x640`).toHaveJSProperty('scrollWidth', await scroll.evaluate((el) => el.clientWidth))
   }
   await closeSettings(ctx)
-  await setContentSize(1400, 900)
+  await setContentSize(ctx.app, 1400, 900)
 })

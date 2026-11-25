@@ -68,6 +68,7 @@ export function SettingsDialog() {
   const closeSettings = useStore((s) => s.closeSettings)
   const setTab = useStore((s) => s.setSettingsTab)
   const setAgentTab = useStore((s) => s.setAgentTab)
+  const tourActive = useStore((s) => s.tourActive)
   const [query, setQuery] = useState('')
   const searchRef = useRef<HTMLInputElement>(null)
   const meta = TABS[tab]
@@ -82,6 +83,11 @@ export function SettingsDialog() {
   useEffect(() => {
     if (!open) setQuery('')
   }, [open])
+
+  // A search query hides most nav items, which the tour points at
+  useEffect(() => {
+    if (tourActive) setQuery('')
+  }, [tourActive])
 
   const navigateTo = (entry: SettingsSearchEntry) => {
     setTab(entry.target.tab)

@@ -250,7 +250,7 @@ test('toolbar height stays constant when an empty pane is focused', async () => 
 })
 
 async function createSessionInDialog(name: string) {
-  await ctx.page.click('[title="New session"]')
+  await ctx.page.click('[data-testid="new-session"]')
   await ctx.page.fill('#name', name)
   await ctx.page.click('button:has-text("Create Session")')
   await ctx.page.waitForSelector('#name', { state: 'detached' })

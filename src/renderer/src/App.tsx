@@ -6,6 +6,7 @@ import { TabBar } from './components/TabBar'
 import { AddressBar } from './components/AddressBar'
 import { SplitView } from './components/SplitView'
 import { CommandPalette } from './components/CommandPalette'
+import { OnboardingTour } from './components/tour/OnboardingTour'
 import { useStore } from './store'
 import { useAgentEvents } from './agent-store'
 import { callMain } from './lib/ipc'
@@ -101,6 +102,8 @@ function App() {
       // pane in main, which blurs the input and so saves the name; and an Escape that cancelled the
       // edit can still arrive after the editor unmounted (at most a tab.stop on a loading page).
       if (useStore.getState().inlineEditing) return
+      // The tour card is the only thing to act on while it runs (Esc still reaches it as a key)
+      if (useStore.getState().tourActive) return
       const tab = window.api.tab
       switch (action) {
         case 'commandPalette':
@@ -195,6 +198,7 @@ function App() {
         />
       )}
       <SplitView />
+      <OnboardingTour />
       <CommandPalette open={commandOpen} onOpenChange={setCommandOpen} />
       <Toaster />
     </div>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ShieldAlert } from 'lucide-react'
+import { ExternalLink, Puzzle, ShieldAlert } from 'lucide-react'
 import type { PaneId } from '../../../main/types'
 import type { SignInBannerState } from '../../../main/google-signin/types'
 import { callMain } from '../lib/ipc'
@@ -46,11 +46,13 @@ function bannerText(s: SignInBannerState, sessionName: string): string {
 export function SignInBanner({ paneId, tabId, sessionName }: SignInBannerProps) {
   const [state, setState] = useState<SignInBannerState | null>(null)
   const [busy, setBusy] = useState(false)
+  const [extBusy, setExtBusy] = useState(false)
 
   // Current state on mount / tab change, then live updates for this tab only
   useEffect(() => {
     setState(null)
     setBusy(false)
+    setExtBusy(false)
     // A dev renderer hot-reloaded against an older preload has no signin API until the app restarts
     if (!window.api.signin) return
     let alive = true
@@ -78,6 +80,14 @@ export function SignInBanner({ paneId, tabId, sessionName }: SignInBannerProps) 
   }
   const dismiss = () => callMain(window.api.signin.dismiss(tabId))
   const cancel = () => callMain(window.api.signin.cancel(tabId))
+  const getExtension = () => {
+    setExtBusy(true)
+    // callMain never rejects (it toasts and resolves undefined), so finally always runs
+    void callMain(window.api.app.openExtensionStore()).finally(() => setExtBusy(false))
+  }
+  // Not in 'unavailable' (the hand-off can't start there), nor with a preload that predates the IPC
+  const showExtension =
+    (state.status === 'offer' || state.status === 'waiting') && typeof window.api.app.openExtensionStore === 'function'
 
   return (
     <div
@@ -134,6 +144,26 @@ export function SignInBanner({ paneId, tabId, sessionName }: SignInBannerProps) 
           </Button>
         )}
       </div>
+      {showExtension && (
+        <div className="flex basis-full flex-wrap items-center gap-x-2 gap-y-1 border-t border-amber-200/60 pt-1.5">
+          <Puzzle className="h-4 w-4 shrink-0 text-amber-600" aria-hidden="true" />
+          <p data-testid={`signin-extension-${paneId}`} className="flex-1 min-w-[12rem] leading-snug">
+            The SessionForge Import extension brings your existing Chrome login into this session.
+          </p>
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-7"
+            data-testid={`signin-get-extension-${paneId}`}
+            title="Opens the Chrome Web Store in your browser"
+            disabled={extBusy}
+            onClick={getExtension}
+          >
+            <ExternalLink className="mr-1 h-3.5 w-3.5" aria-hidden="true" />
+            {extBusy ? 'Opening…' : 'Get the extension'}
+          </Button>
+        </div>
+      )}
     </div>
   )
 }

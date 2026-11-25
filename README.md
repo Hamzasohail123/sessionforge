@@ -86,6 +86,8 @@ Details and troubleshooting: [chrome-extension/README.md](./chrome-extension/REA
 4. **Create another session** – Repeat for "Customer" or other roles.
 5. **Send a login from Chrome** – In Chrome, click the SessionForge Import extension → "Send to SessionForge". The login opens in a new session, in a pane.
 
+On a new install (no sessions yet), SessionForge opens a short tour of split view, Settings and the MCP server. It shows once; **Skip tour** or `Escape` ends it at any step. Profiles that already have sessions don't see it automatically. Replay it any time from Settings → General → **Show tour again** (or search Settings for "tour").
+
 ## Usage
 
 ### Sessions
@@ -116,6 +118,8 @@ Instead, when a pane reaches a Google sign-in page, a banner at the top of that 
 1. Click **Sign in with Chrome**. Your browser opens the right Google sign-in page (or the site's login page for "Sign in with Google" on another site).
 2. Sign in there as usual.
 3. Click the SessionForge Import extension and choose **Send to <session> (SessionForge asked for this)**.
+
+Don't have the extension yet? The banner's **Get the extension** button opens its Chrome Web Store page in your browser.
 
 That's two clicks after signing in. The login goes into the session that asked for it (no new session), and the waiting pane continues where it left off. From the keyboard: press `Cmd/Ctrl+L`, then `Tab` until the banner's button is focused, and `Enter`. This works for Google services such as Gmail and YouTube, and for "Sign in with Google" / "Continue with Google" on other sites; in that case you sign in to that site, not to Google, in that session. For your own app the site must use https, except on localhost (`http://localhost:3000` works; LAN addresses over plain http don't).
 
@@ -283,6 +287,7 @@ npm run test:e2e
 This builds the app and runs the Playwright suite: unit specs (`e2e/unit/`) and Electron end-to-end specs (`e2e/*.spec.ts`). The e2e specs open real windows on your display, use a temporary profile and import port, and load pages only from a local test server; the `example.com` and Google checks are skipped when offline. Screenshots go to `test-artifacts/screenshots/`. Run the unit specs alone with `npx playwright test --project=unit`.
 
 The Google sign-in specs never contact Google. Two test-only variables, read only when `SESSIONFORGE_E2E=1`, stand in for it: `SESSIONFORGE_TEST_GOOGLE_ORIGIN` (`http://127.0.0.1:<port>` or `http://localhost:<port>`) is matched like `https://accounts.google.com`, and `SESSIONFORGE_TEST_BROWSER_LOG` (an absolute path) receives the URL "Sign in with Chrome" would open instead of starting a browser. Outside e2e runs both are ignored, and production matching stays exactly `https://accounts.google.com`.
+The first-run tour never auto-starts in e2e runs, so other specs don't have to dismiss it. `SESSIONFORGE_TEST_TOUR=1` (read only when `SESSIONFORGE_E2E=1`) lets it auto-start for a new profile, as `e2e/onboarding-tour.spec.ts` does.
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
 

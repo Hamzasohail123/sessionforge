@@ -13,12 +13,15 @@ import {
   type CreateSessionInput,
   type DocId,
   type TourState,
-  type UpdateSessionInput
+  type UpdateCheckResult,
+  type UpdateSessionInput,
+  type UpdateState
 } from './types'
+import type { UpdateChecker } from './updates'
 import { writeFile, readFile } from 'fs/promises'
 import { formatZodIssues, isOpenableUrl, resolveImportPort, StorageStateSchema } from './import-payload'
 import { prepareExtensionFolder } from './extension-copy'
-import { CHROME_EXTENSION_STORE_URL, SESSION_NAME_MAX } from './constants'
+import { CHROME_EXTENSION_STORE_URL, RELEASES_PAGE_URL, SESSION_NAME_MAX } from './constants'
 import { isAllowedExternalUrl } from './external-url'
 import type { DatabaseManager } from './database'
 import { TOUR_SETTING_KEY, shouldAutoStartTour, type TourEnv } from './tour'
@@ -292,9 +295,14 @@ export function registerAppIpc(getImportServer: () => ImportServer | null): void
     if (err) throw new Error(err)
   })
   // No argument: the renderer can't choose the URL, main opens the one store page
-  ipcMain.handle('app:openExtensionStore', async () => openAllowedExternal(CHROME_EXTENSION_STORE_URL))
+  ipcMain.handle('app:openExtensionStore', async () =>
+    openAllowedExternal(
+      CHROME_EXTENSION_STORE_URL,
+      'Could not open your browser. Open the Chrome Web Store and search for "SessionForge Import".'
+    )
+  )
 }
-async function openAllowedExternal(url: string): Promise<void> {
+async function openAllowedExternal(url: string, failMessage: string): Promise<void> {
   if (!isAllowedExternalUrl(url)) {
     console.error('[app] refused external URL')
     throw new Error('Refusing to open this URL')
@@ -303,8 +311,22 @@ async function openAllowedExternal(url: string): Promise<void> {
     await shell.openExternal(url)
   } catch (err) {
     console.warn('[app] openExternal failed', err instanceof Error ? err.message : String(err))
-    throw new Error('Could not open your browser. Open the Chrome Web Store and search for "SessionForge Import".')
+    throw new Error(failMessage)
   }
+}
+// ---------------------------------------------------------------- update:* (new release notice)
+export function registerUpdateIpc(checker: UpdateChecker): void {
+  ipcMain.handle('update:getState', async (): Promise<UpdateState> => checker.getState())
+  ipcMain.handle('update:setEnabled', async (_, enabled: unknown) => checker.setEnabled(z.boolean().parse(enabled)))
+  ipcMain.handle('update:checkNow', async (): Promise<UpdateCheckResult> => checker.checkNow())
+  // No arguments: main dismisses the version on offer and opens its own vetted release URL
+  ipcMain.handle('update:dismiss', async () => checker.dismiss())
+  ipcMain.handle('update:openRelease', async () =>
+    openAllowedExternal(
+      checker.releaseUrl(),
+      `Could not open your browser. Open ${RELEASES_PAGE_URL}.`
+    )
+  )
 }
 // ---------------------------------------------------------------- tour:* (first-run tour)
 export function registerTourIpc(db: DatabaseManager, env: TourEnv): void {

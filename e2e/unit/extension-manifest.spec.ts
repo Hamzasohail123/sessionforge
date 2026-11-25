@@ -1,5 +1,5 @@
-// The Chrome Web Store package: narrow permissions, every referenced file present, only 127.0.0.1 contacted,
-// no eval or remote scripts.
+// The Chrome Web Store package: narrow permissions, every referenced file present, only 127.0.0.1 contacted
+// (plus GitHub's release API and page from update-check.js), no eval or remote scripts.
 import { test, expect } from '@playwright/test'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -11,9 +11,9 @@ const sources = readdirSync(extDir)
   .filter((f) => f.endsWith('.js') || f.endsWith('.html'))
   .map((f) => ({ f, src: readFileSync(join(extDir, f), 'utf8') }))
 
-test('manifest: version 1.3.1, a short description, and only the narrow permissions', () => {
+test('manifest: version 1.4.0, a short description, and only the narrow permissions', () => {
   expect(manifest.manifest_version).toBe(3)
-  expect(manifest.version).toBe('1.3.1')
+  expect(manifest.version).toBe('1.4.0')
   expect(manifest.description.length).toBeLessThanOrEqual(132)
   expect(manifest.permissions).toEqual(['activeTab', 'cookies', 'scripting', 'storage'])
   expect(manifest.host_permissions).toEqual(['http://127.0.0.1:34567/*'])
@@ -38,15 +38,29 @@ test('every file the manifest and the pages reference exists', () => {
   expect(readFileSync(join(extDir, 'popup.js'), 'utf8')).toContain("getURL('grant.html')")
 })
 
-test('the only http(s) URL in the extension is the local SessionForge server', () => {
+const GITHUB_URLS = [
+  'https://api.github.com/repos/Hamzasohail123/sessionforge/releases/latest',
+  'https://github.com/Hamzasohail123/sessionforge/releases/latest'
+]
+test('the only http(s) URLs are the local SessionForge server and, in update-check.js only, the GitHub release check', () => {
   expect(sources.map((s) => s.f).sort()).toEqual(
-    ['access.js', 'background.js', 'grant.html', 'grant.js', 'handoff.js', 'popup.html', 'popup.js']
+    ['access.js', 'background.js', 'grant.html', 'grant.js', 'handoff.js', 'popup.html', 'popup.js', 'update-check.js']
   )
+  const github: string[] = []
   for (const { f, src } of sources) {
     for (const [url] of src.matchAll(/https?:\/\/[^\s'"`)<]+/g)) {
-      expect(url.startsWith('http://127.0.0.1:34567'), `${f}: ${url}`).toBe(true)
+      if (url.startsWith('http://127.0.0.1:34567')) continue
+      expect(f === 'update-check.js' && GITHUB_URLS.includes(url), `${f}: ${url}`).toBe(true)
+      github.push(url)
     }
   }
+  expect(github.sort()).toEqual([...GITHUB_URLS].sort())
+})
+test('popup.html loads update-check.js before popup.js', () => {
+  const html = readFileSync(join(extDir, 'popup.html'), 'utf8')
+  const scripts = [...html.matchAll(/<script src="([^"]+)"/g)].map((m) => m[1])
+  expect(scripts.indexOf('update-check.js')).toBeGreaterThan(-1)
+  expect(scripts.indexOf('update-check.js')).toBeLessThan(scripts.indexOf('popup.js'))
 })
 
 test('no eval, new Function or remote scripts', () => {

@@ -17,10 +17,10 @@ export const TOP_LEVEL_SETTINGS = {
     kind: 'tab',
     label: 'General',
     heading: 'General',
-    subtitle: 'App version and where your data lives.',
+    subtitle: 'App version, update checks and where your data lives.',
     category: 'General settings',
     target: { tab: 'general' },
-    keywords: ['general', 'tour']
+    keywords: ['general', 'tour', 'updates', 'check for updates', 'new version', 'release']
   },
   sessions: {
     id: 'sessions',

@@ -11,6 +11,8 @@
 
 **[Download v0.1.0](https://github.com/Hamzasohail123/sessionforge/releases/latest)** for macOS, Windows or Linux.
 
+Get notified of new versions: on GitHub click **Watch → Custom → Releases**. From the next version on, SessionForge itself tells you when an update is out (Settings → General → Check for updates).
+
 - **Every role, logged in, side by side.** Each session has its own cookies and storage; split view shows up to four at once.
 - **One click from Chrome.** The extension's "Send to SessionForge" copies a real Chrome login into a new session.
 - **MCP Server / Agent Bridge (new).** A local MCP server connects Cursor, Codex and Claude Code to your logged-in SessionForge sessions. Off by default, localhost only, production sessions are read-only. See [MCP Server / Agent Bridge](#mcp-server--agent-bridge-cursor-codex-and-claude-code) and [docs/agents/](./docs/agents/sessionforge.md).
@@ -74,7 +76,7 @@ The extension copies the login of the current Chrome tab into a new SessionForge
 3. Click **Load unpacked** and select the `chrome-extension/` folder.
 4. With SessionForge running, open a logged-in tab in Chrome, click the extension, click **Agree** the first time, then **Send to SessionForge**, and allow access to the site when Chrome asks.
 
-The extension has no access to any website at install. It reads a site's cookies and localStorage only when you click Send, after you allowed that site, and sends them only to SessionForge on `127.0.0.1:34567`.
+The extension has no access to any website at install. It reads a site's cookies and localStorage only when you click Send, after you allowed that site, and sends them only to SessionForge on `127.0.0.1:34567`. After you agreed, the popup also asks GitHub for the latest SessionForge version number at most once a day, sending nothing about you, and shows a download link when your desktop app is older.
 
 Details and troubleshooting: [chrome-extension/README.md](./chrome-extension/README.md).
 

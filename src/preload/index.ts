@@ -16,7 +16,9 @@ import type {
   TabState,
   TourOutcome,
   TourState,
-  UpdateSessionInput
+  UpdateCheckResult,
+  UpdateSessionInput,
+  UpdateState
 } from '../main/types'
 import type {
   AgentActivityEntry,
@@ -159,6 +161,22 @@ const api = {
   tour: {
     getState: (): Promise<TourState> => ipcRenderer.invoke('tour:getState'),
     finish: (outcome: TourOutcome): Promise<void> => ipcRenderer.invoke('tour:finish', outcome)
+  },
+
+  // New release notice: main checks GitHub and owns the release URL; no URL crosses IPC
+  update: {
+    /** Current update state (cached latest version, notice, switch) */
+    getState: (): Promise<UpdateState> => ipcRenderer.invoke('update:getState'),
+    /** Settings → General "Check for updates" switch */
+    setEnabled: (enabled: boolean): Promise<UpdateState> => ipcRenderer.invoke('update:setEnabled', enabled),
+    /** Settings → General "Check now": asks GitHub now and reports the outcome */
+    checkNow: (): Promise<UpdateCheckResult> => ipcRenderer.invoke('update:checkNow'),
+    /** "Later": hide the version on offer until a newer one is out */
+    dismiss: (): Promise<UpdateState> => ipcRenderer.invoke('update:dismiss'),
+    /** Opens the release page in the default browser; takes no URL (main owns it) */
+    openRelease: (): Promise<void> => ipcRenderer.invoke('update:openRelease'),
+    /** Pushed after every change in main */
+    onState: (callback: (data: UpdateState) => void) => subscribe('update:state', callback)
   },
   // Playwright
   playwright: {

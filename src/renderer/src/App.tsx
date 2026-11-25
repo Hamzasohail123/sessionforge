@@ -7,6 +7,7 @@ import { AddressBar } from './components/AddressBar'
 import { SplitView } from './components/SplitView'
 import { CommandPalette } from './components/CommandPalette'
 import { OnboardingTour } from './components/tour/OnboardingTour'
+import { UpdateNotice } from './components/UpdateNotice'
 import { useStore } from './store'
 import { useAgentEvents } from './agent-store'
 import { callMain } from './lib/ipc'
@@ -179,6 +180,7 @@ function App() {
 
   return (
     <div className="h-screen w-screen flex flex-col overflow-hidden bg-background">
+      <UpdateNotice />
       <SessionBar />
       {hasSessions && <TabBar sessionId={activeSessionId} />}
       {hasSessions && (

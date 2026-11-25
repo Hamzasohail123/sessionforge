@@ -30,7 +30,7 @@ You should receive a response within 48 hours. If the issue is confirmed, we wil
 
 When using SessionForge:
 
-1. **Keep it updated** – Check [GitHub Releases](https://github.com/Hamzasohail123/sessionforge/releases) for new versions (SessionForge has no auto-update)
+1. **Keep it updated** – Check [GitHub Releases](https://github.com/Hamzasohail123/sessionforge/releases) for new versions (SessionForge tells you when a new version is out; it does not install updates itself)
 2. **Don't export production tokens** – Playwright exports contain live login tokens
 3. **Add storageState files to .gitignore** – Never commit exported session files
 4. **Use OS-level disk encryption** – Protects session data if your device is stolen

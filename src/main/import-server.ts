@@ -83,7 +83,9 @@ export class ImportServer {
 
   constructor(
     private windowManager: WindowManager,
-    private signIn: SignInImportPort
+    private signIn: SignInImportPort,
+    /** app.getVersion(); sent in /pending so the extension can tell the user about newer releases */
+    private appVersion: string
   ) {
     this.sessionManager = SessionManager.getInstance()
     this.port = resolveImportPort(process.env.SESSIONFORGE_IMPORT_PORT)
@@ -175,7 +177,8 @@ export class ImportServer {
       req.resume()
       res.setHeader('Cache-Control', 'no-store')
       res.setHeader('X-Content-Type-Options', 'nosniff')
-      return reply(res, 200, { requests: this.signIn.listForExtension() })
+      // appVersion was added after 0.1.0 (its absence means 0.1.0); older extensions read only requests
+      return reply(res, 200, { requests: this.signIn.listForExtension(), appVersion: this.appVersion })
     }
 
     this.readBody(req, res, (body) => {

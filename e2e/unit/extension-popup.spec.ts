@@ -1,4 +1,4 @@
-// access.js, handoff.js and popup.js run together in one vm context, as in popup.html, with a fake document,
+// access.js, handoff.js, update-check.js and popup.js run together in one vm context, as in popup.html, with a fake document,
 // chrome.* and fetch. Catches a redeclared top-level name (SyntaxError) and checks consent, site access and
 // the hand-off flow. Every fake chrome call and fetch is logged in order in `api`.
 import { test, expect } from '@playwright/test'
@@ -9,6 +9,7 @@ import vm from 'node:vm'
 const extDir = join(__dirname, '..', '..', 'chrome-extension')
 const ACCESS_SRC = readFileSync(join(extDir, 'access.js'), 'utf8')
 const HANDOFF_SRC = readFileSync(join(extDir, 'handoff.js'), 'utf8')
+const UPDATE_SRC = readFileSync(join(extDir, 'update-check.js'), 'utf8')
 const POPUP_SRC = readFileSync(join(extDir, 'popup.js'), 'utf8')
 const POPUP_HTML = readFileSync(join(extDir, 'popup.html'), 'utf8')
 
@@ -17,6 +18,9 @@ class El {
   textContent = ''
   className = ''
   disabled = false
+  href = ''
+  target = ''
+  rel = ''
   style = { display: '', props: {} as Record<string, string>, setProperty(k: string, v: string) { this.props[k] = v } }
   private listeners: Record<string, Array<() => void>> = {}
   constructor(readonly tag: string, readonly id = '') {}
@@ -45,6 +49,7 @@ class El {
 interface FetchCall {
   url: string
   method: string
+  credentials?: string
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- the parsed POST body; specs assert on it field by field
   body: any
 }
@@ -87,6 +92,8 @@ const SENT = '✅ Sent to SessionForge — opened in a pane'
 
 interface BootOpts {
   pending?: Reply | Reply[]
+  /** GitHub's releases/latest (default 'network-error') */
+  latest?: Reply | Reply[]
   importReply?: Reply
   /** Pre-fill chrome.storage.local with {consentVersion: 1} (default true; ignored when `local` is given) */
   consent?: boolean
@@ -107,7 +114,7 @@ interface BootOpts {
 function boot(opts: BootOpts = {}) {
   const ids = [
     'status', 'btn-text', 'import-btn', 'current-url', 'site-access', 'session-info', 'pending', 'main',
-    'consent', 'agree-btn', 'not-now-btn', 'consent-status', 'grant-btn'
+    'consent', 'agree-btn', 'not-now-btn', 'consent-status', 'grant-btn', 'update-notice'
   ]
   const els = new Map(ids.map((id) => [id, new El('div', id)]))
   const calls: FetchCall[] = []
@@ -122,6 +129,8 @@ function boot(opts: BootOpts = {}) {
   const tab = opts.tab ?? GMAIL_TAB
   const pending = opts.pending ?? 'network-error'
   const pendingReplies = Array.isArray(pending) ? [...pending] : null
+  const latest = opts.latest ?? 'network-error'
+  const latestReplies = Array.isArray(latest) ? [...latest] : null
   const reply = (r: Reply) => {
     if (r === 'network-error') return Promise.reject(new TypeError('Failed to fetch'))
     return Promise.resolve({ ok: r.status >= 200 && r.status < 300, status: r.status, json: async () => r.body })
@@ -156,7 +165,8 @@ function boot(opts: BootOpts = {}) {
     alert() {},
     document: {
       getElementById: (id: string) => els.get(id) ?? null,
-      createElement: (tag: string) => new El(tag)
+      createElement: (tag: string) => new El(tag),
+      createTextNode: (text: string) => Object.assign(new El('#text'), { textContent: text })
     },
     chrome: {
       tabs: {
@@ -207,10 +217,13 @@ function boot(opts: BootOpts = {}) {
       storage: { local: area('local', local), session: area('session', session) },
       runtime: { getURL: (p: string) => 'chrome-extension://test-id/' + p }
     },
-    fetch: (url: string, init: { method?: string; body?: string } = {}) => {
+    fetch: (url: string, init: { method?: string; body?: string; credentials?: string } = {}) => {
       const method = init.method ?? 'GET'
       api.push(`fetch ${method} ${new URL(url).pathname}`)
-      calls.push({ url, method, body: init.body ? JSON.parse(init.body) : undefined })
+      calls.push({ url, method, credentials: init.credentials, body: init.body ? JSON.parse(init.body) : undefined })
+      if (url.startsWith('https://api.github.com/')) {
+        return reply(latestReplies ? (latestReplies.shift() ?? 'network-error') : (latest as Reply))
+      }
       if (url.endsWith('/pending')) {
         return reply(pendingReplies ? (pendingReplies.shift() ?? 'network-error') : (pending as Reply))
       }
@@ -221,6 +234,7 @@ function boot(opts: BootOpts = {}) {
   vm.createContext(sandbox)
   vm.runInContext(ACCESS_SRC, sandbox, { filename: 'access.js' })
   vm.runInContext(HANDOFF_SRC, sandbox, { filename: 'handoff.js' })
+  vm.runInContext(UPDATE_SRC, sandbox, { filename: 'update-check.js' })
   vm.runInContext(POPUP_SRC, sandbox, { filename: 'popup.js' })
   const el = (id: string) => els.get(id)!
   const posts = () => calls.filter((c) => c.method === 'POST')
@@ -239,12 +253,17 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 const ready = (p: ReturnType<typeof boot>) => until(() => p.calls.some((c) => c.url.endsWith('/pending')), '/pending fetch')
 const READS = ['cookies.getAll', 'scripting.executeScript', 'fetch POST /import']
 
-test('loads without throwing; handoff.js adds only SessionForgeHandOff', () => {
+test('loads without throwing; handoff.js and update-check.js each add one name', () => {
   const sandbox: Record<string, unknown> = {}
   sandbox.self = sandbox
   vm.createContext(sandbox)
   vm.runInContext(HANDOFF_SRC, sandbox)
   expect(Object.keys(sandbox).filter((k) => k !== 'self')).toEqual(['SessionForgeHandOff'])
+  const other: Record<string, unknown> = {}
+  other.self = other
+  vm.createContext(other)
+  vm.runInContext(UPDATE_SRC, other)
+  expect(Object.keys(other).filter((k) => k !== 'self')).toEqual(['SessionForgeUpdate'])
   expect(() => boot({ pending: 'network-error' })).not.toThrow()
 })
 
@@ -382,7 +401,12 @@ test('Agree: stores consentVersion 1 and consentAt, shows the main UI, then asks
   // The consent was stored before anything else ran
   expect(p.api.slice(0, 2)).toEqual(['storage.local.get', 'storage.local.set'])
   await until(() => p.el('pending').children.length === 1, 'request button')
-  expect(p.calls.map((c) => `${c.method} ${c.url}`)).toEqual(['GET http://127.0.0.1:34567/pending'])
+  const local = p.calls.filter((c) => c.url.startsWith('http://127.0.0.1'))
+  expect(local.map((c) => `${c.method} ${c.url}`)).toEqual(['GET http://127.0.0.1:34567/pending'])
+  // The version check runs after consent and after /pending, never before
+  await until(() => p.calls.some((c) => c.url.startsWith('https://api.github.com/')), 'GitHub check')
+  const urls = p.calls.map((c) => c.url)
+  expect(urls.findIndex((u) => u.startsWith('https://api.github.com/'))).toBeGreaterThan(urls.indexOf('http://127.0.0.1:34567/pending'))
 
   const again = boot({ local: p.local })
   await until(() => again.el('main').style.display === 'block', 'main UI on reopen')
@@ -592,12 +616,129 @@ test('the "Import All Chrome Profiles" placeholder is gone', () => {
   expect(POPUP_SRC).not.toContain('alert(')
 })
 
-test('popup.html has every element popup.js uses, and loads access.js, handoff.js, popup.js in that order', () => {
+test('popup.html has every element popup.js uses, and loads access.js, handoff.js, update-check.js, popup.js in that order', () => {
   const used = [...POPUP_SRC.matchAll(/(?:getElementById|show)\('([^']+)'/g)].map((m) => m[1])
   expect(used).toEqual(expect.arrayContaining(['consent', 'main', 'agree-btn', 'not-now-btn', 'grant-btn', 'site-access']))
   for (const id of new Set(used)) expect(POPUP_HTML, id).toContain(`id="${id}"`)
   const scripts = [...POPUP_HTML.matchAll(/<script src="([^"]+)"/g)].map((m) => m[1])
-  expect(scripts).toEqual(['access.js', 'handoff.js', 'popup.js'])
+  expect(scripts).toEqual(['access.js', 'handoff.js', 'update-check.js', 'popup.js'])
   // No pre-checked boxes: the notice has buttons only
   expect(POPUP_HTML).not.toMatch(/type="checkbox"|checked/)
+})
+
+// ---------------------------------------------------------------- desktop update notice
+
+const RELEASES_URL = 'https://github.com/Hamzasohail123/sessionforge/releases/latest'
+const NOTICE_020 = 'SessionForge desktop 0.2.0 is available. Download'
+const tagReply = (tag: string): Reply => ({ status: 200, body: { tag_name: tag, html_url: RELEASES_URL, draft: false, prerelease: false } })
+const githubCalls = (p: ReturnType<typeof boot>) => p.calls.filter((c) => c.url.startsWith('https://api.github.com/'))
+/** The popup's own UI, which the update check must never change */
+const mainUi = (p: ReturnType<typeof boot>) => ({
+  status: p.el('status').textContent,
+  statusClass: p.el('status').className,
+  btn: p.el('btn-text').textContent,
+  pending: p.el('pending').children.map((c) => c.text),
+  importDisabled: p.el('import-btn').disabled
+})
+
+test('update (a): SessionForge 0.1.0 (no appVersion) and GitHub v0.2.0 shows the notice; the link opens the releases page', async () => {
+  const p = boot({ pending: { status: 200, body: { requests: [REQUEST] } }, latest: tagReply('v0.2.0') })
+  await until(() => p.el('update-notice').style.display === 'block', 'update notice')
+  expect(p.el('update-notice').text).toBe(NOTICE_020)
+  const link = p.el('update-notice').children[1]
+  expect(link.href).toBe(RELEASES_URL)
+  expect(link.target).toBe('_blank')
+  expect(link.rel).toBe('noopener')
+  link.click()
+  expect(p.created).toEqual([RELEASES_URL])
+  const gh = githubCalls(p)
+  expect(gh).toHaveLength(1)
+  expect(gh[0].url).toBe('https://api.github.com/repos/Hamzasohail123/sessionforge/releases/latest')
+  expect(gh[0].method).toBe('GET')
+  expect(gh[0].credentials).toBe('omit')
+  expect(p.local.get('desktopRelease')).toMatchObject({ latest: '0.2.0' })
+  // The request button is still there and still works
+  expect(p.el('pending').children).toHaveLength(1)
+})
+
+test('update (b): an app already on the latest version shows nothing', async () => {
+  const p = boot({ pending: { status: 200, body: { requests: [], appVersion: '0.2.0' } }, latest: tagReply('v0.2.0') })
+  await until(() => githubCalls(p).length === 1, 'GitHub check')
+  await sleep(20)
+  expect(p.el('update-notice').style.display).not.toBe('block')
+  const newer = boot({ pending: { status: 200, body: { requests: [], appVersion: '0.3.0' } }, latest: tagReply('v0.2.0') })
+  await until(() => githubCalls(newer).length === 1, 'GitHub check')
+  await sleep(20)
+  expect(newer.el('update-notice').style.display).not.toBe('block')
+  // A malformed appVersion: nothing is shown and GitHub is not asked
+  const odd = boot({ pending: { status: 200, body: { requests: [], appVersion: 'dev' } }, latest: tagReply('v0.2.0') })
+  await ready(odd)
+  await sleep(20)
+  expect(githubCalls(odd)).toEqual([])
+})
+
+test('update (c): SessionForge unreachable or without /pending: no GitHub request and no notice', async () => {
+  for (const pending of ['network-error', { status: 404, body: { success: false } }, { status: 200, body: 'nope' }] as Reply[]) {
+    const p = boot({ pending, latest: tagReply('v0.2.0') })
+    await ready(p)
+    await sleep(20)
+    expect(githubCalls(p), JSON.stringify(pending)).toEqual([])
+    expect(p.el('update-notice').style.display).not.toBe('block')
+  }
+})
+
+test('update (d): reopening within 24 h uses the cache; after 24 h GitHub is asked again', async () => {
+  const local = new Map<string, unknown>([['consentVersion', 1]])
+  const opts = { local, pending: { status: 200, body: { requests: [] } } as Reply, latest: tagReply('v0.2.0') }
+  const first = boot(opts)
+  await until(() => first.el('update-notice').style.display === 'block', 'update notice')
+  const again = boot(opts)
+  await until(() => again.el('update-notice').style.display === 'block', 'cached notice')
+  expect(githubCalls(again)).toEqual([])
+  expect(again.el('update-notice').text).toBe(NOTICE_020)
+  const cached = local.get('desktopRelease') as { checkedAt: number }
+  local.set('desktopRelease', { ...cached, checkedAt: cached.checkedAt - 25 * 3_600_000 })
+  const later = boot(opts)
+  await until(() => githubCalls(later).length === 1, 'second GitHub check')
+  await until(() => later.el('update-notice').style.display === 'block', 'notice after refresh')
+})
+
+test('update (e): GitHub failures show nothing and leave the popup exactly as without the check', async () => {
+  const pending: Reply = { status: 200, body: { requests: [REQUEST] } }
+  const baseline = boot({ pending, latest: tagReply('v0.1.0') })
+  await until(() => githubCalls(baseline).length === 1, 'GitHub check')
+  await sleep(20)
+  const expected = mainUi(baseline)
+
+  const offline = boot({ pending, latest: 'network-error' })
+  await until(() => githubCalls(offline).length === 1, 'GitHub check')
+  await sleep(20)
+  expect(offline.local.has('desktopRelease')).toBe(false)
+  expect(offline.el('update-notice').style.display).not.toBe('block')
+  expect(mainUi(offline)).toEqual(expected)
+
+  const limited = boot({ pending, latest: { status: 403, body: { message: 'rate limited' } } })
+  await until(() => limited.local.has('desktopRelease'), 'cache written')
+  expect(typeof (limited.local.get('desktopRelease') as { checkedAt: unknown }).checkedAt).toBe('number')
+  expect((limited.local.get('desktopRelease') as { latest: unknown }).latest).toBeNull()
+  expect(limited.el('update-notice').style.display).not.toBe('block')
+  expect(mainUi(limited)).toEqual(expected)
+
+  for (const body of [{ tag_name: 'v9.0.0-beta' }, { tag_name: 'v9.0.0', prerelease: true }, 'oops', null]) {
+    const bad = boot({ pending, latest: { status: 200, body } })
+    await until(() => bad.local.has('desktopRelease'), 'cache written')
+    await sleep(10)
+    expect(bad.el('update-notice').style.display, JSON.stringify(body)).not.toBe('block')
+    expect(mainUi(bad)).toEqual(expected)
+  }
+})
+
+test('update (f): before consent GitHub is never asked', async () => {
+  const p = boot({ consent: false, pending: { status: 200, body: { requests: [] } }, latest: tagReply('v0.2.0') })
+  await until(() => p.el('consent').style.display === 'block', 'consent screen')
+  await sleep(30)
+  expect(githubCalls(p)).toEqual([])
+  const fns = p.sandbox as Record<string, (...a: unknown[]) => Promise<unknown>>
+  await expect(fns.showUpdateNotice('0.1.0')).rejects.toThrow('Consent required')
+  expect(p.calls).toEqual([])
 })

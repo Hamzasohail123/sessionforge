@@ -73,6 +73,7 @@ src/
 │   ├── ipc.ts               IPC handlers, inputs validated with zod
 │   ├── import-server.ts     HTTP import endpoint for the Chrome extension (127.0.0.1:34567)
 │   ├── import-payload.ts    Import payload schema and helpers (pure, unit tested)
+│   ├── updates.ts           Update check: version compare, 24 h throttle, GitHub fetch (pure, unit tested)
 │   ├── shortcuts.ts         Keyboard shortcuts for pages and the shell
 │   ├── context-menu.ts      Page context menu
 │   ├── user-agent.ts        Chrome user agent for every session

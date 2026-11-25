@@ -1,4 +1,4 @@
-import { FileText, Lock, WifiOff } from 'lucide-react'
+import { FileText, Lock, RefreshCw, WifiOff } from 'lucide-react'
 import type { DocId } from '../../../../main/types'
 import { Button } from '../ui/button'
 import { callMain } from '../../lib/ipc'
@@ -39,7 +39,17 @@ export function AboutTab() {
             <span>
               <span className="font-medium">No telemetry.</span>{' '}
               <span className="text-muted-foreground">
-                No analytics, crash reports or update checks. SessionForge's own only request is send_request_as from an agent you connected.
+                No analytics or crash reports. Apart from the update check below, SessionForge's own only request is send_request_as from an
+                agent you connected.
+              </span>
+            </span>
+          </li>
+          <li className="flex gap-3" data-testid="about-update-check">
+            <RefreshCw className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" aria-hidden />
+            <span>
+              <span className="font-medium">Update check.</span>{' '}
+              <span className="text-muted-foreground">
+                Checks GitHub once a day for new versions (no data about you is sent). You can turn this off in General.
               </span>
             </span>
           </li>

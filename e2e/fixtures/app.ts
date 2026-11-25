@@ -9,6 +9,7 @@ import type { SessionManager } from '../../src/main/session-manager'
 import type { DatabaseManager } from '../../src/main/database'
 import type { StorageStateSchema } from '../../src/main/import-payload'
 import type { AgentBridge } from '../../src/main/agent/mcp-server'
+import type { UpdateChecker } from '../../src/main/updates'
 
 export const projectRoot = resolve(__dirname, '..', '..')
 
@@ -20,6 +21,7 @@ export interface SfGlobal {
   StorageStateSchema: typeof StorageStateSchema
   window: BrowserWindow
   agentBridge: AgentBridge
+  updates: UpdateChecker
 }
 
 export interface AppCtx {

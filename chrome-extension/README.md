@@ -20,7 +20,7 @@ isolated session from it and opens the page in a pane, already logged in.
    - the page's `localStorage` (current origin only);
    - the page URL, title and favicon URL.
 5. It sends them in Playwright `storageState` format with
-   `POST http://127.0.0.1:34567/import`. Nothing goes anywhere else.
+   `POST http://127.0.0.1:34567/import`. Your data goes nowhere else.
 6. SessionForge creates a session, names it after the e-mail address in the tab title (Gmail titles have
    one) or else the hostname, adds " 2", " 3"… if the name is taken, and opens the URL in a free pane.
 
@@ -42,8 +42,8 @@ login. After you sign in there, the popup shows a button per waiting session, in
   for (for example `google.com`, or the site's domain) into that existing session. The pane continues
   where it left off. The regular button is then labelled **Send to new session** and works as before.
 - The popup asks `GET http://127.0.0.1:34567/pending` when it opens (after you agreed to the notice);
-  SessionForge answers with the request id, the session's name and colour, the cookie domains and the
-  expiry, nothing else.
+  SessionForge answers with the request id, the session's name and colour, the cookie domains, the
+  expiry and its own version number, nothing else.
 - The first time, Chrome asks you to allow access to the domains shown on the button.
 - Only cookies are sent for a request, not localStorage. Sites that keep their login in localStorage or
   IndexedDB stay signed out after this hand-off; use **Send to new session** (which carries
@@ -116,9 +116,11 @@ should work but haven't been tested. Firefox isn't supported: SessionForge only 
 
 ## Privacy
 
-The extension only talks to `127.0.0.1` on your computer. It has no analytics and makes no other network
-requests. It stores only your answer to the first-run notice (`chrome.storage.local`) and, until Chrome
-closes, the site it last asked access for (`chrome.storage.session`). To stop it, remove site access in
+The extension sends your data only to `127.0.0.1` on your computer. Its one other request, at most once a
+day after you agreed, asks GitHub (`api.github.com`) for the latest SessionForge version number and carries
+none of your data; when your desktop app is older, the popup shows a link to the releases page. It has no
+analytics and makes no other network requests. It stores only your answer to the first-run notice and the
+last version check (`chrome.storage.local`) and, until Chrome closes, the site it last asked access for (`chrome.storage.session`). To stop it, remove site access in
 `chrome://extensions` → SessionForge Import → **Details** → **Site access**, or uninstall it. See
 [store/PRIVACY.md](./store/PRIVACY.md).
 
@@ -130,6 +132,7 @@ closes, the site it last asked access for (`chrome.storage.session`). To stop it
 | `popup.html`, `popup.js` | The popup: first-run notice, site-access requests and the import logic |
 | `access.js` | Consent and site-access helpers: `CONSENT_VERSION`, host patterns per domain, the `grant.html` link |
 | `handoff.js` | "Sign in with Chrome" helpers: checks `/pending`, collects the requested cookies, builds the payload |
+| `update-check.js` | New desktop version notice: reads the app version from `/pending`, asks GitHub's latest release at most once a day, compares versions |
 | `grant.html`, `grant.js` | "Allow access in a tab": asks Chrome for site access in a tab when the popup can't; reads and sends nothing |
 | `background.js` | Service worker (logs installation; no other work) |
 | `icon16.png`, `icon48.png`, `icon128.png` | Toolbar and extension-page icons |
@@ -138,12 +141,12 @@ closes, the site it last asked access for (`chrome.storage.session`). To stop it
 ## Development
 
 Edit the files, then click **Reload** on the extension in `chrome://extensions/`. Before committing, run
-`node --check` on `access.js`, `handoff.js`, `popup.js`, `grant.js` and `background.js`, and
+`node --check` on `access.js`, `handoff.js`, `update-check.js`, `popup.js`, `grant.js` and `background.js`, and
 `npx playwright test --project=unit e2e/unit/extension-*.spec.ts`:
-`extension-popup.spec.ts` runs `access.js`, `handoff.js` and `popup.js` together with a fake `chrome` and
+`extension-popup.spec.ts` runs `access.js`, `handoff.js`, `update-check.js` and `popup.js` together with a fake `chrome` and
 `fetch`, `extension-access.spec.ts` covers `access.js` and `grant.js`, `extension-manifest.spec.ts` checks
-the permissions and that only `127.0.0.1:34567` is contacted, and `extension-handoff.spec.ts` covers
-`handoff.js`. The server side is `src/main/import-server.ts` and `src/main/import-payload.ts` (and
+the permissions and that only `127.0.0.1:34567` and the GitHub release check are contacted, and `extension-handoff.spec.ts` covers
+`handoff.js`, and `extension-update.spec.ts` covers `update-check.js`. The server side is `src/main/import-server.ts` and `src/main/import-payload.ts` (and
 `src/main/google-signin/` for "Sign in with Chrome").
 
 If you change what the extension reads, when it reads it or where it sends it, update the notice in

@@ -145,6 +145,31 @@ export interface ReopenResult {
   tabId: string | null
 }
 
+/** A release newer than the running app; url is a vetted release page */
+export interface AvailableUpdate {
+  version: string
+  url: string
+}
+/** update:getState / update:state */
+export interface UpdateState {
+  enabled: boolean
+  currentVersion: string
+  /** Newest version GitHub reported (cached), whether or not it is newer */
+  latestVersion: string | null
+  /** Set only when checks are on, an endpoint exists and latest is strictly newer */
+  available: AvailableUpdate | null
+  /** available, unless the user hid that version with "Later" */
+  notice: AvailableUpdate | null
+  dismissedVersion: string | null
+  lastCheckedAt: number | null
+  checking: boolean
+}
+/** update:checkNow */
+export interface UpdateCheckResult {
+  outcome: 'up-to-date' | 'available' | 'failed' | 'disabled'
+  version?: string
+  state: UpdateState
+}
 export interface PlaywrightStorageState {
   cookies: Array<{
     name: string

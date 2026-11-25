@@ -140,6 +140,18 @@
       margin-left: 8px;
       vertical-align: middle;
     }
+    .update-notice {
+      margin-top: 10px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      background: #eff6ff;
+      color: #1e3a8a;
+      font-size: 12px;
+    }
+    .update-notice a {
+      color: #1d4ed8;
+      font-weight: 600;
+    }
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
@@ -156,9 +168,9 @@
     <ul class="consent-list">
       <li><strong>What it reads:</strong> the cookies and localStorage of the site you send, and that page's URL, title and favicon URL (if the title contains an e-mail address, SessionForge names the session after it). A “Send to &lt;session&gt;” button for a SessionForge sign-in request reads only the cookies of the domains shown on it.</li>
       <li><strong>When:</strong> only when you click a Send button. Nothing is read in the background.</li>
-      <li><strong>Where it goes:</strong> only to the SessionForge app on this computer (http://127.0.0.1:34567). Never to us or any other server. No analytics.</li>
+      <li><strong>Where it goes:</strong> only to the SessionForge app on this computer (http://127.0.0.1:34567). Never to us or any other server. No analytics. To tell you about new SessionForge desktop versions, it also asks GitHub (api.github.com) for the latest version number at most once a day; nothing about you or your logins is sent.</li>
       <li><strong>Site access:</strong> the first time you send from a site, Chrome asks you to allow access to that site.</li>
-      <li><strong>What it stores:</strong> this choice, and until Chrome closes, the site it last asked access for.</li>
+      <li><strong>What it stores:</strong> this choice, the time and result of the last version check, and until Chrome closes, the site it last asked access for.</li>
       <li><strong>How to stop:</strong> remove site access in chrome://extensions → SessionForge Import → Details → Site access, or uninstall the extension.</li>
     </ul>
     <button id="agree-btn">Agree</button>
@@ -188,10 +200,12 @@
       ℹ️ Make sure SessionForge is running<br>
       🔒 Reads this site's cookies and localStorage only when you click Send, and sends them only to SessionForge on this computer.
     </div>
+    <div id="update-notice" class="update-notice" style="display: none;"></div>
   </div>
 
   <script src="access.js"></script>
   <script src="handoff.js"></script>
+  <script src="update-check.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

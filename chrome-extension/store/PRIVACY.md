@@ -1,6 +1,6 @@
 # SessionForge Import: privacy statement
 
-Last updated: 2026-11-18
+Last updated: 2026-11-25
 
 SessionForge Import is a Chrome extension that copies a login from Chrome into the SessionForge desktop
 app on your own computer.
@@ -35,6 +35,12 @@ Only to the SessionForge app on this computer: one `POST` request to `http://127
 `GET http://127.0.0.1:34567/pending` to the same app, to list sessions waiting for a login; that request
 carries none of your data.
 
+To tell you when a newer SessionForge desktop app is out, the popup also sends, after you agreed and at
+most once a day, `GET https://api.github.com/repos/Hamzasohail123/sessionforge/releases/latest` to
+GitHub. That request carries none of your data (no cookies, no page, no identifiers; GitHub sees your IP
+address, as with any request). When your SessionForge is older, the popup shows a link, and the releases
+page opens only when you click it.
+
 The extension makes no other network requests. It has no analytics, no telemetry, no ads and no remote
 code. The data never goes to us or to any other server. Nothing is sold or shared with anyone.
 
@@ -47,7 +53,8 @@ time in `chrome://extensions` → SessionForge Import → **Details** → **Site
 
 ## What is stored
 
-- In `chrome.storage.local`: your choice on the notice (`consentVersion`, `consentAt`).
+- In `chrome.storage.local`: your choice on the notice (`consentVersion`, `consentAt`), and
+  `desktopRelease`: the time of the last version check and the latest SessionForge version number.
 - In `chrome.storage.session`, until Chrome closes: the site the extension last asked access for, so the
   popup can explain if Chrome closed it while asking.
 

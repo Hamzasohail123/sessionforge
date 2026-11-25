@@ -19,6 +19,11 @@ test('search matches titles, subtitles, and multiple tokens', () => {
 test('"tour" finds General, where the tour is replayed', () => {
   expect(filterSettings('tour').map((entry) => entry.id)).toContain('general')
 })
+test('update searches find General, where the update check lives', () => {
+  for (const query of ['update', 'check for updates', 'new version', 'release']) {
+    expect(filterSettings(query).map((entry) => entry.id), query).toContain('general')
+  }
+})
 test('every top-level settings target is represented by searchable metadata', () => {
   for (const entry of Object.values(TOP_LEVEL_SETTINGS)) {
     expect(filterSettings(entry.label).map((result) => result.id), entry.label).toContain(entry.id)
@@ -48,7 +53,8 @@ test('required discoverability keywords match real settings entries', () => {
     'shortcuts',
     'privacy',
     'activity',
-    'general'
+    'general',
+    'updates'
   ]
 
   for (const keyword of keywords) expect(filterSettings(keyword).length, keyword).toBeGreaterThan(0)

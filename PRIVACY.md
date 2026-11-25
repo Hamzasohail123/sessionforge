@@ -1,10 +1,10 @@
 # Privacy Policy
 
-**Last updated: November 2026**
+**Last updated: 25 November 2026**
 
 ## Summary
 
-SessionForge is a local-first desktop application. No data leaves your machine by default.
+SessionForge is a local-first desktop application. No data about you leaves your machine.
 
 ## Data Collection
 
@@ -13,11 +13,11 @@ SessionForge collects **no data**, and there is no setting to turn collection on
 - No analytics or usage statistics
 - No crash reports
 - No telemetry
-- No update checks
+- One update check a day, which you can turn off (see [Updates](#updates))
 - No user accounts
 - No cloud sync
 
-SessionForge's network traffic is the pages you (or an agent you connected) open in its sessions. The only request it makes on its own is when an AI agent you connected through the Agent Bridge calls `send_request_as`: it then sends that request, to the URL the agent chose, with the cookies of the sessions the agent named.
+SessionForge's network traffic is the pages you (or an agent you connected) open in its sessions. On its own it makes two kinds of request. The first is the daily update check described under [Updates](#updates), which carries no data about you. The second is when an AI agent you connected through the Agent Bridge calls `send_request_as`: it then sends that request, to the URL the agent chose, with the cookies of the sessions the agent named.
 
 Sign in with Chrome opens one URL in your browser. SessionForge sends nothing itself; the extension sends the cookies of the requested domains to SessionForge on 127.0.0.1 only.
 
@@ -55,7 +55,12 @@ This file is **your responsibility** to protect. Add it to `.gitignore` and do n
 
 ## Updates
 
-SessionForge does not check for updates. New versions are published on [GitHub Releases](https://github.com/Hamzasohail123/sessionforge/releases).
+SessionForge tells you when a new version is out. It does not download or install anything itself; you install new versions from [GitHub Releases](https://github.com/Hamzasohail123/sessionforge/releases).
+
+- **What is sent:** one HTTPS `GET` to `https://api.github.com/repos/Hamzasohail123/sessionforge/releases/latest` with the User-Agent `SessionForge/<version>`. No cookies, no session data, no identifiers. GitHub sees your IP address, as with any request.
+- **When:** a few seconds after launch, then at most once every 24 hours while SessionForge runs, and when you click **Check now**.
+- **What is stored locally:** the time of the last check, the latest version number GitHub reported, and the version you hid with **Later**.
+- **How to turn it off:** Settings → General → **Check for updates**. With it off, SessionForge never contacts GitHub.
 
 ## Children's Privacy
 

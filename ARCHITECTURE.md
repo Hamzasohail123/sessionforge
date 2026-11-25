@@ -317,7 +317,7 @@ Outputs (in `release/`):
 - **Linux**: `.AppImage`, `.deb`
 
 A `v*` tag runs `.github/workflows/release.yml`, which builds every target and attaches the files to a draft
-GitHub Release. There is no auto-update yet: users download new versions from Releases.
+GitHub Release. There is no auto-update: SessionForge checks GitHub once a day (`src/main/updates.ts`) and shows a notice, and users install new versions from Releases.
 
 ## Future Architecture
 

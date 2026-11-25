@@ -1,8 +1,9 @@
-import { app, BrowserWindow, shell } from 'electron'
+import { app, BrowserWindow, net, shell } from 'electron'
 import { isAbsolute, join } from 'path'
 import { mkdirSync } from 'fs'
 import { electronApp, is } from '@electron-toolkit/utils'
-import { initializeIPC, registerAppIpc, registerTourIpc } from './ipc'
+import { initializeIPC, registerAppIpc, registerTourIpc, registerUpdateIpc } from './ipc'
+import { UpdateChecker, resolveUpdateEndpoint } from './updates'
 import { SessionManager } from './session-manager'
 import { WindowManager } from './window-manager'
 import { ImportServer } from './import-server'
@@ -127,9 +128,26 @@ if (envOk) app.whenReady().then(() => {
   signIn.init(mainWindow!)
 
   // Import server for the Chrome extension starts once the window exists
-  importServer = new ImportServer(windowManager, signIn)
+  importServer = new ImportServer(windowManager, signIn, app.getVersion())
   importServer.start()
   registerAppIpc(() => importServer)
+
+  // Release notice: net.fetch runs on the shell's default session (never a persist: partition),
+  // credentials 'omit' keeps cookies out. No endpoint under e2e unless a local stub is given.
+  const updates = new UpdateChecker({
+    settings: DatabaseManager.getInstance(),
+    fetch: (url, init) => net.fetch(url, init),
+    now: () => Date.now(),
+    version: app.getVersion(),
+    endpoint: resolveUpdateEndpoint(process.env),
+    onState: (state) => {
+      if (mainWindow && !mainWindow.isDestroyed() && !mainWindow.webContents.isDestroyed()) {
+        mainWindow.webContents.send('update:state', state)
+      }
+    }
+  })
+  registerUpdateIpc(updates)
+  updates.start(e2e ? 300 : 5_000)
   agentBridge.init(mainWindow!)
 
   // Flush cookies/storage before quitting. beginShutdown runs first so view teardown writes nothing.
@@ -139,6 +157,7 @@ if (envOk) app.whenReady().then(() => {
     if (flushed) return
     e.preventDefault()
     importServer?.stop()
+    updates.stop()
     signIn.dispose()
     agentBridge.stop('quit')
     const delay = new Promise<void>((r) => setTimeout(r, 2000))
@@ -158,7 +177,8 @@ if (envOk) app.whenReady().then(() => {
       StorageStateSchema,
       window: mainWindow,
       agentBridge,
-      googleSignIn: signIn
+      googleSignIn: signIn,
+      updates
     }
   }
 

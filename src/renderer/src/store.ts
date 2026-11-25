@@ -25,6 +25,8 @@ interface AppState {
   inlineEditing: boolean
   /** The first-run tour is running; app shortcuts are ignored and Settings search is cleared meanwhile */
   tourActive: boolean
+  /** The New Session dialog (opened from the session bar or the empty state) */
+  createSessionOpen: boolean
   setSessions: (sessions: Session[]) => void
   setTabs: (tabs: Tab[]) => void
   setLayout: (layout: LayoutState) => void
@@ -39,6 +41,7 @@ interface AppState {
   /** No-op when a tour is already running */
   startTour: () => void
   endTour: () => void
+  setCreateSessionOpen: (open: boolean) => void
 }
 export const useStore = create<AppState>((set) => ({
   sessions: [],
@@ -50,6 +53,7 @@ export const useStore = create<AppState>((set) => ({
   settings: { open: false, tab: 'agent', agentTab: 'overview' },
   inlineEditing: false,
   tourActive: false,
+  createSessionOpen: false,
   setSessions: (sessions) => set({ sessions }),
   setTabs: (tabs) => set({ tabs }),
   setLayout: (layout) => {
@@ -68,5 +72,6 @@ export const useStore = create<AppState>((set) => ({
   setAgentTab: (agentTab) => set((s) => ({ settings: { ...s.settings, agentTab } })),
   setInlineEditing: (inlineEditing) => set({ inlineEditing }),
   startTour: () => set((s) => (s.tourActive ? s : { tourActive: true })),
-  endTour: () => set({ tourActive: false })
+  endTour: () => set({ tourActive: false }),
+  setCreateSessionOpen: (createSessionOpen) => set({ createSessionOpen })
 }))

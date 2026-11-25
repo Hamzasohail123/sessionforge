@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query'
 import type { LayoutMode, PaneId, PaneRect, Session } from '../../../main/types'
 import { useStore } from '../store'
 import { cn } from '../lib/utils'
+import { Plus } from 'lucide-react'
+import { Button } from './ui/button'
 import { Pane } from './Pane'
 
 const GRID: Record<LayoutMode, string> = {
@@ -87,6 +89,7 @@ function usePaneRects(): (paneId: PaneId) => (el: HTMLDivElement | null) => void
 
 export function SplitView() {
   const layout = useStore((s) => s.layout)
+  const openCreate = useStore((s) => s.setCreateSessionOpen)
   const slotRef = usePaneRects()
   const { data: sessions = [], isSuccess } = useQuery<Session[]>({
     queryKey: ['sessions'],
@@ -95,10 +98,14 @@ export function SplitView() {
 
   if (isSuccess && sessions.length === 0) {
     return (
-      <div className="flex-1 flex items-center justify-center text-muted-foreground">
-        <div className="text-center">
+      <div data-testid="empty-state" className="flex-1 flex items-center justify-center text-muted-foreground">
+        <div className="flex flex-col items-center text-center">
           <h2 className="text-2xl font-semibold mb-2">Welcome to SessionForge</h2>
           <p>Create a session to get started</p>
+          <Button size="lg" className="mt-6 gap-2" data-testid="empty-new-session" onClick={() => openCreate(true)}>
+            <Plus className="h-5 w-5" aria-hidden />
+            New session
+          </Button>
         </div>
       </div>
     )

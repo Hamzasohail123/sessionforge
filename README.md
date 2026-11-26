@@ -5,7 +5,7 @@
 [![CI](https://github.com/Hamzasohail123/sessionforge/actions/workflows/ci.yml/badge.svg)](https://github.com/Hamzasohail123/sessionforge/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/Hamzasohail123/sessionforge?include_prereleases)](https://github.com/Hamzasohail123/sessionforge/releases)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](./LICENSE)
-![Platforms](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey)
+[![Platforms](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey)](#prebuilt-downloads)
 
 <!-- Demo GIF goes here once recorded: ![SessionForge: an agent checks Admin and Customer side by side](./docs/release/demo.gif) -->
 
@@ -69,12 +69,13 @@ The AppImage works on distributions that allow unprivileged user namespaces: `ch
 
 ### Chrome extension (SessionForge Import)
 
-The extension copies the login of the current Chrome tab into a new SessionForge session. Until it is approved in the Chrome Web Store, load it unpacked:
+The extension copies the login of the current Chrome tab into a new SessionForge session. Install it from the [Chrome Web Store](https://chromewebstore.google.com/detail/sessionforge-import/ofdnckgaoffbablejmfimchoifdlhjbf), then, with SessionForge running, open a logged-in tab in Chrome, click the extension, click **Agree** the first time, then **Send to SessionForge**, and allow access to the site when Chrome asks.
+
+To run the extension from source instead (for development), load it unpacked:
 
 1. Get the `chrome-extension/` folder (clone the repo, or download the source zip from the release).
 2. Open `chrome://extensions/` and turn on **Developer mode** (top right).
-3. Click **Load unpacked** and select the `chrome-extension/` folder.
-4. With SessionForge running, open a logged-in tab in Chrome, click the extension, click **Agree** the first time, then **Send to SessionForge**, and allow access to the site when Chrome asks.
+3. Click **Load unpacked** and select the `chrome-extension/` folder, then use it as described above.
 
 The extension has no access to any website at install. It reads a site's cookies and localStorage only when you click Send, after you allowed that site, and sends them only to SessionForge on `127.0.0.1:34567`. After you agreed, the popup also asks GitHub for the latest SessionForge version number at most once a day, sending nothing about you, and shows a download link when your desktop app is older.
 
@@ -308,9 +309,8 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for the full design.
 
 - **Google sign-in inside SessionForge is blocked by Google.** Use **Sign in with Chrome** in the banner (two clicks with the extension, see [Signing in with Google](#signing-in-with-google)). Logins kept in localStorage or IndexedDB are not carried by that hand-off; some Google sessions may be bound to the device in Chrome and could sign out after import (unverified).
 - **The macOS build is not notarized.** It is ad-hoc signed only (no Apple Developer account yet), so the first launch needs the steps in [Installation](#prebuilt-downloads). The Windows installer is unsigned (SmartScreen → More info → Run anyway). Running from source avoids both.
-- **Agent Bridge is new.** This is the first release of the MCP server. It has no arbitrary JavaScript, file uploads, downloads or cross-origin iframe support, and it is off by default.
+- **Agent Bridge is new.** The MCP server first shipped in v0.1.0. It has no arbitrary JavaScript, file uploads, downloads or cross-origin iframe support, and it is off by default.
 - **Most testing so far has been on Linux.** CI runs the end-to-end suite on Linux and macOS. On Windows it runs only the typecheck and unit specs, so expect rough edges there.
-- The Chrome extension may still be in Web Store review; until then, use "Load unpacked".
 
 ## Roadmap
 

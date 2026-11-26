@@ -1,17 +1,29 @@
-# SessionForge
+<p align="center">
+  <a href="https://github.com/Hamzasohail123/sessionforge/releases/latest">
+    <img src="./docs/assets/readme-banner.png" alt="SessionForge: every role, one window" width="100%">
+  </a>
+</p>
 
-> **Your app's users, ready for your coding agent.** Log in as Admin, Customer and Guest once, watch them side by side, and let Cursor, Codex or Claude Code test every role.
+<h1 align="center">SessionForge</h1>
+
+<div align="center">
+
+**Your app's users, ready for your coding agent.** Log in as Admin, Customer and Guest once, watch them side by side, and let Cursor, Codex or Claude Code test every role.
 
 [![CI](https://github.com/Hamzasohail123/sessionforge/actions/workflows/ci.yml/badge.svg)](https://github.com/Hamzasohail123/sessionforge/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/Hamzasohail123/sessionforge?include_prereleases)](https://github.com/Hamzasohail123/sessionforge/releases)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](./LICENSE)
 [![Platforms](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey)](#prebuilt-downloads)
 
+**[Download v0.1.1](https://github.com/Hamzasohail123/sessionforge/releases/latest)** for macOS, Windows or Linux
+
+[Chrome extension](https://chromewebstore.google.com/detail/sessionforge-import/ofdnckgaoffbablejmfimchoifdlhjbf) · [MCP setup](#mcp-server--agent-bridge-cursor-codex-and-claude-code) · [Docs for agents](./docs/agents/sessionforge.md) · [Roadmap](./ROADMAP.md) · [Contributing](./CONTRIBUTING.md)
+
+</div>
+
 <!-- Demo GIF goes here once recorded: ![SessionForge: an agent checks Admin and Customer side by side](./docs/release/demo.gif) -->
 
-**[Download v0.1.1](https://github.com/Hamzasohail123/sessionforge/releases/latest)** for macOS, Windows or Linux.
-
-Get notified of new versions: on GitHub click **Watch → Custom → Releases**. From the next version on, SessionForge itself tells you when an update is out (Settings → General → Check for updates).
+Get notified of new versions: on GitHub click **Watch → Custom → Releases**. SessionForge v0.1.1 and later also tell you when an update is out (Settings → General → Check for updates).
 
 - **Every role, logged in, side by side.** Each session has its own cookies and storage; split view shows up to four at once.
 - **One click from Chrome.** The extension's "Send to SessionForge" copies a real Chrome login into a new session.

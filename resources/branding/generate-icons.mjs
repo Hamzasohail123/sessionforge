@@ -38,7 +38,9 @@ const icons = [
 // Chrome Web Store promo tiles: JPEG or 24-bit PNG, no alpha. The marquee is the small tile's layout scaled 2.4x.
 const promos = [
   { source: 'sessionforge-promo.svg', output: 'chrome-extension/store/promo-small-440x280.png', width: 440, height: 280, icon: 164 },
-  { source: 'sessionforge-promo-marquee.svg', output: 'chrome-extension/store/promo-marquee-1400x560.png', width: 1400, height: 560, icon: 394 }
+  { source: 'sessionforge-promo-marquee.svg', output: 'chrome-extension/store/promo-marquee-1400x560.png', width: 1400, height: 560, icon: 394 },
+  // README banner, not a store tile: transparent outside its rounded card so it suits GitHub's light and dark themes
+  { source: 'sessionforge-readme-banner.svg', output: 'docs/assets/readme-banner.png', width: 1280, height: 400, icon: 280, alpha: true }
 ]
 
 /**
@@ -201,15 +203,18 @@ async function main() {
         return result
       }, Object.keys(PROMO_FONTS))
       if (missing.length) throw new Error(`Promo font weights did not load: ${missing.join(', ')}`)
-      const png = await promoPage.screenshot({ type: 'png' })
-      // IHDR: width, height, bit depth, colour type. The store wants 8-bit truecolour (type 2), no alpha.
+      const png = await promoPage.screenshot({ type: 'png', omitBackground: Boolean(promo.alpha) })
+      // IHDR: width, height, bit depth, colour type. The store wants 8-bit truecolour (type 2), no alpha;
+      // the README banner is 8-bit truecolour with alpha (type 6).
       const [width, height, depth, colourType] = [png.readUInt32BE(16), png.readUInt32BE(20), png[24], png[25]]
-      if (width !== promo.width || height !== promo.height || depth !== 8 || colourType !== 2) {
-        throw new Error(`${promo.output}: got ${width}x${height}, ${depth}-bit colour type ${colourType}; need ${promo.width}x${promo.height} 8-bit RGB`)
+      const wantType = promo.alpha ? 6 : 2
+      const wantName = promo.alpha ? '8-bit RGBA' : '8-bit RGB'
+      if (width !== promo.width || height !== promo.height || depth !== 8 || colourType !== wantType) {
+        throw new Error(`${promo.output}: got ${width}x${height}, ${depth}-bit colour type ${colourType}; need ${promo.width}x${promo.height} ${wantName}`)
       }
       await write(promo.output, png)
       await promoPage.close()
-      console.log(`wrote ${promo.output} (${promo.width}x${promo.height}, 24-bit RGB)`)
+      console.log(`wrote ${promo.output} (${promo.width}x${promo.height}, ${promo.alpha ? '32-bit RGBA' : '24-bit RGB'})`)
     }
   } finally {
     await browser.close()

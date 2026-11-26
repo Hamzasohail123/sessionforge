@@ -1,0 +1,61 @@
+# SessionForge
+
+> SessionForge is a free, open-source desktop browser that keeps each logged-in user in its own isolated session, shows them side by side, and lets Cursor, Codex and Claude Code test every role through a local MCP server.
+
+- Free and open source under Apache-2.0. No paid version of the desktop app, no account, no cloud sync, no telemetry.
+- Runs on macOS (Apple Silicon and Intel), Windows 10/11 and Linux (.deb and AppImage). Electron app, so every session is Chromium.
+- Each session has its own cookies, storage and cache. Split view shows up to four sessions in one window.
+- The SessionForge Import Chrome extension copies a logged-in Chrome tab into a new session.
+- MCP server (Agent Bridge) at http://127.0.0.1:34568/mcp, plus a stdio bridge. Off by default, 127.0.0.1 only, bearer token, per-session Hidden/Read/Control access, production sessions read-only for agents unless confirmed, Stop button and activity log. 17 tools: list_sessions, open, navigate, back, reload, snapshot, click, type, select, press, wait_for, screenshot, console_logs, network_log, send_request_as, get_layout, set_layout.
+- Not supported: Google sign-in inside the app (use Sign in with Chrome), arbitrary JavaScript, file uploads and downloads for agents, Firefox or WebKit, running tests in CI. Exporting sessions to Playwright is planned, not shipped.
+
+## Docs
+
+- [Chrome extension (SessionForge Import)](https://hamzasohail123.github.io/sessionforge/extension/): one-click Chrome login import, Sign in with Chrome for Google, permissions and privacy
+- [Getting started](https://hamzasohail123.github.io/sessionforge/docs/getting-started/): install, first sessions, Chrome extension, MCP setup for Cursor, Codex and Claude Code
+<!-- docs -->
+- [Install SessionForge](https://hamzasohail123.github.io/sessionforge/docs/install/): Download SessionForge for macOS, Windows or Linux, get past the first-launch warnings of the unsigned builds, or run it from source with Node.js.
+- [Quick start](https://hamzasohail123.github.io/sessionforge/docs/getting-started/): Create your first SessionForge sessions, log in once per role, open split view and send an existing login from Chrome. The five steps from the README.
+- [Sessions](https://hamzasohail123.github.io/sessionforge/docs/sessions/): Each SessionForge session has its own cookies, storage and cache. How to create, rename, recolour, close, reopen and permanently delete sessions.
+- [Split view](https://hamzasohail123.github.io/sessionforge/docs/split-view/): Show up to four SessionForge sessions side by side: single, two columns, two rows or a 2x2 grid, with one focused pane that the toolbar acts on.
+- [Environment safety](https://hamzasohail123.github.io/sessionforge/docs/environment-safety/): Sessions tagged production get a red PROD label, and coding agents can only read them unless you confirm by typing the session name in Settings.
+- [Keyboard shortcuts](https://hamzasohail123.github.io/sessionforge/docs/keyboard-shortcuts/): Every SessionForge keyboard shortcut. They work in the toolbar and inside pages and act on the focused pane: Cmd on macOS, Ctrl on Windows and Linux.
+- [Signing in with Google](https://hamzasohail123.github.io/sessionforge/docs/google-sign-in/): Google blocks sign-in inside embedded browsers such as SessionForge. Use the Sign in with Chrome banner and the extension to bring the login back in two clicks.
+- [Chrome extension](https://hamzasohail123.github.io/sessionforge/docs/chrome-extension/): SessionForge Import copies the login of the current Chrome tab into a new SessionForge session in one click. How it works and how to install it.
+- [Sign in with Chrome](https://hamzasohail123.github.io/sessionforge/docs/sign-in-with-chrome/): How SessionForge hands a Google login over to Chrome and back: the pane banner, the extension button, the 10-minute request and its limits.
+- [Extension privacy and permissions](https://hamzasohail123.github.io/sessionforge/docs/extension-privacy/): Exactly what the SessionForge Import extension reads, when, where it sends it, what it stores, and the permissions in its manifest.json.
+- [Extension troubleshooting](https://hamzasohail123.github.io/sessionforge/docs/extension-troubleshooting/): What the SessionForge Import popup messages mean and what to do: SessionForge not running, site access refused, expired requests, missing buttons.
+- [MCP Server / Agent Bridge](https://hamzasohail123.github.io/sessionforge/docs/mcp/): The local MCP server in SessionForge connects Cursor, Codex, Claude Code and other MCP clients to your logged-in sessions. What it does and its limits.
+- [Set up Cursor, Codex or Claude Code](https://hamzasohail123.github.io/sessionforge/docs/mcp-setup/): Turn on the SessionForge MCP server, put the token in your shell, and add the server to Cursor, Codex or Claude Code. Snippets and connection checks.
+- [stdio bridge](https://hamzasohail123.github.io/sessionforge/docs/stdio-bridge/): Connect an MCP client to SessionForge with a command instead of a URL: the dependency-free sessionforge-mcp.mjs bridge for Cursor, Codex and Claude Code.
+- [Approvals in your editor](https://hamzasohail123.github.io/sessionforge/docs/approvals/): Choose whether Cursor, Claude Code or Codex asks before running SessionForge tools: the three presets in Settings, the files they change, and their limits.
+- [Tools reference](https://hamzasohail123.github.io/sessionforge/docs/mcp-tools/): All 17 SessionForge MCP tools, from list_sessions to set_layout, with the access level each one needs and a one-line description of what it does.
+- [Security model](https://hamzasohail123.github.io/sessionforge/docs/mcp-security/): How the SessionForge MCP server is limited: localhost only, Origin refused, bearer token in the OS keyring, per-session access, read-only production and Stop.
+- [MCP troubleshooting](https://hamzasohail123.github.io/sessionforge/docs/mcp-troubleshooting/): Fix common SessionForge MCP problems: port 34568 in use, 401 after rotating the token, the stdio bridge saying SessionForge is not running, ui_busy.
+- [Roadmap](https://hamzasohail123.github.io/sessionforge/docs/roadmap/): What is next for SessionForge: network log and request rules, the Send as panel, device emulation per pane, and signed builds. A plan, not a promise.
+- [Contributing](https://hamzasohail123.github.io/sessionforge/docs/contributing/): How to contribute to SessionForge: set up the development environment, run the Playwright tests, and open a pull request. Free and open source under Apache-2.0.
+- [Privacy](https://hamzasohail123.github.io/sessionforge/docs/privacy/): SessionForge collects no data: no analytics, crash reports or telemetry. What it stores locally, and the one daily update check you can turn off.
+- [Security](https://hamzasohail123.github.io/sessionforge/docs/security/): How to report a SessionForge vulnerability privately, which versions are supported, best practices when you use it, and its documented known limits.
+<!-- /docs -->
+- [README](https://github.com/Hamzasohail123/sessionforge#readme): full documentation
+- [Instructions for agents](https://github.com/Hamzasohail123/sessionforge/blob/main/docs/agents/sessionforge.md): rules and a typical tool flow
+- [Roadmap](https://github.com/Hamzasohail123/sessionforge/blob/main/ROADMAP.md)
+- [Privacy](https://github.com/Hamzasohail123/sessionforge/blob/main/PRIVACY.md)
+- [Security](https://github.com/Hamzasohail123/sessionforge/blob/main/SECURITY.md)
+
+## Use cases
+
+- [Test multiple user roles at once](https://hamzasohail123.github.io/sessionforge/use-cases/multi-role-testing/)
+- [Let Claude Code, Cursor or Codex test your app while logged in](https://hamzasohail123.github.io/sessionforge/use-cases/coding-agent-browser/)
+- [Exploratory QA and filling a test sheet with your agent](https://hamzasohail123.github.io/sessionforge/use-cases/exploratory-qa/)
+
+## Comparisons
+
+- [SessionForge vs Chrome profiles](https://hamzasohail123.github.io/sessionforge/compare/chrome-profiles/)
+- [SessionForge vs Playwright](https://hamzasohail123.github.io/sessionforge/compare/playwright/)
+
+## Download
+
+- [Latest release](https://github.com/Hamzasohail123/sessionforge/releases/latest)
+- [Chrome extension](https://chromewebstore.google.com/detail/sessionforge-import/ofdnckgaoffbablejmfimchoifdlhjbf)
+- [Source code](https://github.com/Hamzasohail123/sessionforge)

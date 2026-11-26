@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; media-src 'self'; style-src 'self'; script-src 'self'; font-src 'self'; connect-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>SessionForge Import: a Chrome login in one click</title>
+<meta name="description" content="SessionForge Import is a free Chrome extension that copies the login of a Chrome tab into a new SessionForge session, on your computer only. How it works.">
+<link rel="canonical" href="https://hamzasohail123.github.io/sessionforge/extension/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SessionForge">
+<meta property="og:title" content="SessionForge Import: a Chrome login in one click">
+<meta property="og:description" content="SessionForge Import is a free Chrome extension that copies the login of a Chrome tab into a new SessionForge session, on your computer only. How it works.">
+<meta property="og:url" content="https://hamzasohail123.github.io/sessionforge/extension/">
+<meta property="og:image" content="https://hamzasohail123.github.io/sessionforge/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SessionForge icon with the text: Every role. One window.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SessionForge Import: a Chrome login in one click">
+<meta name="twitter:description" content="SessionForge Import is a free Chrome extension that copies the login of a Chrome tab into a new SessionForge session, on your computer only. How it works.">
+<meta name="twitter:image" content="https://hamzasohail123.github.io/sessionforge/og.png">
+<!-- partial:head -->
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<link rel="icon" href="../favicon.ico" sizes="48x48">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="manifest" href="../site.webmanifest">
+<!-- /partial:head -->
+<link rel="stylesheet" href="../assets/css/site.css">
+<script src="../assets/js/theme.js"></script>
+<script src="../assets/js/site.js" defer></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "SessionForge Import",
+      "description": "Chrome extension that copies the login of the current Chrome tab into a new SessionForge session on the same computer (127.0.0.1 only).",
+      "applicationCategory": "BrowserApplication",
+      "operatingSystem": "Chrome",
+      "softwareVersion": "1.4.0",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "license": "https://www.apache.org/licenses/LICENSE-2.0",
+      "url": "https://chromewebstore.google.com/detail/sessionforge-import/ofdnckgaoffbablejmfimchoifdlhjbf",
+      "isPartOf": { "@type": "SoftwareApplication", "name": "SessionForge", "url": "https://hamzasohail123.github.io/sessionforge/" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hamzasohail123.github.io/sessionforge/" },
+        { "@type": "ListItem", "position": 2, "name": "Chrome extension", "item": "https://hamzasohail123.github.io/sessionforge/extension/" }
+      ]
+    },
+    {
+      "@type": "TechArticle",
+      "headline": "SessionForge Import: send a Chrome login to SessionForge in one click",
+      "description": "SessionForge Import is a free Chrome extension that copies the login of a Chrome tab into a new SessionForge session, on your computer only. How it works.",
+      "about": { "@type": "SoftwareApplication", "name": "SessionForge Import" },
+      "url": "https://hamzasohail123.github.io/sessionforge/extension/"
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<!-- partial:header -->
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="../" aria-label="SessionForge, home">
+      <svg class="logo-mark" width="28" height="28" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="#0b112b"/><path fill="#22d3ee" fill-rule="evenodd" d="M6 4h6a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm0 2v6h6V6zM20 4h6a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm0 2v6h6V6zM6 18h6a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2zm0 2v6h6v-6zM20 18h6a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-6a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2zm0 2v6h6v-6z"/></svg>
+      <span>SessionForge</span>
+    </a>
+    <nav id="site-nav" class="nav" aria-label="Main">
+      <a href="../#features">Features</a>
+      <a href="../extension/" aria-current="page">Extension</a>
+      <a href="../#use-cases">Use cases</a>
+      <a href="../#mcp">MCP</a>
+      <a href="../docs/">Docs</a>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-ghost btn-sm gh-link" href="https://github.com/Hamzasohail123/sessionforge" aria-label="Star on GitHub">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-2.9-5.4 2.9 1.1-6-4.5-4.2 6.1-.8z"/></svg>
+        <span class="gh-label">Star on GitHub</span>
+      </a>
+      <button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Switch to light theme">
+        <svg class="icon icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+        <svg class="icon icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <a class="btn btn-primary btn-sm header-download" href="https://github.com/Hamzasohail123/sessionforge/releases/latest">Download<span class="label-long">&nbsp;for free</span></a>
+      <button class="icon-btn menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+<!-- /partial:header -->
+
+<main id="main">
+  <div class="container page-hero">
+    <nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../">Home</a></li><li aria-current="page">Chrome extension</li></ol></nav>
+    <span class="eyebrow">Chrome extension · version 1.4.0</span>
+    <h1>SessionForge Import: send a Chrome login to SessionForge in one click</h1>
+    <p class="lead">You are already logged in to your app in Chrome. Click SessionForge Import, then Send to SessionForge, and the same login opens in a new SessionForge session, in a pane.</p>
+    <div class="cta-row ext-cta">
+      <a class="btn btn-primary" href="https://chromewebstore.google.com/detail/sessionforge-import/ofdnckgaoffbablejmfimchoifdlhjbf">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        Add to Chrome
+      </a>
+      <a class="btn btn-secondary" href="#install">Load unpacked instead</a>
+    </div>
+    <p class="cta-note">Free, Apache-2.0. Talks only to SessionForge on 127.0.0.1. Needs the <a href="../#download">SessionForge desktop app</a> running.</p>
+  </div>
+
+  <div class="container article">
+    <div class="prose">
+      <h2 id="how-it-works">How it works</h2>
+      <ol>
+        <li>Log in to a site in Chrome as usual.</li>
+        <li>Click the SessionForge Import icon. The first time, a short notice says what it reads, when, where it goes and how to stop it. Click <strong>Agree</strong>. Nothing is read or sent before that, and <strong>Not now</strong> stores nothing.</li>
+        <li>Click <strong>Send to SessionForge</strong>. The first time you send from a site, Chrome asks you to allow access to that site.</li>
+        <li>SessionForge creates a session, names it after the e-mail address in the tab title (Gmail titles have one) or else the hostname, and opens the page in a free pane, already logged in.</li>
+      </ol>
+    </div>
+
+    <div class="shot-row" aria-label="The extension popup, step by step">
+      <figure class="frame frame-plain fit">
+        <a class="zoom" href="../assets/shots/popup-consent.webp" data-zoom><img src="../assets/shots/popup-consent-1x.webp" srcset="../assets/shots/popup-consent-1x.webp 1x, ../assets/shots/popup-consent.webp 2x" width="352" height="585" loading="lazy" decoding="async" alt="The SessionForge Import popup the first time: Before you start, with what it reads, when, where it goes, site access, what it stores and how to stop it, and the buttons Agree and Not now."></a>
+        <figcaption>1. First run: the notice. Nothing is read until you click Agree.</figcaption>
+      </figure>
+      <figure class="frame frame-plain fit">
+        <a class="zoom" href="../assets/shots/popup-ready.webp" data-zoom><img src="../assets/shots/popup-ready-1x.webp" srcset="../assets/shots/popup-ready-1x.webp 1x, ../assets/shots/popup-ready.webp 2x" width="352" height="285" loading="lazy" decoding="async" alt="The popup ready to send: Current site localhost, site access Allowed, and a Send to SessionForge button."></a>
+        <figcaption>2. Ready: the current site and its access.</figcaption>
+      </figure>
+      <figure class="frame frame-plain fit">
+        <a class="zoom" href="../assets/shots/popup-sent.webp" data-zoom><img src="../assets/shots/popup-sent-1x.webp" srcset="../assets/shots/popup-sent-1x.webp 1x, ../assets/shots/popup-sent.webp 2x" width="352" height="285" loading="lazy" decoding="async" alt="The popup after sending, with a green message: Sent to SessionForge, opened in a pane."></a>
+        <figcaption>3. Sent: the login is in SessionForge.</figcaption>
+      </figure>
+    </div>
+
+    <figure class="frame bleed">
+      <div class="frame-bar" aria-hidden="true"><i></i><i></i><i></i><span>SessionForge</span></div>
+      <a class="zoom" href="../assets/shots/ext-imported.webp" data-zoom><img src="../assets/shots/ext-imported-1x.webp" srcset="../assets/shots/ext-imported-1x.webp 1x, ../assets/shots/ext-imported.webp 2x" width="1400" height="400" loading="lazy" decoding="async" alt="SessionForge right after the import: a new session named localhost shows the demo app's My orders page for Jamie Rivera, logged in, and a notice says Imported localhost."></a>
+    </figure>
+    <p class="caption">In SessionForge: the new session opened in a pane, logged in as the same user. Captured with a local demo app.</p>
+
+    <div class="prose">
+      <h2 id="google">Sign in with Chrome, for Google</h2>
+      <p>Google blocks Google account sign-in inside embedded browsers, and SessionForge is one. SessionForge does not disguise itself to get around this. Instead, when a pane reaches a Google sign-in page, a banner in that pane offers <strong>Sign in with Chrome</strong>:</p>
+      <ol>
+        <li>Click <strong>Sign in with Chrome</strong>. Your browser opens the right sign-in page.</li>
+        <li>Sign in there as usual.</li>
+        <li>Click SessionForge Import and choose <strong>Send to &lt;session&gt; (SessionForge asked for this)</strong>.</li>
+      </ol>
+      <p>The login goes into the session that asked for it, and the waiting pane continues where it left off. This works for Google services such as Gmail and YouTube, and for "Sign in with Google" on other sites. A request is valid for 10 minutes and works once. It needs extension version 1.2.0 or later and SessionForge's import server on its default port 34567.</p>
+    </div>
+
+    <div class="stack-shots">
+      <figure class="frame frame-plain fit">
+        <a class="zoom" href="../assets/shots/ext-banner.webp" data-zoom><img src="../assets/shots/ext-banner-1x.webp" srcset="../assets/shots/ext-banner-1x.webp 1x, ../assets/shots/ext-banner.webp 2x" width="700" height="136" loading="lazy" decoding="async" alt="A SessionForge pane header with the banner: Google doesn't allow signing in inside embedded browsers like SessionForge. Sign in with Chrome and send the login back, two clicks. Buttons Sign in with Chrome, Dismiss and Get the extension."></a>
+        <figcaption>The banner on a pane that reached a sign-in page.</figcaption>
+      </figure>
+      <figure class="frame frame-plain fit">
+        <a class="zoom" href="../assets/shots/ext-waiting.webp" data-zoom><img src="../assets/shots/ext-waiting-1x.webp" srcset="../assets/shots/ext-waiting-1x.webp 1x, ../assets/shots/ext-waiting.webp 2x" width="700" height="136" loading="lazy" decoding="async" alt="The banner while SessionForge waits: Finish signing in in Google Chrome, then click the SessionForge Import extension and choose Send to Admin, with the expiry time and buttons Open again and Cancel."></a>
+        <figcaption>After the click: SessionForge waits for the login.</figcaption>
+      </figure>
+    </div>
+
+    <div class="shot-row">
+      <figure class="frame frame-plain fit">
+        <a class="zoom" href="../assets/shots/popup-request.webp" data-zoom><img src="../assets/shots/popup-request-1x.webp" srcset="../assets/shots/popup-request-1x.webp 1x, ../assets/shots/popup-request.webp 2x" width="352" height="364" loading="lazy" decoding="async" alt="The popup with a button in the session's colour: Send to Admin (SessionForge asked for this), sends cookies for google.com, localhost only. Below it, Send to new session."></a>
+        <figcaption>In Chrome: one button per waiting session, with the domains it sends.</figcaption>
+      </figure>
+      <figure class="frame frame-plain fit">
+        <a class="zoom" href="../assets/shots/popup-request-sent.webp" data-zoom><img src="../assets/shots/popup-request-sent-1x.webp" srcset="../assets/shots/popup-request-sent-1x.webp 1x, ../assets/shots/popup-request-sent.webp 2x" width="352" height="380" loading="lazy" decoding="async" alt="The popup after sending: Sent to Admin. Check the SessionForge pane."></a>
+        <figcaption>Sent into the session that asked.</figcaption>
+      </figure>
+    </div>
+
+    <figure class="frame bleed">
+      <div class="frame-bar" aria-hidden="true"><i></i><i></i><i></i><span>SessionForge</span></div>
+      <a class="zoom" href="../assets/shots/ext-signin-done.webp" data-zoom><img src="../assets/shots/ext-signin-done-1x.webp" srcset="../assets/shots/ext-signin-done-1x.webp 1x, ../assets/shots/ext-signin-done.webp 2x" width="1400" height="540" loading="lazy" decoding="async" alt="SessionForge after the hand-off: the Admin pane now shows the demo app's dashboard logged in as Morgan Lee, and a notice says Login sent from Chrome: Admin."></a>
+    </figure>
+    <p class="caption">The waiting Admin pane continued, logged in. In this capture a local test page stands in for Google's sign-in page; no Google account was used.</p>
+
+    <div class="prose">
+      <div class="note">
+        <p><strong>One Google account per Chrome profile.</strong> When several Google accounts are signed in to one Chrome profile, every login sent from that profile carries all of them, and signing out in one session can sign out the others. Use a separate Chrome profile per Google account. A hand-off sends cookies only, not localStorage, so sites that keep their login in localStorage or IndexedDB stay signed out; use Send to new session for those.</p>
+      </div>
+
+      <h2 id="privacy">Privacy and permissions</h2>
+      <ul>
+        <li><strong>No site access at install.</strong> The first time you send from a site, Chrome asks you to allow that site (and its subdomains). If you don't, nothing is read or sent.</li>
+        <li><strong>Reads only when you click Send:</strong> the cookies Chrome sends to that page plus its site's domain cookies, the page's localStorage (current origin only), and the page URL, title and favicon URL. A "Send to &lt;session&gt;" button reads only the cookies of the domains shown on it. Not copied: sessionStorage, IndexedDB, history, bookmarks, saved passwords.</li>
+        <li><strong>Sends only to SessionForge on your computer:</strong> <code>POST http://127.0.0.1:34567/import</code>. Opening the popup also asks <code>GET http://127.0.0.1:34567/pending</code> which sessions wait for a login.</li>
+        <li><strong>One version check a day</strong>, after you agreed: it asks GitHub (<code>api.github.com</code>) for the latest SessionForge version number and carries none of your data. The popup shows a download link when your desktop app is older.</li>
+        <li><strong>Stores</strong> your answer to the notice and the last version check in <code>chrome.storage.local</code>, and until Chrome closes, the site it last asked access for.</li>
+        <li>No analytics, no telemetry, no remote code.</li>
+      </ul>
+      <p>The exact permissions in <code>manifest.json</code>:</p>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Extension permissions">
+        <table>
+          <thead><tr><th scope="col">Permission</th><th scope="col">Why</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><code>activeTab</code></th><td>Read the current tab's address and title when you open the popup</td></tr>
+            <tr><th scope="row"><code>cookies</code></th><td>Read the site's cookies when you click Send</td></tr>
+            <tr><th scope="row"><code>scripting</code></th><td>Read the page's localStorage when you click Send</td></tr>
+            <tr><th scope="row"><code>storage</code></th><td>Remember your answer to the notice and the last version check</td></tr>
+            <tr><th scope="row"><code>http://127.0.0.1:34567/*</code> (host)</th><td>Talk to SessionForge's import server on your computer</td></tr>
+            <tr><th scope="row"><code>*://*/*</code> (optional host)</th><td>Asked per site, only when you send from it</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>To stop it, remove site access in <code>chrome://extensions</code> → SessionForge Import → Details → Site access, or uninstall it. Full statement: <a href="https://github.com/Hamzasohail123/sessionforge/blob/main/chrome-extension/store/PRIVACY.md">store/PRIVACY.md</a>.</p>
+
+      <h2 id="install">Install</h2>
+      <p>From the <a href="https://chromewebstore.google.com/detail/sessionforge-import/ofdnckgaoffbablejmfimchoifdlhjbf">Chrome Web Store</a> (recommended). Or load it unpacked, for working on the extension:</p>
+      <ol>
+        <li>Get the <code>chrome-extension/</code> folder: clone the repo, or download the source zip from the release.</li>
+        <li>Open <code>chrome://extensions/</code> and turn on <strong>Developer mode</strong> (top right).</li>
+        <li>Click <strong>Load unpacked</strong> and select the <code>chrome-extension/</code> folder.</li>
+        <li>Optional: pin it with the puzzle-piece icon in the toolbar.</li>
+      </ol>
+      <p>Built and tested for Chrome (103 or later). Edge and Brave use the same extension format and should work, but they are untested. Firefox is not supported.</p>
+
+      <h2 id="troubleshooting">Troubleshooting</h2>
+      <ul>
+        <li><strong>"SessionForge is not running (could not reach 127.0.0.1:34567)":</strong> start SessionForge and check that nothing else uses port 34567.</li>
+        <li><strong>"Chrome did not allow access to …, so nothing was sent":</strong> click Send again and allow access, or click <strong>Allow access in a tab</strong>.</li>
+        <li><strong>"Only http(s) pages can be sent":</strong> the tab is a <code>chrome://</code> page, the Web Store or a file. Open the site itself.</li>
+        <li><strong>"This request expired or was already used":</strong> click Sign in with Chrome in SessionForge again. A request lasts 10 minutes and works once.</li>
+        <li><strong>No "Send to &lt;session&gt;" button:</strong> update the extension to 1.2.0 or later and check that SessionForge uses port 34567.</li>
+        <li><strong>Imported but not logged in:</strong> some sites keep the login outside cookies and localStorage. Log in once inside SessionForge; the session keeps it.</li>
+      </ul>
+      <p>All messages: <a href="https://github.com/Hamzasohail123/sessionforge/blob/main/chrome-extension/README.md#troubleshooting">chrome-extension/README.md</a>.</p>
+    </div>
+
+    <div class="cta-band">
+      <h2>Bring your Chrome logins into SessionForge</h2>
+      <p>Free. Works with the SessionForge desktop app for macOS, Windows and Linux.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://chromewebstore.google.com/detail/sessionforge-import/ofdnckgaoffbablejmfimchoifdlhjbf">Add to Chrome</a>
+        <a class="btn btn-secondary" href="https://github.com/Hamzasohail123/sessionforge/releases/latest">Get the desktop app</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- partial:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="../" aria-label="SessionForge, home">
+          <svg class="logo-mark" width="28" height="28" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="#0b112b"/><path fill="#22d3ee" fill-rule="evenodd" d="M6 4h6a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm0 2v6h6V6zM20 4h6a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm0 2v6h6V6zM6 18h6a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2zm0 2v6h6v-6zM20 18h6a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-6a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2zm0 2v6h6v-6z"/></svg>
+          <span>SessionForge</span>
+        </a>
+        <p>Every role. One window.</p>
+      </div>
+      <div>
+        <h2>Product</h2>
+        <ul>
+          <li><a href="../#features">Features</a></li>
+          <li><a href="../#download">Download</a></li>
+          <li><a href="../extension/" aria-current="page">Chrome extension</a></li>
+          <li><a href="https://chromewebstore.google.com/detail/sessionforge-import/ofdnckgaoffbablejmfimchoifdlhjbf">Add to Chrome</a></li>
+          <li><a href="../docs/getting-started/">Getting started</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Use cases</h2>
+        <ul>
+          <li><a href="../use-cases/multi-role-testing/">Multi-role testing</a></li>
+          <li><a href="../use-cases/coding-agent-browser/">Browser for coding agents</a></li>
+          <li><a href="../use-cases/exploratory-qa/">Exploratory QA</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Compare</h2>
+        <ul>
+          <li><a href="../compare/chrome-profiles/">vs Chrome profiles</a></li>
+          <li><a href="../compare/playwright/">vs Playwright</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Project</h2>
+        <ul>
+          <li><a href="https://github.com/Hamzasohail123/sessionforge">GitHub</a></li>
+          <li><a href="https://github.com/Hamzasohail123/sessionforge/releases">Releases</a></li>
+          <li><a href="https://github.com/Hamzasohail123/sessionforge/blob/main/ROADMAP.md">Roadmap</a></li>
+          <li><a href="https://github.com/Hamzasohail123/sessionforge/blob/main/CONTRIBUTING.md">Contributing</a></li>
+          <li><a href="https://github.com/Hamzasohail123/sessionforge/blob/main/PRIVACY.md">Privacy</a></li>
+          <li><a href="https://github.com/Hamzasohail123/sessionforge/blob/main/SECURITY.md">Security</a></li>
+          <li><a href="https://github.com/Hamzasohail123/sessionforge/blob/main/LICENSE">License (Apache-2.0)</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-legal">Free and open source under Apache-2.0. No account, no cloud, no telemetry. This site has no analytics or cookies.</p>
+  </div>
+</footer>
+<!-- /partial:footer -->
+</body>
+</html>

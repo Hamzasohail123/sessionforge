@@ -1,0 +1,30 @@
+<!-- {"title": "Install SessionForge", "description": "Download SessionForge for macOS, Windows or Linux, get past the first-launch warnings of the unsigned builds, or run it from source with Node.js.", "lead": "Get the file for your system from GitHub Releases, or run SessionForge from source.", "nav": "Install"} -->
+<h2>Prebuilt downloads</h2>
+<p>Download from <a href="https://github.com/Hamzasohail123/sessionforge/releases/latest">GitHub Releases</a>. <code>SHA256SUMS.txt</code> in the release lists the checksums.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Download files"><table>
+<thead><tr><th scope="col">System</th><th scope="col">File</th></tr></thead>
+<tbody>
+<tr><th scope="row">macOS, Apple Silicon</th><td><code>SessionForge-&lt;version&gt;-mac-arm64.dmg</code></td></tr>
+<tr><th scope="row">macOS, Intel</th><td><code>SessionForge-&lt;version&gt;-mac-x64.dmg</code></td></tr>
+<tr><th scope="row">Windows 10/11</th><td><code>SessionForge-&lt;version&gt;-win-x64-setup.exe</code></td></tr>
+<tr><th scope="row">Linux (Debian, Ubuntu)</th><td><code>SessionForge-&lt;version&gt;-linux-amd64.deb</code></td></tr>
+<tr><th scope="row">Linux (other distributions)</th><td><code>SessionForge-&lt;version&gt;-linux-x86_64.AppImage</code></td></tr>
+</tbody></table></div>
+<h2>macOS first launch</h2>
+<p>The app is ad-hoc signed but not notarized (there is no Apple Developer account yet), so macOS blocks the first open. Drag SessionForge to Applications and open it once. Then either click <strong>Open Anyway</strong> in System Settings → Privacy &amp; Security (required on macOS 15 and later), or run:</p>
+<pre data-lang="sh"><code>xattr -dr com.apple.quarantine /Applications/SessionForge.app</code></pre>
+<h2>Windows first launch</h2>
+<p>The installer is unsigned, so SmartScreen shows "Windows protected your PC". Click <strong>More info → Run anyway</strong>.</p>
+<h2>Linux</h2>
+<p>On Ubuntu 23.10 and later, use the .deb. Its install script sets up Chromium's sandbox helper, so the app starts with the sandbox on.</p>
+<pre data-lang="sh"><code>sudo apt install ./SessionForge-*-linux-amd64.deb</code></pre>
+<p>The AppImage works on distributions that allow unprivileged user namespaces:</p>
+<pre data-lang="sh"><code>chmod +x SessionForge-*.AppImage &amp;&amp; ./SessionForge-*.AppImage</code></pre>
+<div class="callout warning"><p><strong>Avoid <code>--no-sandbox</code>.</strong> On Ubuntu 23.10 and later AppArmor blocks those namespaces and the AppImage exits with a SUID sandbox error. <code>--no-sandbox</code> starts it, but turns off Chromium's sandbox for every page you open. Prefer the .deb.</p></div>
+<h2>Run from source</h2>
+<p>Needs Node.js 20 or 22, npm and git. On macOS run <code>xcode-select --install</code> once; on Windows install the "Desktop development with C++" workload of Visual Studio Build Tools if <code>rebuild:native</code> asks for it.</p>
+<pre data-lang="sh"><code>git clone https://github.com/Hamzasohail123/sessionforge
+cd sessionforge
+npm install
+npm run rebuild:native
+npm run electron:dev</code></pre>

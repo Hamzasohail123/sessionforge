@@ -1,0 +1,13 @@
+<!-- {"title": "Extension troubleshooting", "description": "What the SessionForge Import popup messages mean and what to do: SessionForge not running, site access refused, expired requests, missing buttons.", "lead": "The common popup messages and how to fix them.", "nav": "Troubleshooting"} -->
+<div class="table-wrap" tabindex="0" role="region" aria-label="Extension messages"><table>
+<thead><tr><th scope="col">Message</th><th scope="col">What to do</th></tr></thead>
+<tbody>
+<tr><td>SessionForge is not running (could not reach 127.0.0.1:34567)</td><td>Start SessionForge; check that nothing else uses port 34567</td></tr>
+<tr><td>Chrome did not allow access to …, so nothing was sent</td><td>Click Send again and allow access, or click <strong>Allow access in a tab</strong></td></tr>
+<tr><td>Only http(s) pages can be sent</td><td>The tab is a <code>chrome://</code> page, the Web Store or a file; open the site itself</td></tr>
+<tr><td>Session too large to import (over 5 MB)</td><td>Import from a page with less localStorage, or log in inside SessionForge</td></tr>
+<tr><td>This request expired or was already used</td><td>Click <strong>Sign in with Chrome</strong> in SessionForge again</td></tr>
+<tr><td>No "Send to &lt;session&gt;" button</td><td>Update or reload the extension (1.2.0 or later); check that SessionForge uses port 34567</td></tr>
+<tr><td>Imported but not logged in</td><td>The site keeps its login elsewhere (IndexedDB, sessionStorage). Log in once inside SessionForge</td></tr>
+</tbody></table></div>
+<p>All messages: <a href="https://github.com/Hamzasohail123/sessionforge/blob/main/chrome-extension/README.md#troubleshooting">chrome-extension/README.md</a>.</p>

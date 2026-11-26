@@ -1,0 +1,16 @@
+<!-- {"title": "Security", "description": "How to report a SessionForge vulnerability privately, which versions are supported, best practices when you use it, and its documented known limits.", "lead": "Please do not report security vulnerabilities through public GitHub issues."} -->
+<h2>Report a vulnerability</h2>
+<p>Use <a href="https://github.com/Hamzasohail123/sessionforge/security/advisories/new">GitHub Security Advisories</a>. You should receive a response within 48 hours. The project follows a 90-day disclosure timeline. Supported: 0.1.x.</p>
+<h2>Best practices</h2>
+<ul>
+<li>Keep it updated from <a href="https://github.com/Hamzasohail123/sessionforge/releases">GitHub Releases</a>. SessionForge tells you about new versions; it does not install them.</li>
+<li>Use OS-level disk encryption.</li>
+<li>Log out of production sessions when you are not testing.</li>
+</ul>
+<h2>Known limits</h2>
+<ul>
+<li>Local malware with your user's rights can read session data.</li>
+<li>Agents act with the session's real cookies.</li>
+<li>Closed shadow DOM and cross-origin iframes are not inspected by <code>snapshot</code>.</li>
+</ul>
+<p>Full policy: <a href="https://github.com/Hamzasohail123/sessionforge/blob/main/SECURITY.md">SECURITY.md</a>. The MCP server's limits: <a href="{{root}}docs/mcp-security/">Security model</a>.</p>

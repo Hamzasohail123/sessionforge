@@ -1,0 +1,12 @@
+<!-- {"title": "Sessions", "description": "Each SessionForge session has its own cookies, storage and cache. How to create, rename, recolour, close, reopen and permanently delete sessions.", "lead": "A session is one logged-in identity: its own cookies, localStorage, IndexedDB and cache, in one Chromium partition."} -->
+<h2>Create</h2>
+<p>Click <strong>New session</strong>, enter a name, pick a colour and an environment: Local, Staging, Production or Custom. A session's environment can't be changed after it is created.</p>
+<h2>Rename and recolour</h2>
+<p>Double-click a session in the session bar (or focus it and press <code>F2</code>), type, then <code>Enter</code> saves and <code>Escape</code> cancels. Clicking elsewhere also saves; an empty name keeps the old one. While renaming, click the dot to pick a colour.</p>
+<h2>Close and reopen</h2>
+<p>The <code>×</code> next to a session closes it after a confirmation. Its tabs close, but its logins stay on disk, and <code>Cmd/Ctrl+Shift+T</code> reopens it with its tabs. The same shortcut reopens closed tabs, newest first.</p>
+<p>SessionForge keeps your last 10 closed sessions and your last 25 closed tabs. Closing an 11th session deletes the oldest closed session for good, including its logins. Closing tabs never deletes a closed session.</p>
+<h2>Delete permanently</h2>
+<p><strong>Delete permanently</strong> in the close confirmation removes the session's cookies and storage. It can't be reopened.</p>
+<h2>Where data lives</h2>
+<p>All session data stays on your computer: <code>~/.config/sessionforge/</code> on Linux, <code>~/Library/Application Support/sessionforge/</code> on macOS and <code>%APPDATA%\sessionforge\</code> on Windows.</p>

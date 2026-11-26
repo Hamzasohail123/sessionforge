@@ -1,0 +1,16 @@
+<!-- {"title": "Sign in with Chrome", "description": "How SessionForge hands a Google login over to Chrome and back: the pane banner, the extension button, the 10-minute request and its limits.", "lead": "Sign in where Google allows it, in Chrome, and send the login into the SessionForge session that asked for it."} -->
+<ol>
+<li>In the pane's banner, click <strong>Sign in with Chrome</strong>. Your browser opens the right Google sign-in page (or the site's login page for "Sign in with Google" on another site).</li>
+<li>Sign in there as usual.</li>
+<li>Click the SessionForge Import extension and choose <strong>Send to &lt;session&gt; (SessionForge asked for this)</strong>.</li>
+</ol>
+<figure class="frame frame-plain fit doc-figure"><a class="zoom" href="{{root}}assets/shots/popup-request.webp" data-zoom><img src="{{root}}assets/shots/popup-request-1x.webp" srcset="{{root}}assets/shots/popup-request-1x.webp 1x, {{root}}assets/shots/popup-request.webp 2x" width="352" height="364" loading="lazy" decoding="async" alt="The popup with a button in the session colour: Send to Admin (SessionForge asked for this), sends cookies for google.com, localhost only."></a><figcaption>The button for the waiting session shows the domains it sends.</figcaption></figure>
+<p>The login goes into the session that asked for it (no new session), and the waiting pane continues where it left off. From the keyboard: press <code>Cmd/Ctrl+L</code>, then <code>Tab</code> until the banner's button is focused, and <code>Enter</code>.</p>
+<h2>Requirements and limits</h2>
+<ul>
+<li>SessionForge Import 1.2.0 or later in the browser that opens. SessionForge tries Chrome, then Chromium, Edge and Brave, else your default browser.</li>
+<li>SessionForge's import server on its default port 34567 (not changed with <code>SESSIONFORGE_IMPORT_PORT</code>).</li>
+<li>A request is valid for 10 minutes and works once.</li>
+<li>Only cookies are sent for a request. Sites that keep their login in localStorage or IndexedDB stay signed out; use Send to new session for those.</li>
+<li>For your own app the site must use https, except on localhost.</li>
+</ul>

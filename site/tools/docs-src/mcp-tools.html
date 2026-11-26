@@ -1,0 +1,31 @@
+<!-- {"title": "Tools reference", "description": "All 17 SessionForge MCP tools, from list_sessions to set_layout, with the access level each one needs and a one-line description of what it does.", "lead": "The MCP server has 17 tools. Read tools never change a page; Control tools act in the session.", "nav": "Tools reference"} -->
+<div class="table-wrap" tabindex="0" role="region" aria-label="MCP tools"><table>
+<thead><tr><th scope="col">Tool</th><th scope="col">Access</th><th scope="col">What it does</th></tr></thead>
+<tbody>
+<tr><td><code>list_sessions</code></td><td>Read</td><td>Your sessions (already logged in) with their tabs and your access. Call it first.</td></tr>
+<tr><td><code>open</code></td><td>Control</td><td>Open a URL in a session and show it in a pane.</td></tr>
+<tr><td><code>navigate</code></td><td>Control</td><td>Navigate a session tab to a URL.</td></tr>
+<tr><td><code>back</code></td><td>Control</td><td>Go back in a session tab's history.</td></tr>
+<tr><td><code>reload</code></td><td>Control</td><td>Reload a session tab.</td></tr>
+<tr><td><code>snapshot</code></td><td>Read</td><td>A compact page outline with element refs for click, type, select and press.</td></tr>
+<tr><td><code>click</code></td><td>Control</td><td>Click an element (ref or CSS selector) with a real mouse event.</td></tr>
+<tr><td><code>type</code></td><td>Control</td><td>Type into a text field; optionally press Enter.</td></tr>
+<tr><td><code>select</code></td><td>Control</td><td>Choose options of a <code>&lt;select&gt;</code> by value or label.</td></tr>
+<tr><td><code>press</code></td><td>Control</td><td>Press one key, optionally with modifiers.</td></tr>
+<tr><td><code>wait_for</code></td><td>Read</td><td>Wait for text, a selector, a URL or network idle.</td></tr>
+<tr><td><code>screenshot</code></td><td>Read</td><td>PNG of a session tab, or of all panes. For visual checks.</td></tr>
+<tr><td><code>console_logs</code></td><td>Read</td><td>Console messages of a session tab since the bridge was enabled.</td></tr>
+<tr><td><code>network_log</code></td><td>Read</td><td>Requests of a session tab with status and timing; secret headers redacted.</td></tr>
+<tr><td><code>send_request_as</code></td><td>Read for GET, HEAD, OPTIONS; Control for others</td><td>Send one HTTP request as several sessions and compare the answers.</td></tr>
+<tr><td><code>get_layout</code></td><td>Read</td><td>The split layout: mode, active pane, what each pane shows.</td></tr>
+<tr><td><code>set_layout</code></td><td>Control</td><td>Change the layout mode, which session each pane shows, and the focused pane.</td></tr>
+</tbody></table></div>
+<h2>A typical flow</h2>
+<ol>
+<li><code>list_sessions</code> → see <code>Admin</code> and <code>Customer</code> and your access to each.</li>
+<li><code>open { session: "Admin", url: "http://localhost:3000/billing" }</code>.</li>
+<li><code>snapshot { session: "Admin" }</code> → find refs such as <code>[ref=e12]</code>.</li>
+<li><code>click { session: "Admin", ref: "e12" }</code>.</li>
+<li><code>send_request_as { sessions: ["Admin", "Customer"], include_no_session: true, url: "http://localhost:3000/api/billing" }</code> → one column per role, with a summary of what differs.</li>
+</ol>
+<div class="callout note"><p>Not available: arbitrary JavaScript, file uploads, downloads, CDP, cross-origin iframes. <code>snapshot</code> does not look inside closed shadow DOM.</p></div>

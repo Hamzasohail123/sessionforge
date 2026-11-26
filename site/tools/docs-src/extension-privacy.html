@@ -1,0 +1,21 @@
+<!-- {"title": "Extension privacy and permissions", "description": "Exactly what the SessionForge Import extension reads, when, where it sends it, what it stores, and the permissions in its manifest.json.", "lead": "No site access at install, nothing read before you click Send, and nothing sent anywhere except SessionForge on 127.0.0.1.", "nav": "Privacy and permissions"} -->
+<h2>What it reads, and when</h2>
+<ul>
+<li><strong>Send to SessionForge:</strong> the cookies of the site you send (what Chrome sends to that page, plus the site's domain cookies), that page's localStorage, and the page URL, title and favicon URL.</li>
+<li><strong>Send to &lt;session&gt;:</strong> only the cookies of the domains shown on that button.</li>
+<li>Only when you click a Send button. Nothing is read in the background.</li>
+</ul>
+<h2>Where it goes</h2>
+<p>Only to SessionForge on your computer: <code>POST http://127.0.0.1:34567/import</code>. Opening the popup also asks <code>GET http://127.0.0.1:34567/pending</code> which sessions wait for a login. After you agreed, at most once a day, it asks GitHub for the latest SessionForge version number; that request carries none of your data. No analytics, telemetry or remote code.</p>
+<h2>Permissions</h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Extension permissions"><table>
+<thead><tr><th scope="col">Permission</th><th scope="col">Why</th></tr></thead>
+<tbody>
+<tr><td><code>activeTab</code></td><td>The current tab's address and title in the popup</td></tr>
+<tr><td><code>cookies</code></td><td>Read the site's cookies when you click Send</td></tr>
+<tr><td><code>scripting</code></td><td>Read the page's localStorage when you click Send</td></tr>
+<tr><td><code>storage</code></td><td>Your answer to the notice and the last version check</td></tr>
+<tr><td><code>http://127.0.0.1:34567/*</code></td><td>Talk to SessionForge's import server</td></tr>
+<tr><td><code>*://*/*</code> (optional)</td><td>Asked per site, only when you send from it</td></tr>
+</tbody></table></div>
+<p>To stop it, remove site access in <code>chrome://extensions</code> → SessionForge Import → Details → Site access, or uninstall it. Full statement: <a href="https://github.com/Hamzasohail123/sessionforge/blob/main/chrome-extension/store/PRIVACY.md">store/PRIVACY.md</a>.</p>

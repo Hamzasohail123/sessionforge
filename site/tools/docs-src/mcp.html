@@ -1,0 +1,12 @@
+<!-- {"title": "MCP Server / Agent Bridge", "description": "The local MCP server in SessionForge connects Cursor, Codex, Claude Code and other MCP clients to your logged-in sessions. What it does and its limits.", "lead": "An MCP server inside SessionForge at <code>http://127.0.0.1:34568/mcp</code> that lets your coding agent use the sessions you are logged in to.", "nav": "Overview"} -->
+<p>An agent can list your sessions, open pages in panes, read a compact page outline with element refs, click and type with real input events, read console and network logs, take screenshots, change the split layout, and send one HTTP request as several roles to compare what each gets. SessionForge has no AI of its own.</p>
+<figure class="frame frame-plain fit doc-figure"><a class="zoom" href="{{root}}assets/shots/agent-header.webp" data-zoom><img src="{{root}}assets/shots/agent-header-1x.webp" srcset="{{root}}assets/shots/agent-header-1x.webp 1x, {{root}}assets/shots/agent-header.webp 2x" width="600" height="330" loading="lazy" decoding="async" alt="The Admin pane header with a yellow Agent label and a red Stop button while the agent has typed 1042 into the order search."></a><figcaption>The Agent label and Stop button in the pane an agent is using.</figcaption></figure>
+<h2>Defaults</h2>
+<ul>
+<li>Off until you turn on <strong>Enable MCP server</strong> in Settings → MCP Server / Agent Bridge.</li>
+<li>New sessions start at Read access. Production sessions are read-only.</li>
+<li>Set <code>SESSIONFORGE_MCP_PORT</code> to use another port.</li>
+</ul>
+<h2>Limitations</h2>
+<p>The MCP server first shipped in v0.1.0. It has no arbitrary JavaScript, file uploads, downloads or cross-origin iframe support.</p>
+<p>Next: <a href="{{root}}docs/mcp-setup/">set it up in your editor</a>.</p>

@@ -44,12 +44,24 @@ for (const f of Object.values(FONTS)) if (!existsSync(f)) throw new Error(`Font 
 const { browser, page } = await openMaster()
 try {
   const render = async (size) => pngFromDataUrl(await page.evaluate((s) => window.sfRender(s), size))
-  await write('assets/img/icon-64.png', await render(64))
-  await write('assets/img/icon-128.png', await render(128))
   await write('icon-192.png', await render(192))
   await write('icon-512.png', await render(512))
   await write('apple-touch-icon.png', await render(180))
-  await write('favicon.ico', ico([{ size: 16, png: await render(16) }, { size: 32, png: await render(32) }]))
+  // Favicons come from the simplified, pixel-snapped mark (site/favicon.svg), not the detailed icon
+  const svg = await readFile(join(SITE, 'favicon.svg'), 'utf8')
+  const fav = async (size) => {
+    const p = await browser.newPage({ viewport: { width: size, height: size }, deviceScaleFactor: 1 })
+    await p.setContent(`<!doctype html><style>html,body{margin:0;background:transparent}svg{display:block;width:${size}px;height:${size}px}</style>${svg}`)
+    const png = await p.screenshot({ type: 'png', omitBackground: true })
+    await p.close()
+    return png
+  }
+  const f16 = await fav(16)
+  const f32 = await fav(32)
+  const f48 = await fav(48)
+  await write('favicon-16.png', f16)
+  await write('favicon-32.png', f32)
+  await write('favicon.ico', ico([{ size: 16, png: f16 }, { size: 32, png: f32 }, { size: 48, png: f48 }]))
 
   const faces = []
   for (const [w, f] of Object.entries(FONTS)) {

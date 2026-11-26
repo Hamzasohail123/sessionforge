@@ -145,6 +145,32 @@ async function listen(server: ReturnType<typeof createServer>, port: number): Pr
   })
 }
 
+/**
+ * Stand-in for accounts.google.com in the "Sign in with Chrome" capture (SESSIONFORGE_TEST_GOOGLE_ORIGIN,
+ * read only when SESSIONFORGE_E2E=1). A neutral page that says what it is; it never imitates Google.
+ */
+export async function startSignInStub(): Promise<DemoApp> {
+  const server = createServer((req, res) => {
+    const url = new URL(req.url ?? '/', 'http://localhost')
+    if (url.pathname === '/ServiceLogin') return send(res, 302, 'text/plain', '', { location: `/v3/signin/identifier${url.search}` })
+    // Where the pane continues after the hand-off: back to the demo app (same localhost cookies)
+    if (url.pathname === '/continue') return send(res, 302, 'text/plain', '', { location: url.searchParams.get('to') ?? '/' })
+    if (url.pathname === '/v3/signin/identifier') {
+      return send(
+        res,
+        200,
+        'text/html; charset=utf-8',
+        `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Sign in</title><style>${CSS}</style></head><body>
+<div class="card price" style="max-width:420px;margin:60px auto"><span class="muted">Test sign-in page</span><b>Sign in</b>
+<p class="muted">Stands in for the Google sign-in page in this local demo.</p></div></body></html>`
+      )
+    }
+    return send(res, 404, 'text/plain', 'Not found')
+  })
+  const port = await listen(server, 0)
+  return { port, base: `http://localhost:${port}`, close: () => new Promise<void>((resolve) => server.close(() => resolve())) }
+}
+
 export async function startDemoApp(): Promise<DemoApp> {
   let orders = freshOrders()
   const server = createServer((req, res) => {

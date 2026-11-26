@@ -87,7 +87,6 @@ for (let crf = 32; ; crf += 2) {
 const posterAt = marks.refund + 1500
 const poster = composed.reduce((a, b) => (Math.abs(b.t - posterAt) < Math.abs(a.t - posterAt) ? b : a))
 await sharp(poster.file).webp({ quality: 80, effort: 6 }).toFile(join(OUT, 'demo-poster.webp'))
-await sharp(poster.file).jpeg({ quality: 80, mozjpeg: true }).toFile(join(OUT, 'demo-poster.jpg'))
 const pm = await sharp(poster.file).metadata()
 console.log(`poster ${pm.width}x${pm.height} from ${((poster.t - composed[0].t) / 1000).toFixed(1)} s`)
 // Keep three composited frames for inspection

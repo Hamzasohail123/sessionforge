@@ -2,12 +2,13 @@ SessionForge Import - Quick Reference
 =====================================
 
 INSTALL
-  Chrome Web Store: "SessionForge Import" (once published)
-  or: chrome://extensions -> Developer mode ON -> Load unpacked -> this folder
+  Chrome Web Store: https://chromewebstore.google.com/detail/sessionforge-import/ofdnckgaoffbablejmfimchoifdlhjbf
+  or (development): chrome://extensions -> Developer mode ON -> Load unpacked -> this folder
 
 UPDATE
-  After updating SessionForge: chrome://extensions -> reload icon on SessionForge Import
-  (version 1.3.1; versions before 1.2.0 have no "Send to <session>" request button)
+  Web Store installs update by themselves.
+  Unpacked: after pulling new code, chrome://extensions -> reload icon on SessionForge Import
+  (version 1.4.0; versions before 1.2.0 have no "Send to <session>" request button)
 
 USE
   1. Log in to a site in Chrome

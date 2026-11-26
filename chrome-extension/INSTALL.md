@@ -2,8 +2,8 @@
 
 ## Chrome Web Store
 
-Once the extension is published, install "SessionForge Import" from the Chrome Web Store. No developer
-mode needed.
+Install [SessionForge Import](https://chromewebstore.google.com/detail/sessionforge-import/ofdnckgaoffbablejmfimchoifdlhjbf)
+from the Chrome Web Store. No developer mode needed.
 
 ## Load unpacked (developer mode)
 

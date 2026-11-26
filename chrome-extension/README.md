@@ -59,9 +59,9 @@ login. After you sign in there, the popup shows a button per waiting session, in
 
 ## Install
 
-From the Chrome Web Store (once published): search for "SessionForge Import".
+Install it from the [Chrome Web Store](https://chromewebstore.google.com/detail/sessionforge-import/ofdnckgaoffbablejmfimchoifdlhjbf).
 
-Or load it unpacked (developer mode):
+Or load it unpacked (developer mode, for working on the extension):
 
 1. Open `chrome://extensions/`.
 2. Turn on **Developer mode** (top right).

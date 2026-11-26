@@ -14,7 +14,7 @@ This roadmap is a plan, not a promise. Feedback in issues and discussions change
 | Milestone | Scope | Status |
 |---|---|---|
 | M0 Core browser | Isolated sessions (one Chromium partition each), split view (1, 2 or 4 panes), Chrome user agent, Chrome extension "Send to SessionForge" import into a pane, keyboard shortcuts, isolation e2e tests | Done |
-| **M1 Agent Bridge MVP** | Local MCP server for Cursor, Codex and Claude Code (Streamable HTTP at `127.0.0.1:34568/mcp` plus a stdio bridge), v1 tools, security model, Settings → Agent Bridge panel, agent indicator and Stop button, activity log, agent instructions file | Ships with v0.1.0 |
+| **M1 Agent Bridge MVP** | Local MCP server for Cursor, Codex and Claude Code (Streamable HTTP at `127.0.0.1:34568/mcp` plus a stdio bridge), v1 tools, security model, Settings → Agent Bridge panel, agent indicator and Stop button, activity log, agent instructions file | Done (v0.1.0) |
 | M2 Network log + request rules | Shared webRequest hub, network drawer per session, header/block/redirect rules, Copy as cURL; the `network_log` tool reads from the hub | Next |
 | M3 "Send as…" panel | UI for sending one request as several sessions, on top of the M1 `send_request_as` engine | Planned |
 | M4 Device emulation per pane | Per-pane device and throttling, also exposed as an MCP `set_device` tool | Planned |

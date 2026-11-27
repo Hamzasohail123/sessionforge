@@ -241,18 +241,19 @@
         <p class="muted">Cursor, Codex and Claude Code connect to a local MCP server. The agent opens pages, clicks, types, reads logs and compares roles, while an Agent label and a Stop button show which pane it is using.</p>
         <p><a href="docs/mcp/">How the MCP server works</a></p>
       </div>
-      <figure class="frame frame-plain fit"><a class="zoom" href="assets/shots/agent-header.webp" data-zoom><img src="assets/shots/agent-header-1x.webp" srcset="assets/shots/agent-header-1x.webp 1x, assets/shots/agent-header.webp 2x" width="714" height="330" loading="lazy" decoding="async" alt="The Admin pane header with a yellow Agent label and a red Stop button while the agent has typed 1042 into the order search."></a></figure>
+      <div class="panel"><figure class="frame frame-plain fit"><a class="zoom" href="assets/shots/agent-header.webp" data-zoom><img src="assets/shots/agent-header-1x.webp" srcset="assets/shots/agent-header-1x.webp 1x, assets/shots/agent-header.webp 2x" width="714" height="330" loading="lazy" decoding="async" alt="The Admin pane header with a yellow Agent label and a red Stop button while the agent has typed 1042 into the order search."></a></figure></div>
     </div>
   </section>
 
   <section class="section" id="production" aria-labelledby="production-title">
-    <div class="container">
-      <div class="section-head reveal">
+    <div class="container feature-row reveal">
+      <div>
         <span class="eyebrow">Environment safety</span>
         <h2 id="production-title">Production stays read-only for agents.</h2>
-        <p>Production sessions get a red PROD label. Agents can only read them unless you type the session name to confirm, until SessionForge restarts. <a href="docs/environment-safety/">Environment safety</a></p>
+        <p class="muted">Production sessions get a red PROD label. Agents can only read them unless you type the session name to confirm, until SessionForge restarts.</p>
+        <p><a href="docs/environment-safety/">Environment safety</a></p>
       </div>
-      <figure class="frame frame-plain fit reveal"><a class="zoom" href="assets/shots/prod-bar.webp" data-zoom><img src="assets/shots/prod-bar-1x.webp" srcset="assets/shots/prod-bar-1x.webp 1x, assets/shots/prod-bar.webp 2x" width="720" height="136" loading="lazy" decoding="async" alt="The session bar with Admin, Customer, Guest and the focused Prod Admin session, which has a red PROD label."></a></figure>
+      <div class="panel"><figure class="frame frame-plain fit"><a class="zoom" href="assets/shots/prod-bar.webp" data-zoom><img src="assets/shots/prod-bar-1x.webp" srcset="assets/shots/prod-bar-1x.webp 1x, assets/shots/prod-bar.webp 2x" width="720" height="136" loading="lazy" decoding="async" alt="The session bar with Admin, Customer, Guest and the focused Prod Admin session, which has a red PROD label."></a></figure></div>
     </div>
   </section>
 
@@ -267,7 +268,7 @@
           <a class="btn btn-secondary" href="extension/">How it works</a>
         </div>
       </div>
-      <figure class="frame frame-plain fit"><a class="zoom" href="assets/shots/popup-ready.webp" data-zoom><img src="assets/shots/popup-ready-1x.webp" srcset="assets/shots/popup-ready-1x.webp 1x, assets/shots/popup-ready.webp 2x" width="352" height="285" loading="lazy" decoding="async" alt="The SessionForge Import popup: Current site localhost, site access Allowed, and a Send to SessionForge button."></a></figure>
+      <div class="panel"><figure class="frame frame-plain fit"><a class="zoom" href="assets/shots/popup-ready.webp" data-zoom><img src="assets/shots/popup-ready-1x.webp" srcset="assets/shots/popup-ready-1x.webp 1x, assets/shots/popup-ready.webp 2x" width="352" height="285" loading="lazy" decoding="async" alt="The SessionForge Import popup: Current site localhost, site access Allowed, and a Send to SessionForge button."></a></figure></div>
     </div>
   </section>
 
@@ -278,9 +279,9 @@
         <h2 id="settings-title">Settings that explain themselves.</h2>
         <p>Turn the MCP server on, see who is connected, and set what agents may do per session, all in one place.</p>
       </div>
-      <figure class="frame frame-plain fit reveal">
+      <div class="panel reveal"><figure class="frame frame-plain fit">
         <a class="zoom" href="assets/shots/settings-overview-modal.webp" data-zoom><img src="assets/shots/settings-overview-modal-1x.webp" srcset="assets/shots/settings-overview-modal-1x.webp 1x, assets/shots/settings-overview-modal.webp 2x" width="1098" height="942" loading="lazy" decoding="async" alt="The SessionForge Settings window on MCP Server (Agent Bridge), Overview tab: the sidebar lists General, Sessions, MCP Server, Chrome Import, Shortcuts and About and Privacy; the MCP server is enabled and listening on 127.0.0.1:34568 with one connected client, demo-agent."></a>
-      </figure>
+      </figure></div>
     </div>
   </section>
 
@@ -306,7 +307,8 @@
         <h2 id="mcp-title">Connect Cursor, Codex or Claude Code.</h2>
         <p>The server runs inside SessionForge at <code>http://127.0.0.1:34568/mcp</code>.</p>
       </div>
-      <div class="mcp-body reveal">
+      <div class="mcp-grid reveal">
+        <div>
         <ol class="steps-list">
           <li>In Settings → MCP Server / Agent Bridge, turn on <strong>Enable MCP server</strong>.</li>
           <li>Click <strong>Copy export line</strong> and add it to <code>~/.bashrc</code> or <code>~/.zshrc</code>:</li>
@@ -316,7 +318,9 @@
             <span class="copy-status visually-hidden" aria-live="polite"></span>
             <pre tabindex="0"><code id="snippet-export" data-snippet="export">export SESSIONFORGE_TOKEN='sfa_…'</code></pre>
           </div>
-        <ol class="steps-list" start="3"><li>Add the server to your editor, then restart it from that shell:</li></ol>
+        <ol class="steps-list" start="3"><li>Add the server to your editor, then restart it from that shell.</li></ol>
+        <p class="small muted">Checks, approvals and the stdio bridge: <a href="docs/mcp-setup/">MCP setup docs</a>.</p>
+        </div>
         <div class="tabs">
           <div class="tablist" role="tablist" aria-label="Editor">
             <button type="button" role="tab" id="tab-cursor" aria-controls="panel-cursor" aria-selected="true" tabindex="0">Cursor</button>
@@ -359,7 +363,6 @@ bearer_token_env_var = "SESSIONFORGE_TOKEN"</code></pre>
           </div>
           </div>
         </div>
-        <p class="small muted">Checks, approvals and the stdio bridge: <a href="docs/mcp-setup/">MCP setup docs</a>.</p>
       </div>
     </div>
   </section>

@@ -25,10 +25,10 @@ const agent = recorded.find((c) => c.name === 'agent-header').box
 const CROPS = [
   // Session bar with Admin, Customer, Guest and the focused Admin (prod) session and its red PROD label
   { name: 'prod-bar', source: 'grid', box: { x: 0, y: 0, width: 720, height: 136 } },
-  // The pane header with the Agent label and Stop, plus the search box the agent typed into
-  { name: 'agent-header', source: 'agent', box: { x: agent.x, y: agent.y, width: Math.min(agent.width, 600), height: 330 } },
-  // Settings: each tab as the whole modal over the dimmed app (-modal) and the right-hand panel only (-panel),
-  // boxes measured by capture.spec.ts
+  // The pane header with the Agent label and Stop, plus the search box the agent typed into. The whole pane
+  // width (inside its focus border), so the right edge is the pane's edge and no text is cut.
+  { name: 'agent-header', source: 'agent', box: { x: agent.x, y: agent.y, width: agent.width, height: 330 } },
+  // Settings: the modal itself, inside its border (box measured by capture.spec.ts)
   ...recorded.filter((c) => c.name.startsWith('settings-')),
   // The New Session dialog
   { name: 'new-session-dialog', source: 'new-session', box: { x: 456, y: 246, width: 528, height: 408 } }

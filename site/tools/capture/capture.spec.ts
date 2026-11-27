@@ -156,11 +156,6 @@ async function settingsShot(ctx: AppCtx, nav: string, sub: string | null, name: 
   expect(text.includes(homedir()), `${name} shows the home directory`).toBe(false)
   await shot(ctx, name)
   const dialog = await boxOf(ctx, 'settings-dialog')
-  const panel = await ctx.page.evaluate(() => {
-    const r = document.querySelector('[data-testid="settings-scroll"]')!.parentElement!.getBoundingClientRect()
-    return { x: r.x, y: r.y, width: r.width, height: r.height }
-  })
-  const m = 40
   // The capture profile has no OS keyring on purpose (the real one is never touched), so the Token tab warns
   // about it. Users with a keyring don't see that, so the Token images end above the warning, at the card edge.
   const cut = await ctx.page.evaluate(() => {
@@ -173,21 +168,12 @@ async function settingsShot(ctx: AppCtx, nav: string, sub: string | null, name: 
     while (el.parentElement && !(el.parentElement.textContent ?? '').includes('Bearer token')) el = el.parentElement
     return el.getBoundingClientRect().top
   })
-  if (cut !== null) {
-    dialog.height = cut - 4 - dialog.y
-    panel.height = cut - 4 - panel.y
-  }
-  const round = (b: { x: number; y: number; width: number; height: number }) => ({
-    x: Math.round(b.x),
-    y: Math.round(b.y),
-    width: Math.round(b.width),
-    height: Math.round(b.height)
-  })
+  if (cut !== null) dialog.height = cut - 4 - dialog.y
   await closeSettings(ctx)
-  return [
-    { name: `${name}-modal`, source: name, box: round({ x: dialog.x - m, y: dialog.y - m, width: dialog.width + 2 * m, height: dialog.height + m + (cut === null ? m : 0) }) },
-    { name: `${name}-panel`, source: name, box: round(panel) }
-  ]
+  // The modal only, just inside its 1 px border: no dimmed app around it, so the site's frame is its edge.
+  // Unrounded CSS px; optimize.mjs rounds at device scale (the dialog can sit on a half CSS pixel).
+  const b = 1
+  return [{ name: `${name}-modal`, source: name, box: { x: dialog.x + b, y: dialog.y + b, width: dialog.width - 2 * b, height: dialog.height - (cut === null ? 2 * b : b) } }]
 }
 
 const refOf = (snap: string, label: string): string => {
@@ -306,9 +292,8 @@ test('screenshots', async () => {
     expect((await call(client, 'console_logs', { session: 'Customer' })).isError).toBe(false)
     expect((await call(client, 'get_layout')).isError).toBe(false)
 
-    // 5. Settings: every MCP Server tab, plus General and Chrome Import. The modal is sized to show each
-    // panel whole (no inner scrollbars), the window made tall enough for it, then cropped with a margin
-    // of the dimmed app around it. A second crop is the right-hand panel only, for the docs.
+    // 5. Settings: the modal is sized to show the panel whole (no inner scrollbars), the window made tall
+    // enough for it, then cropped to the modal itself.
     // One Settings image (Addendum 5): the modal at its normal width on MCP Server → Overview
     for (const [nav, sub, name] of [
       ['agent', 'overview', 'settings-overview']

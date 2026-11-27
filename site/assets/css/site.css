@@ -240,9 +240,11 @@ code, pre, kbd { font-family: var(--mono); }
   border-bottom: 1px solid var(--border); position: relative;
 }
 .frame-bar i { width: 11px; height: 11px; border-radius: 50%; background: var(--border-strong); }
+/* Centred in the bar but kept clear of the dots (14 px padding + 3 x 11 px + 2 x 7 px gaps = 61 px) */
 .frame-bar span {
-  position: absolute; left: 50%; transform: translateX(-50%);
-  font: 0.75rem/1 var(--mono); color: var(--fg-subtle); white-space: nowrap;
+  position: absolute; inset-inline: 72px; text-align: center;
+  font: 0.75rem/1 var(--mono); color: var(--fg-subtle);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .frame img, .frame video { width: 100%; }
 .frame-plain { box-shadow: none; }
@@ -455,7 +457,7 @@ td { color: var(--fg-muted); }
 .frame.fit img { width: auto; max-width: 100%; height: auto; }
 .frame.fit .zoom + .zoom { border-top: 1px solid var(--border); }
 .center { margin-inline: auto; }
-.feature-row > .frame.fit { justify-self: center; }
+.feature-row > .frame.fit { justify-self: start; }
 .mcp-grid.stacked { grid-template-columns: 1fr; }
 .mcp-grid.stacked > div { max-width: 760px; }
 .zoom { display: block; cursor: zoom-in; }
@@ -471,11 +473,16 @@ td { color: var(--fg-muted); }
 .lightbox-bar p { margin: 0; font-size: 0.875rem; color: var(--fg-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* ---------- Extension popups and stacked crops ---------- */
-.shot-row { display: flex; flex-wrap: wrap; gap: var(--s-5); align-items: flex-start; justify-content: center; margin: var(--s-6) 0; }
+/* Narrow images all follow one rule: they start at the left edge of their column, like the text.
+   Cards in a row share one height, with the caption at the bottom. */
+.shot-row { display: flex; flex-wrap: wrap; gap: var(--s-5); align-items: stretch; justify-content: flex-start; margin: var(--s-6) 0; }
 .shot-row figure { margin: 0; }
+/* The popup area grows to the row height in the popup's own white, so captions line up at the bottom */
+.shot-row figure.frame.fit { display: flex; flex-direction: column; }
+.shot-row figure.frame.fit > .zoom { flex: 1 0 auto; background: #fff; }
 .shot-row figcaption { max-width: 352px; padding: 0 var(--s-3) var(--s-3); }
 .shot-row.tight { margin: 0; gap: var(--s-4); }
-.stack-shots { display: grid; gap: var(--s-5); justify-items: center; margin: var(--s-6) 0; }
+.stack-shots { display: grid; gap: var(--s-5); justify-items: start; margin: var(--s-6) 0; }
 .stack-shots figure { margin: 0; }
 .stack-shots figcaption { padding: 0 var(--s-3) var(--s-3); }
 .ext-cta { margin-top: var(--s-6); }
@@ -586,7 +593,7 @@ h2:hover .anchor, h3:hover .anchor, .anchor:focus-visible { opacity: 1; }
   .feature-row, .feature-row.flip { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: center; }
   .feature-row.flip > :first-child { order: 2; }
   .feature-row.flip > figure { order: 0; }
-  .feature-row > .frame.fit { justify-self: center; }
+  .feature-row > .frame.fit { justify-self: start; }
 }
 .mcp-body { max-width: 760px; }
 .check-list { list-style: none; padding: 0; margin: 0 0 var(--s-5); display: grid; gap: var(--s-3) var(--s-6); grid-template-columns: 1fr; }

@@ -1,0 +1,14 @@
+<!-- {"title": "Approvals in your editor", "description": "Choose whether Cursor, Claude Code or Codex asks before running SessionForge tools: the three presets in Settings, the files they change, and their limits.", "lead": "Each editor decides on its own whether to ask before it runs an MCP tool. Settings → MCP Server → Editors → <strong>Approvals</strong> offers three presets per editor."} -->
+<ul>
+<li><strong>Ask every time.</strong></li>
+<li><strong>Auto-run read-only tools</strong> (recommended): <code>list_sessions</code>, <code>snapshot</code>, <code>wait_for</code>, <code>screenshot</code>, <code>console_logs</code>, <code>network_log</code>, <code>get_layout</code>.</li>
+<li><strong>Auto-run all SessionForge tools</strong>, for sessions you deliberately set to Control.</li>
+</ul>
+<p>Each preset shows the exact text to paste. <strong>Apply</strong> edits the file for you after a preview: it makes a <code>&lt;file&gt;.bak-YYYYMMDD-HHmmss</code> backup, changes only SessionForge entries, keeps comments, and never writes the token. SessionForge's own limits (Hidden/Read/Control, read-only production, Stop) apply whatever you choose.</p>
+<h2>Files</h2>
+<ul>
+<li><strong>Cursor:</strong> <code>~/.cursor/permissions.json</code>, <code>mcpAllowlist</code>. Once this key exists, Cursor uses it instead of the allowlist in Cursor Settings, so tools you allowed there for other servers ask again.</li>
+<li><strong>Claude Code:</strong> <code>~/.claude/settings.json</code>, <code>permissions.allow</code> entries <code>mcp__sessionforge__&lt;tool&gt;</code>.</li>
+<li><strong>Codex:</strong> <code>default_tools_approval_mode</code> in <code>[mcp_servers.sessionforge]</code> of <code>~/.codex/config.toml</code>. Restart Codex afterwards.</li>
+</ul>
+<p>Details for each editor: <a href="https://github.com/Hamzasohail123/sessionforge#approvals-in-your-editor">README, Approvals in your editor</a>.</p>

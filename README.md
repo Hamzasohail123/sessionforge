@@ -17,7 +17,7 @@
 
 **[Download v0.1.1](https://github.com/Hamzasohail123/sessionforge/releases/latest)** for macOS, Windows or Linux
 
-[Chrome extension](https://chromewebstore.google.com/detail/sessionforge-import/ofdnckgaoffbablejmfimchoifdlhjbf) · [MCP setup](#mcp-server--agent-bridge-cursor-codex-and-claude-code) · [Docs for agents](./docs/agents/sessionforge.md) · [Roadmap](./ROADMAP.md) · [Contributing](./CONTRIBUTING.md)
+[Website](https://hamzasohail123.github.io/sessionforge/) · [Chrome extension](https://chromewebstore.google.com/detail/sessionforge-import/ofdnckgaoffbablejmfimchoifdlhjbf) · [MCP setup](#mcp-server--agent-bridge-cursor-codex-and-claude-code) · [Docs for agents](./docs/agents/sessionforge.md) · [Roadmap](./ROADMAP.md) · [Contributing](./CONTRIBUTING.md)
 
 </div>
 

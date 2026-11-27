@@ -1,0 +1,11 @@
+<!-- {"title": "Contributing", "description": "How to contribute to SessionForge: set up the development environment, run the Playwright tests, and open a pull request. Free and open source under Apache-2.0.", "lead": "Contributions are welcome. Open an issue first for anything large."} -->
+<h2>Set up</h2>
+<pre data-lang="sh"><code>git clone https://github.com/Hamzasohail123/sessionforge.git
+cd sessionforge
+npm install
+npm run rebuild:native
+npm run electron:dev</code></pre>
+<h2>Tests</h2>
+<pre data-lang="sh"><code>npm run test:e2e</code></pre>
+<p>This builds the app and runs the Playwright suite: unit specs and Electron end-to-end specs, with a temporary profile and a local test server. Run the unit specs alone with <code>npx playwright test --project=unit</code>.</p>
+<p>Code style, commit conventions and the review process: <a href="https://github.com/Hamzasohail123/sessionforge/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> and <a href="https://github.com/Hamzasohail123/sessionforge/blob/main/DEVELOPMENT.md">DEVELOPMENT.md</a>.</p>

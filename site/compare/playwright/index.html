@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; media-src 'self'; style-src 'self'; script-src 'self'; font-src 'self'; connect-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>SessionForge vs Playwright · SessionForge</title>
+<meta name="description" content="SessionForge is for exploring logged-in, multi-role apps with you and your coding agent. Playwright runs repeatable CI suites. How they differ and fit together.">
+<link rel="canonical" href="https://hamzasohail123.github.io/sessionforge/compare/playwright/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SessionForge">
+<meta property="og:title" content="SessionForge vs Playwright · SessionForge">
+<meta property="og:description" content="SessionForge is for exploring logged-in, multi-role apps with you and your coding agent. Playwright runs repeatable CI suites. How they differ and fit together.">
+<meta property="og:url" content="https://hamzasohail123.github.io/sessionforge/compare/playwright/">
+<meta property="og:image" content="https://hamzasohail123.github.io/sessionforge/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SessionForge icon with the text: Every role. One window.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SessionForge vs Playwright · SessionForge">
+<meta name="twitter:description" content="SessionForge is for exploring logged-in, multi-role apps with you and your coding agent. Playwright runs repeatable CI suites. How they differ and fit together.">
+<meta name="twitter:image" content="https://hamzasohail123.github.io/sessionforge/og.png">
+<!-- partial:head -->
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<link rel="icon" href="../../favicon.ico" sizes="48x48">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="manifest" href="../../site.webmanifest">
+<!-- /partial:head -->
+<link rel="stylesheet" href="../../assets/css/site.css">
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/site.js" defer></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hamzasohail123.github.io/sessionforge/" },
+        { "@type": "ListItem", "position": 2, "name": "Compare", "item": "https://hamzasohail123.github.io/sessionforge/#use-cases" },
+        { "@type": "ListItem", "position": 3, "name": "SessionForge vs Playwright", "item": "https://hamzasohail123.github.io/sessionforge/compare/playwright/" }
+      ]
+    },
+    {
+      "@type": "TechArticle",
+      "headline": "SessionForge vs Playwright",
+      "description": "SessionForge is for exploring logged-in, multi-role apps with you and your coding agent. Playwright runs repeatable CI suites. How they differ and fit together.",
+      "about": { "@type": "SoftwareApplication", "name": "SessionForge" },
+      "url": "https://hamzasohail123.github.io/sessionforge/compare/playwright/"
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<!-- partial:header -->
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="../../" aria-label="SessionForge, home">
+      <svg class="logo-mark" width="28" height="28" viewBox="0 0 28 28" aria-hidden="true" focusable="false"><rect width="28" height="28" rx="6" fill="#0b112b"/><path fill="#22d3ee" fill-rule="evenodd" d="M5 3h5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2zm0 2v5h5v-5zM18 3h5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2zm0 2v5h5v-5zM5 16h5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2zm0 2v5h5v-5zM18 16h5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2zm0 2v5h5v-5z"/></svg>
+      <span>SessionForge</span>
+    </a>
+    <nav id="site-nav" class="nav" aria-label="Main">
+      <a href="../../#features">Features</a>
+      <a href="../../extension/">Extension</a>
+      <a href="../../#use-cases">Use cases</a>
+      <a href="../../#mcp">MCP</a>
+      <a href="../../docs/">Docs</a>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-ghost btn-sm gh-link" href="https://github.com/Hamzasohail123/sessionforge" aria-label="Star on GitHub">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-2.9-5.4 2.9 1.1-6-4.5-4.2 6.1-.8z"/></svg>
+        <span class="gh-label">Star on GitHub</span>
+      </a>
+      <button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Switch to light theme">
+        <svg class="icon icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+        <svg class="icon icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <a class="btn btn-primary btn-sm header-download" href="https://github.com/Hamzasohail123/sessionforge/releases/latest">Download<span class="label-long">&nbsp;for free</span></a>
+      <button class="icon-btn menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+<!-- /partial:header -->
+
+<main id="main">
+  <div class="container page-hero">
+    <nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../../">Home</a></li><li><a href="../../#use-cases">Compare</a></li><li aria-current="page">Playwright</li></ol></nav>
+    <span class="eyebrow">Comparison</span>
+    <h1>SessionForge vs Playwright</h1>
+    <p class="lead">They do different jobs: SessionForge is for exploratory, logged-in, multi-role work by you and your coding agent; Playwright is for repeatable regression suites in CI across browsers.</p>
+  </div>
+
+  <div class="container article">
+    <div class="table-wrap" tabindex="0" role="region" aria-label="Comparison table">
+      <table class="compare">
+        <thead><tr><th scope="col">What you need</th><th scope="col">SessionForge</th><th scope="col">Playwright</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Walk cases once with real logins</th><td>Yes, log in once per session and keep it</td><td>Possible, with scripted logins or saved storageState files</td></tr>
+          <tr><th scope="row">Watch several roles side by side</th><td>Yes, up to four panes in one window</td><td>No, it is a test runner, not a browser you look at</td></tr>
+          <tr><th scope="row">Coding agent drives your logged-in sessions</th><td>Yes, through the built-in MCP server</td><td>Not its job</td></tr>
+          <tr><th scope="row">Repeatable suites on every change, in CI</th><td>No, SessionForge does not run tests in CI</td><td>Yes</td></tr>
+          <tr><th scope="row">Chromium, Firefox and WebKit</th><td>Chromium only</td><td>Yes</td></tr>
+          <tr><th scope="row">Traces and exact pass/fail results</th><td>No; an agent can take screenshots and read logs</td><td>Yes</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose">
+      <h2>Using both today</h2>
+      <ol>
+        <li>Log in once per role in SessionForge and explore the feature yourself, or let your agent walk the cases.</li>
+        <li>When a case should hold on every change, write it as a Playwright spec and run it in CI.</li>
+        <li>Use SessionForge again when a spec fails and you want to see the problem as each role.</li>
+      </ol>
+      <p>SessionForge's own end-to-end tests are written with Playwright.</p>
+
+      <h2>Export to Playwright <span class="tag">Planned</span></h2>
+      <p>These are on the roadmap under <a href="https://github.com/Hamzasohail123/sessionforge/blob/main/ROADMAP.md#later-evaluating">Later (evaluating)</a>. They are not in any release yet, and the roadmap is a plan, not a promise.</p>
+      <ul>
+        <li>Export a session as a Playwright <code>storageState</code> file, so a spec starts logged in as that role.</li>
+        <li>Turn what you or your agent did in a pane into a Playwright spec.</li>
+        <li>Playwright codegen launched inside a logged-in session.</li>
+      </ul>
+      <div class="note">
+        <p><strong>About storageState files.</strong> They contain live cookies and tokens. Add them to <code>.gitignore</code> and never export production logins.</p>
+      </div>
+    </div>
+
+    <div class="cta-band">
+      <h2>Explore with SessionForge, regress with Playwright</h2>
+      <p>Free and open source for macOS, Windows and Linux.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://github.com/Hamzasohail123/sessionforge/releases/latest"><span data-download-label>Download</span></a>
+        <a class="btn btn-secondary" href="../../use-cases/exploratory-qa/">Exploratory QA</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- partial:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="../../" aria-label="SessionForge, home">
+          <svg class="logo-mark" width="28" height="28" viewBox="0 0 28 28" aria-hidden="true" focusable="false"><rect width="28" height="28" rx="6" fill="#0b112b"/><path fill="#22d3ee" fill-rule="evenodd" d="M5 3h5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2zm0 2v5h5v-5zM18 3h5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2zm0 2v5h5v-5zM5 16h5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2zm0 2v5h5v-5zM18 16h5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2zm0 2v5h5v-5z"/></svg>
+          <span>SessionForge</span>
+        </a>
+        <p>Every role. One window.</p>
+      </div>
+      <div>
+        <h2>Product</h2>
+        <ul>
+          <li><a href="../../#features">Features</a></li>
+          <li><a href="../../#download">Download</a></li>
+          <li><a href="../../extension/">Chrome extension</a></li>
+          <li><a href="https://chromewebstore.google.com/detail/sessionforge-import/ofdnckgaoffbablejmfimchoifdlhjbf">Add to Chrome</a></li>
+          <li><a href="../../docs/getting-started/">Getting started</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Use cases</h2>
+        <ul>
+          <li><a href="../../use-cases/multi-role-testing/">Multi-role testing</a></li>
+          <li><a href="../../use-cases/coding-agent-browser/">Browser for coding agents</a></li>
+          <li><a href="../../use-cases/exploratory-qa/">Exploratory QA</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Compare</h2>
+        <ul>
+          <li><a href="../../compare/chrome-profiles/">vs Chrome profiles</a></li>
+          <li><a href="../../compare/playwright/" aria-current="page">vs Playwright</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Project</h2>
+        <ul>
+          <li><a href="https://github.com/Hamzasohail123/sessionforge">GitHub</a></li>
+          <li><a href="https://github.com/Hamzasohail123/sessionforge/releases">Releases</a></li>
+          <li><a href="https://github.com/Hamzasohail123/sessionforge/blob/main/ROADMAP.md">Roadmap</a></li>
+          <li><a href="https://github.com/Hamzasohail123/sessionforge/blob/main/CONTRIBUTING.md">Contributing</a></li>
+          <li><a href="https://github.com/Hamzasohail123/sessionforge/blob/main/PRIVACY.md">Privacy</a></li>
+          <li><a href="https://github.com/Hamzasohail123/sessionforge/blob/main/SECURITY.md">Security</a></li>
+          <li><a href="https://github.com/Hamzasohail123/sessionforge/blob/main/LICENSE">License (Apache-2.0)</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-legal">Free and open source under Apache-2.0. No account, no cloud, no telemetry. This site has no analytics or cookies.</p>
+  </div>
+</footer>
+<!-- /partial:footer -->
+</body>
+</html>

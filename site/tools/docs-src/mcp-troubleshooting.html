@@ -1,0 +1,9 @@
+<!-- {"title": "MCP troubleshooting", "description": "Fix common SessionForge MCP problems: port 34568 in use, 401 after rotating the token, the stdio bridge saying SessionForge is not running, ui_busy.", "lead": "The four problems people hit most often.", "nav": "Troubleshooting"} -->
+<h2>Port in use</h2>
+<p>Another SessionForge (or app) has port 34568. Quit it, or set <code>SESSIONFORGE_MCP_PORT</code>, then toggle the bridge off and on.</p>
+<h2>401 after rotating the token</h2>
+<p>Copy the new export line, update your shell profile and restart the editor.</p>
+<h2>"SessionForge is not running, or the Agent Bridge is turned off"</h2>
+<p>From the stdio bridge: start SessionForge and enable Settings → MCP Server / Agent Bridge.</p>
+<h2>ui_busy</h2>
+<p>Settings, a dialog or a notification covers the panes. Input tools pause until it closes; read tools keep working.</p>

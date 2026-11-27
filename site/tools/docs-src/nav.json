@@ -1,0 +1,7 @@
+[
+  { "title": "Getting started", "pages": ["", "install", "getting-started"] },
+  { "title": "Using SessionForge", "pages": ["sessions", "split-view", "environment-safety", "keyboard-shortcuts", "google-sign-in"] },
+  { "title": "Chrome extension", "pages": ["chrome-extension", "sign-in-with-chrome", "extension-privacy", "extension-troubleshooting"] },
+  { "title": "MCP Server / Agent Bridge", "pages": ["mcp", "mcp-setup", "stdio-bridge", "approvals", "mcp-tools", "mcp-security", "mcp-troubleshooting"] },
+  { "title": "Project", "pages": ["roadmap", "contributing", "privacy", "security"] }
+]

@@ -1,0 +1,26 @@
+<!-- {"title": "stdio bridge", "description": "Connect an MCP client to SessionForge with a command instead of a URL: the dependency-free sessionforge-mcp.mjs bridge for Cursor, Codex and Claude Code.", "lead": "<code>bin/sessionforge-mcp.mjs</code> is a dependency-free bridge (Node 18 or later) that forwards to the running app. Its path is shown in the Settings panel."} -->
+<h2>Cursor</h2>
+<pre data-lang="json"><code>{
+  "mcpServers": {
+    "sessionforge": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "&lt;path&gt;/sessionforge-mcp.mjs"
+      ],
+      "env": {
+        "SESSIONFORGE_TOKEN": "${env:SESSIONFORGE_TOKEN}"
+      }
+    }
+  }
+}</code></pre>
+<h2>Codex</h2>
+<pre data-lang="toml"><code>[mcp_servers.sessionforge]
+command = "node"
+args = ["&lt;path&gt;/sessionforge-mcp.mjs"]
+env_vars = ["SESSIONFORGE_TOKEN"]</code></pre>
+<h2>Claude Code</h2>
+<p>Remove an HTTP entry first with <code>claude mcp remove sessionforge</code>; the name must come before <code>--env</code>:</p>
+<pre data-lang="sh"><code>claude mcp add sessionforge --transport stdio --scope user --env 'SESSIONFORGE_TOKEN=${SESSIONFORGE_TOKEN}' -- node '&lt;path&gt;/sessionforge-mcp.mjs'</code></pre>
+<h2>Without Node</h2>
+<p>Use the SessionForge executable as <code>command</code> and add <code>ELECTRON_RUN_AS_NODE=1</code> to the server's environment. Packaged builds keep the bridge in <code>resources/bin/</code>.</p>

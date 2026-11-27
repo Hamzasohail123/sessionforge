@@ -72,3 +72,4 @@ Thumbs.db
 !.env.example
 # Stray npm cache from a command run with a literal HOME='~'
 /~/
+.worktrees/

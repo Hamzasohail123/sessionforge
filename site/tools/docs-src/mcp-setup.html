@@ -1,0 +1,36 @@
+<!-- {"title": "Set up Cursor, Codex or Claude Code", "description": "Turn on the SessionForge MCP server, put the token in your shell, and add the server to Cursor, Codex or Claude Code. Snippets and connection checks.", "lead": "Three steps: turn on the server, export the token, add the server to your editor.", "nav": "Setup"} -->
+<h2>1. Turn on the server</h2>
+<p>Open Settings (gear icon or <code>Cmd/Ctrl+,</code>) → MCP Server / Agent Bridge and turn on <strong>Enable MCP server</strong>.</p>
+<h2>2. Export the token</h2>
+<p>Click <strong>Copy export line</strong> and add it to <code>~/.bashrc</code> or <code>~/.zshrc</code>:</p>
+<pre data-lang="sh"><code id="docs-snippet-export" data-snippet="export">export SESSIONFORGE_TOKEN='sfa_…'</code></pre>
+<h2>3. Add the server to your editor</h2>
+<p>The panel shows the same snippets with your real port and path.</p>
+<h3>Cursor</h3>
+<p><code>.cursor/mcp.json</code> in a project, or <code>~/.cursor/mcp.json</code> for all projects:</p>
+<pre data-lang="json"><code id="docs-snippet-cursor" data-snippet="cursor">{
+  "mcpServers": {
+    "sessionforge": {
+      "url": "http://127.0.0.1:34568/mcp",
+      "headers": {
+        "Authorization": "Bearer ${env:SESSIONFORGE_TOKEN}"
+      }
+    }
+  }
+}</code></pre>
+<h3>Codex</h3>
+<p>The CLI, VS Code extension and app share <code>~/.codex/config.toml</code>:</p>
+<pre data-lang="toml"><code id="docs-snippet-codex" data-snippet="codex">[mcp_servers.sessionforge]
+url = "http://127.0.0.1:34568/mcp"
+bearer_token_env_var = "SESSIONFORGE_TOKEN"</code></pre>
+<h3>Claude Code</h3>
+<p>Run once. Keep the single quotes: they store <code>${SESSIONFORGE_TOKEN}</code> literally, so the token never lands in <code>~/.claude.json</code>.</p>
+<pre data-lang="sh"><code id="docs-snippet-claude" data-snippet="claude">claude mcp add --transport http --scope user sessionforge http://127.0.0.1:34568/mcp --header 'Authorization: Bearer ${SESSIONFORGE_TOKEN}'</code></pre>
+<h2>4. Restart and check</h2>
+<p>Restart the editor from a shell that has <code>SESSIONFORGE_TOKEN</code> (or log out and in). Then check that the tools are listed:</p>
+<ul>
+<li>Cursor: Settings → MCP.</li>
+<li>Codex: <code>codex mcp list</code>, or <code>/mcp</code> in the chat.</li>
+<li>Claude Code: <code>claude mcp list</code> should say "✔ Connected", or <code>/mcp</code> in a session.</li>
+</ul>
+<p>Optional: give your agent the rules in <a href="https://github.com/Hamzasohail123/sessionforge/blob/main/docs/agents/sessionforge.md">docs/agents/sessionforge.md</a>.</p>

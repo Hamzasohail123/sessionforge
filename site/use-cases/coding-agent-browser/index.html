@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; media-src 'self'; style-src 'self'; script-src 'self'; font-src 'self'; connect-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>A logged-in browser for your coding agent · SessionForge</title>
+<meta name="description" content="Let Claude Code, Cursor or Codex test your app while logged in: SessionForge's local MCP server gives your agent the sessions you already use, with limits.">
+<link rel="canonical" href="https://hamzasohail123.github.io/sessionforge/use-cases/coding-agent-browser/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SessionForge">
+<meta property="og:title" content="A logged-in browser for your coding agent · SessionForge">
+<meta property="og:description" content="Let Claude Code, Cursor or Codex test your app while logged in: SessionForge's local MCP server gives your agent the sessions you already use, with limits.">
+<meta property="og:url" content="https://hamzasohail123.github.io/sessionforge/use-cases/coding-agent-browser/">
+<meta property="og:image" content="https://hamzasohail123.github.io/sessionforge/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SessionForge icon with the text: Every role. One window.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="A logged-in browser for your coding agent · SessionForge">
+<meta name="twitter:description" content="Let Claude Code, Cursor or Codex test your app while logged in: SessionForge's local MCP server gives your agent the sessions you already use, with limits.">
+<meta name="twitter:image" content="https://hamzasohail123.github.io/sessionforge/og.png">
+<!-- partial:head -->
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<link rel="icon" href="../../favicon.ico" sizes="48x48">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="manifest" href="../../site.webmanifest">
+<!-- /partial:head -->
+<link rel="stylesheet" href="../../assets/css/site.css">
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/site.js" defer></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hamzasohail123.github.io/sessionforge/" },
+        { "@type": "ListItem", "position": 2, "name": "Use cases", "item": "https://hamzasohail123.github.io/sessionforge/#use-cases" },
+        { "@type": "ListItem", "position": 3, "name": "Let Claude Code, Cursor or Codex test your app while logged in", "item": "https://hamzasohail123.github.io/sessionforge/use-cases/coding-agent-browser/" }
+      ]
+    },
+    {
+      "@type": "TechArticle",
+      "headline": "Let Claude Code, Cursor or Codex test your app while logged in",
+      "description": "Let Claude Code, Cursor or Codex test your app while logged in: SessionForge's local MCP server gives your agent the sessions you already use, with limits.",
+      "about": { "@type": "SoftwareApplication", "name": "SessionForge" },
+      "url": "https://hamzasohail123.github.io/sessionforge/use-cases/coding-agent-browser/"
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<!-- partial:header -->
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="../../" aria-label="SessionForge, home">
+      <svg class="logo-mark" width="28" height="28" viewBox="0 0 28 28" aria-hidden="true" focusable="false"><rect width="28" height="28" rx="6" fill="#0b112b"/><path fill="#22d3ee" fill-rule="evenodd" d="M5 3h5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2zm0 2v5h5v-5zM18 3h5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2zm0 2v5h5v-5zM5 16h5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2zm0 2v5h5v-5zM18 16h5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2zm0 2v5h5v-5z"/></svg>
+      <span>SessionForge</span>
+    </a>
+    <nav id="site-nav" class="nav" aria-label="Main">
+      <a href="../../#features">Features</a>
+      <a href="../../extension/">Extension</a>
+      <a href="../../#use-cases">Use cases</a>
+      <a href="../../#mcp">MCP</a>
+      <a href="../../docs/">Docs</a>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-ghost btn-sm gh-link" href="https://github.com/Hamzasohail123/sessionforge" aria-label="Star on GitHub">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-2.9-5.4 2.9 1.1-6-4.5-4.2 6.1-.8z"/></svg>
+        <span class="gh-label">Star on GitHub</span>
+      </a>
+      <button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Switch to light theme">
+        <svg class="icon icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+        <svg class="icon icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <a class="btn btn-primary btn-sm header-download" href="https://github.com/Hamzasohail123/sessionforge/releases/latest">Download<span class="label-long">&nbsp;for free</span></a>
+      <button class="icon-btn menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+<!-- /partial:header -->
+
+<main id="main">
+  <div class="container page-hero">
+    <nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../../">Home</a></li><li><a href="../../#use-cases">Use cases</a></li><li aria-current="page">Browser for coding agents</li></ol></nav>
+    <span class="eyebrow">Use case</span>
+    <h1>Let Claude Code, Cursor or Codex test your app while logged in</h1>
+    <p class="lead">Turn on SessionForge's local MCP server, add it to Cursor, Codex or Claude Code, and your agent can use the sessions you are already logged in to.</p>
+  </div>
+
+  <div class="container article">
+    <figure class="frame bleed">
+      <div class="frame-bar" aria-hidden="true"><i></i><i></i><i></i><span>Agent working in the Admin pane</span></div>
+      <a class="zoom" href="../../assets/shots/agent.webp" data-zoom><img src="../../assets/shots/agent-1440.webp" srcset="../../assets/shots/agent-1440.webp 1440w, ../../assets/shots/agent.webp 2880w" sizes="(min-width: 1248px) 1200px, calc(100vw - 40px)" width="1440" height="900" loading="lazy" decoding="async" alt="Two panes, Admin and Customer. The Admin pane header shows a yellow Agent label and a Stop button; the agent has typed 1042 into the order search, which now shows only order #1042."></a>
+    </figure>
+    <p class="caption">An MCP client typed "1042" into the Admin search box. The Agent label and Stop button show which pane it is using.</p>
+
+    <div class="prose">
+      <h2>Why your agent needs your sessions</h2>
+      <p>Most of what matters in a web app sits behind a login, and differs by role. An agent with a fresh, logged-out browser can't see it, and you don't want to hand it passwords. SessionForge has no AI of its own: it is the browser your coding agent uses, with the logins you already made.</p>
+
+      <h2>What the agent can do</h2>
+      <p>The MCP server has 17 tools:</p>
+      <ul class="tool-list">
+        <li><code>list_sessions</code></li><li><code>open</code></li><li><code>navigate</code></li><li><code>back</code></li><li><code>reload</code></li><li><code>snapshot</code></li><li><code>click</code></li><li><code>type</code></li><li><code>select</code></li><li><code>press</code></li><li><code>wait_for</code></li><li><code>screenshot</code></li><li><code>console_logs</code></li><li><code>network_log</code></li><li><code>send_request_as</code></li><li><code>get_layout</code></li><li><code>set_layout</code></li>
+      </ul>
+      <p><code>snapshot</code> returns a compact page outline with element refs, and <code>click</code> and <code>type</code> use real input events on those refs. <code>send_request_as</code> sends one HTTP request as several sessions and returns one column per role with a summary of what differs.</p>
+
+      <h2>A typical flow</h2>
+      <ol>
+        <li><code>list_sessions</code> → see <code>Admin</code> and <code>Customer</code> and your access to each.</li>
+        <li><code>open { session: "Admin", url: "http://localhost:3000/billing" }</code> → the page is shown in a pane.</li>
+        <li><code>snapshot { session: "Admin" }</code> → find refs such as <code>[ref=e12]</code>.</li>
+        <li><code>click { session: "Admin", ref: "e12" }</code> or <code>type { session: "Admin", ref: "e7", text: "hello", submit: true }</code>.</li>
+        <li><code>send_request_as { sessions: ["Admin", "Customer"], include_no_session: true, url: "http://localhost:3000/api/billing" }</code> → one column per role.</li>
+      </ol>
+      <p>An example prompt for your editor:</p>
+      <div class="code">
+        <button class="copy" type="button" data-copy="snippet-prompt"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg><span class="copy-label">Copy</span></button>
+        <span class="copy-status visually-hidden" aria-live="polite"></span>
+        <pre tabindex="0"><code id="snippet-prompt">Use SessionForge. Check that a Customer gets 403 on /admin/billing and an Admin gets 200.</code></pre>
+      </div>
+      <p>Give your agent the rules in <a href="https://github.com/Hamzasohail123/sessionforge/blob/main/docs/agents/sessionforge.md">docs/agents/sessionforge.md</a>: a Cursor rule and a section for <code>AGENTS.md</code> or <code>CLAUDE.md</code>.</p>
+
+      <h2>What keeps it safe</h2>
+      <ul>
+        <li>The server is off by default and listens on 127.0.0.1 only. Requests with an Origin header are refused, so web pages can't reach it.</li>
+        <li>Every request needs a 256-bit bearer token, stored encrypted with the OS keyring.</li>
+        <li>Each session is Hidden, Read or Control for agents. New sessions start at Read. Production sessions are read-only unless you type the session name to confirm.</li>
+        <li><strong>Stop</strong> in the pane header sets the session back to Read and ends the running call. The activity log lists every call.</li>
+        <li>Secrets are redacted in results, page content is labelled untrusted, calls are rate limited, and there is no eval, CDP, file or shell tool.</li>
+      </ul>
+      <p>All of these are in Settings → MCP Server. See the <a href="../../#settings">Settings window</a> on the home page.</p>
+
+      <h2>Set it up</h2>
+      <p>Turn on the server, export the token, and add one snippet to your editor. The snippets are on the <a href="../../#mcp">home page</a> and in <a href="../../docs/getting-started/">Getting started</a>.</p>
+
+      <div class="note">
+        <p><strong>Limitations.</strong> The MCP server is new: it first shipped in v0.1.0. It has no arbitrary JavaScript, file uploads, downloads or cross-origin iframe support. <code>snapshot</code> does not see inside closed shadow DOM. Read access allows GET, HEAD and OPTIONS through <code>send_request_as</code>, and a GET can still change things (for example <code>/logout</code>). Anything an agent does is done as that logged-in user.</p>
+      </div>
+    </div>
+
+    <div class="cta-band">
+      <h2>Give your agent a logged-in browser</h2>
+      <p>Free and open source for macOS, Windows and Linux.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://github.com/Hamzasohail123/sessionforge/releases/latest"><span data-download-label>Download</span></a>
+        <a class="btn btn-secondary" href="../../docs/mcp-setup/">MCP setup</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- partial:footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="../../" aria-label="SessionForge, home">
+          <svg class="logo-mark" width="28" height="28" viewBox="0 0 28 28" aria-hidden="true" focusable="false"><rect width="28" height="28" rx="6" fill="#0b112b"/><path fill="#22d3ee" fill-rule="evenodd" d="M5 3h5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2zm0 2v5h5v-5zM18 3h5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2zm0 2v5h5v-5zM5 16h5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2zm0 2v5h5v-5zM18 16h5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2zm0 2v5h5v-5z"/></svg>
+          <span>SessionForge</span>
+        </a>
+        <p>Every role. One window.</p>
+      </div>
+      <div>
+        <h2>Product</h2>
+        <ul>
+          <li><a href="../../#features">Features</a></li>
+          <li><a href="../../#download">Download</a></li>
+          <li><a href="../../extension/">Chrome extension</a></li>
+          <li><a href="https://chromewebstore.google.com/detail/sessionforge-import/ofdnckgaoffbablejmfimchoifdlhjbf">Add to Chrome</a></li>
+          <li><a href="../../docs/getting-started/">Getting started</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Use cases</h2>
+        <ul>
+          <li><a href="../../use-cases/multi-role-testing/">Multi-role testing</a></li>
+          <li><a href="../../use-cases/coding-agent-browser/" aria-current="page">Browser for coding agents</a></li>
+          <li><a href="../../use-cases/exploratory-qa/">Exploratory QA</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Compare</h2>
+        <ul>
+          <li><a href="../../compare/chrome-profiles/">vs Chrome profiles</a></li>
+          <li><a href="../../compare/playwright/">vs Playwright</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Project</h2>
+        <ul>
+          <li><a href="https://github.com/Hamzasohail123/sessionforge">GitHub</a></li>
+          <li><a href="https://github.com/Hamzasohail123/sessionforge/releases">Releases</a></li>
+          <li><a href="https://github.com/Hamzasohail123/sessionforge/blob/main/ROADMAP.md">Roadmap</a></li>
+          <li><a href="https://github.com/Hamzasohail123/sessionforge/blob/main/CONTRIBUTING.md">Contributing</a></li>
+          <li><a href="https://github.com/Hamzasohail123/sessionforge/blob/main/PRIVACY.md">Privacy</a></li>
+          <li><a href="https://github.com/Hamzasohail123/sessionforge/blob/main/SECURITY.md">Security</a></li>
+          <li><a href="https://github.com/Hamzasohail123/sessionforge/blob/main/LICENSE">License (Apache-2.0)</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-legal">Free and open source under Apache-2.0. No account, no cloud, no telemetry. This site has no analytics or cookies.</p>
+  </div>
+</footer>
+<!-- /partial:footer -->
+</body>
+</html>

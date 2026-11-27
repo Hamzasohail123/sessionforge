@@ -1,0 +1,12 @@
+<!-- {"title": "Security model", "description": "How the SessionForge MCP server is limited: localhost only, Origin refused, bearer token in the OS keyring, per-session access, read-only production and Stop.", "lead": "Agents act with a session's real cookies, so what an agent does is done as that logged-in user. These limits apply whatever your editor allows.", "nav": "Security model"} -->
+<ul>
+<li><strong>Off by default.</strong> Nothing listens until you turn it on.</li>
+<li><strong>127.0.0.1 only.</strong> Only <code>127.0.0.1</code>/<code>localhost</code> Host headers are accepted, and every request with an <code>Origin</code> header is refused, so web pages can't reach it.</li>
+<li><strong>Bearer token.</strong> 256-bit, stored encrypted with the OS keyring. Rotate it in the panel; old clients get 401.</li>
+<li><strong>Per-session access:</strong> Hidden, Read or Control. New sessions start at Read. Hidden sessions are not listed and can't be addressed.</li>
+<li><strong>Production is read-only</strong> unless you type the session name to confirm; that lasts until SessionForge restarts.</li>
+<li><strong>URL guards</strong> apply to agent navigation, requests, redirects and popups. Agents can never call SessionForge's own import or MCP server.</li>
+<li><strong>Stop.</strong> A "🤖 Agent" label and a Stop button appear in the pane an agent uses; Stop sets the session back to Read and ends the running call. The activity log lists every call.</li>
+<li><strong>Redaction.</strong> Cookie, Set-Cookie, Authorization and other secret headers, query parameters and JSON keys are redacted; page content is labelled untrusted; calls are rate limited. There is no eval, CDP, file or shell tool.</li>
+</ul>
+<div class="callout security"><p><strong>Known limits.</strong> Read access allows GET, HEAD and OPTIONS through <code>send_request_as</code>, and a GET can still have side effects (for example <code>/logout</code>). Local malware with your user's rights can read session data. See <a href="https://github.com/Hamzasohail123/sessionforge/blob/main/SECURITY.md">SECURITY.md</a>.</p></div>

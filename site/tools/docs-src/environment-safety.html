@@ -1,0 +1,8 @@
+<!-- {"title": "Environment safety", "description": "Sessions tagged production get a red PROD label, and coding agents can only read them unless you confirm by typing the session name in Settings.", "lead": "Mark real production logins as Production. They are labelled red, and agents can only read them unless you confirm."} -->
+<figure class="frame frame-plain fit doc-figure"><a class="zoom" href="{{root}}assets/shots/prod-bar.webp" data-zoom><img src="{{root}}assets/shots/prod-bar-1x.webp" srcset="{{root}}assets/shots/prod-bar-1x.webp 1x, {{root}}assets/shots/prod-bar.webp 2x" width="720" height="136" loading="lazy" decoding="async" alt="The session bar with Admin, Customer, Guest and the focused Prod Admin session, which has a red PROD label."></a><figcaption>A production session in the session bar.</figcaption></figure>
+<h2>What production changes</h2>
+<ul>
+<li>A red <strong>PROD</strong> label in the session bar and in the pane header.</li>
+<li>Agents get read-only access unless you confirm by typing the session name in Settings → MCP Server / Agent Bridge. The confirmation lasts until SessionForge restarts.</li>
+<li>The environment can't be changed after a session is created, so a production session can't lose this protection. Renaming keeps it, and a closed production session comes back read-only for agents.</li>
+</ul>

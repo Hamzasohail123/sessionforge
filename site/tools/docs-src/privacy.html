@@ -1,0 +1,9 @@
+<!-- {"title": "Privacy", "description": "SessionForge collects no data: no analytics, crash reports or telemetry. What it stores locally, and the one daily update check you can turn off.", "lead": "SessionForge is a local-first desktop application. No data about you leaves your machine."} -->
+<ul>
+<li>No analytics, usage statistics, crash reports, telemetry, accounts or cloud sync.</li>
+<li>One update check a day: an HTTPS GET to GitHub's latest-release API with the User-Agent <code>SessionForge/&lt;version&gt;</code>, no cookies or identifiers. Turn it off in Settings → General → <strong>Check for updates</strong>.</li>
+<li>When an agent calls <code>send_request_as</code>, SessionForge sends that request, to the URL the agent chose, with the cookies of the sessions it named.</li>
+</ul>
+<h2>Stored on your computer</h2>
+<p>Session data (cookies, localStorage, IndexedDB, cache) and a local SQLite database with names, colours and tabs. The Agent Bridge token is stored encrypted with the OS keyring. The activity log and the console and network logs that agents read live in memory only.</p>
+<p>This website has no analytics or cookies either. Full policy: <a href="https://github.com/Hamzasohail123/sessionforge/blob/main/PRIVACY.md">PRIVACY.md</a>.</p>

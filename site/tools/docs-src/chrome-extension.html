@@ -1,0 +1,18 @@
+<!-- {"title": "Chrome extension", "description": "SessionForge Import copies the login of the current Chrome tab into a new SessionForge session in one click. How it works and how to install it.", "lead": "SessionForge Import copies the login of the current Chrome tab into SessionForge with one click. SessionForge creates a new session from it and opens the page in a pane, already logged in.", "nav": "Overview and install"} -->
+<figure class="frame frame-plain fit doc-figure"><a class="zoom" href="{{root}}assets/shots/popup-ready.webp" data-zoom><img src="{{root}}assets/shots/popup-ready-1x.webp" srcset="{{root}}assets/shots/popup-ready-1x.webp 1x, {{root}}assets/shots/popup-ready.webp 2x" width="352" height="285" loading="lazy" decoding="async" alt="The SessionForge Import popup: Current site localhost, site access Allowed, and a Send to SessionForge button."></a><figcaption>The popup, ready to send.</figcaption></figure>
+<h2>How it works</h2>
+<ol>
+<li>Log in to a site in Chrome as usual.</li>
+<li>Click the SessionForge Import icon. The first time, a short notice explains what it reads, when, where it goes and how to stop it. Nothing is read or sent until you click <strong>Agree</strong>.</li>
+<li>Click <strong>Send to SessionForge</strong>. The first time you send from a site, Chrome asks you to allow access to that site.</li>
+<li>SessionForge names the session after the e-mail address in the tab title, or else the hostname, and opens the URL in a free pane.</li>
+</ol>
+<p>Not copied: sessionStorage, IndexedDB, history, bookmarks, saved passwords. Cookies without an expiry date are kept for 30 days, so imported logins survive a restart.</p>
+<h2>Install</h2>
+<p>Install it from the <a href="https://chromewebstore.google.com/detail/sessionforge-import/ofdnckgaoffbablejmfimchoifdlhjbf">Chrome Web Store</a>. To work on the extension, load it unpacked:</p>
+<ol>
+<li>Get the <code>chrome-extension/</code> folder (clone the repo, or download the source zip from the release).</li>
+<li>Open <code>chrome://extensions/</code> and turn on <strong>Developer mode</strong>.</li>
+<li>Click <strong>Load unpacked</strong> and select the folder.</li>
+</ol>
+<p>Built and tested for Chrome. Edge and Brave should work but are untested. Firefox is not supported. Every popup state, with pictures: <a href="{{root}}extension/">the extension page</a>.</p>
